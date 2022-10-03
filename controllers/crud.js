@@ -11,8 +11,7 @@ exports.getIndex = async (req, res) => {
 };
 
 exports.getUserProfile = async (req, res) => {
-  const { userId } = req.params;
-  const user = await User.findById(userId);
+  const user = await User.findById(req.userId);
   const followingCount = 2;
   const followersCount = 500;
   const backdropUrl =
