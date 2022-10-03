@@ -57,8 +57,8 @@ exports.getUserProfile = async (req, res) => {
       error.statusCode = 401;
       throw error;
     }
-    const followingCount = Math.floor(Math.random() * 1000);
-    const followersCount = Math.floor(Math.random() * 1000);
+    let followingCount = Math.floor(Math.random() * 1000);
+    let followersCount = Math.floor(Math.random() * 1000);
     let backdropUrl = "https://placeimg.com/640/360/any";
     let displayUrl = "https://placeimg.com/640/360/any";
     if (user.username === "HoodieDan") {
@@ -66,6 +66,8 @@ exports.getUserProfile = async (req, res) => {
         "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664820980/profileImages/c8otiaauqetohvrdpq2z.jpg";
       displayUrl =
         "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664821014/profileImages/dkqvt00s5i5n70djouc5.jpg";
+      followingCount = 2;
+      followersCount = 500;
     }
     // const bio = ""
     let { name, username, stack, location, email, bio, verified } = user;
