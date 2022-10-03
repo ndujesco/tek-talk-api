@@ -7,7 +7,11 @@ const { catchError } = require("./utils/catch-error");
 const authRoutes = require("./routes/auth");
 const crudRoutes = require("./routes/crud");
 const passwordRoutes = require("./routes/password-reset");
-const { isAuthorized, isAuthenticated } = require("./middleware/is-auth");
+const {
+  isAuthorized,
+  isAuthenticated,
+  checkApi,
+} = require("./middleware/is-auth");
 
 const MONGODB_PRACTICE_URI = "mongodb://localhost:27017/tektalkDB";
 const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.83uvt.mongodb.net/tektalkDB?retryWrites=true&w=majority`;
@@ -26,7 +30,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(bodyParser.json());
-app.use(isAuthorized);
+app.use(checkApi, isAuthorized);
 
 app.use("/auth", authRoutes);
 app.use(crudRoutes);
