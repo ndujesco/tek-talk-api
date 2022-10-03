@@ -59,8 +59,14 @@ exports.getUserProfile = async (req, res) => {
     }
     const followingCount = Math.floor(Math.random() * 1000);
     const followersCount = Math.floor(Math.random() * 1000);
-    const backdropUrl = "https://placeimg.com/640/360/any";
-    const displayUrl = "https://placeimg.com/640/360/any";
+    let backdropUrl = "https://placeimg.com/640/360/any";
+    let displayUrl = "https://placeimg.com/640/360/any";
+    if (user.username === "HoodieDan") {
+      backdropUrl =
+        "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664820980/profileImages/c8otiaauqetohvrdpq2z.jpg";
+      displayUrl =
+        "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664821014/profileImages/dkqvt00s5i5n70djouc5.jpg";
+    }
     // const bio = ""
     let { name, username, stack, location, email, bio, verified } = user;
     if (!bio) {
