@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/", isAuthenticated, getIndex);
 
-router.get("/profile", isAuthenticated, getUserProfile);
+router.get("/profile/:userId", isAuthenticated, getUserProfile);
 
 router.get("/sample", (req, res) => {
   const { token } = req.query;
