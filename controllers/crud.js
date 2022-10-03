@@ -10,31 +10,77 @@ exports.getIndex = async (req, res) => {
   }
 };
 
-exports.getUserProfile = async (req, res) => {
-  const user = await User.findById(req.userId);
-  const followingCount = 2;
-  const followersCount = 500;
-  const backdropUrl =
-    "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664820980/profileImages/c8otiaauqetohvrdpq2z.jpg";
-  const displayUrl =
-    "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664821014/profileImages/dkqvt00s5i5n70djouc5.jpg";
-  // const bio = ""
-  let { name, username, stack, location, email, bio, verified } = user;
-  if (!bio) {
-    bio =
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic enim assumenda recusandae atque minus ipsa quidem expedita eligendi, modi accusamus consequuntur rerum? Aspernatur officia explicabo id quo? Earum, harum quidem?";
+exports.getMyProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    const followingCount = 2;
+    const followersCount = 500;
+    const backdropUrl =
+      "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664820980/profileImages/c8otiaauqetohvrdpq2z.jpg";
+    const displayUrl =
+      "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664821014/profileImages/dkqvt00s5i5n70djouc5.jpg";
+    // const bio = ""
+    let { name, username, stack, location, email, bio, verified } = user;
+    if (!bio) {
+      bio =
+        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic enim assumenda recusandae atque minus ipsa quidem expedita eligendi, modi accusamus consequuntur rerum? Aspernatur officia explicabo id quo? Earum, harum quidem?";
+    }
+    res.json({
+      name,
+      username,
+      stack,
+      location,
+      email,
+      backdropUrl,
+      displayUrl,
+      bio,
+      followingCount,
+      followersCount,
+      verified,
+    });
+  } catch (err) {
+    catchError(err, res);
   }
-  res.json({
-    name,
-    username,
-    stack,
-    location,
-    email,
-    backdropUrl,
-    displayUrl,
-    bio,
-    followingCount,
-    followersCount,
-    verified,
-  });
+};
+
+exports.getUserProfile = async (req, res) => {
+  try {
+    const userName = req.params.username;
+    if (!userName) {
+      const error = new Error("Add /username na");
+      error.statusCode = 401;
+      throw error;
+    }
+    const user = await User.findOne({ username: userName });
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 401;
+      throw error;
+    }
+    const followingCount = Math.floor(Math.random() * 1000);
+    const followersCount = Math.floor(Math.random() * 1000);
+    const backdropUrl = "https://placeimg.com/640/360/any";
+    const displayUrl = "https://placeimg.com/640/360/any";
+    // const bio = ""
+    let { name, username, stack, location, email, bio, verified } = user;
+    if (!bio) {
+      bio =
+        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic enim assumenda recusandae atque minus ipsa quidem expedita eligendi, modi accusamus consequuntur rerum? Aspernatur officia explicabo id quo? Earum, harum quidem?";
+    }
+    res.json({
+      name,
+      username,
+      stack,
+      location,
+      email,
+      backdropUrl,
+      displayUrl,
+      bio,
+      followingCount,
+      followersCount,
+      verified,
+    });
+  } catch (err) {
+    catchError(err, res);
+  }
 };
