@@ -22,9 +22,14 @@ exports.signup = async (req, res) => {
       password: hashedPassword,
     });
     const result = await user.save();
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_PRIVATE_KEY, {
+      expiresIn: "30d",
+    });
     res.status(201).json({
       status: 201,
       message: "User created!",
+      token,
+      userId: result.id,
     });
   } catch (err) {
     catchError(err, res);

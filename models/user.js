@@ -21,7 +21,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  country: {
+  location: {
     type: String,
     required: true,
   },

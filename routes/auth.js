@@ -36,7 +36,7 @@ router.post(
       .isLength({ min: 5 })
       .trim(),
     body("name", "Name field should not be empty").isLength({ min: 1 }).trim(),
-    body("country", "Country field should not be empty")
+    body("location", "Location field should not be empty")
       .isLength({ min: 1 })
       .trim(),
 

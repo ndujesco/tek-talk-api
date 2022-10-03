@@ -36,6 +36,8 @@ exports.isAuthorized = (req, res, next) => {
       message: errors.array()[0].msg,
     });
   }
+  console.log(req.query.apiKey);
+
   const apiKey = req.query.apiKey || null;
   if (!API_KEYS.includes(apiKey)) {
     return res.status(401).json({ status: 401, message: "Inavlid api key" });
