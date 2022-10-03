@@ -21,7 +21,8 @@ exports.getUserProfile = async (req, res) => {
   // const bio = ""
   let { name, username, stack, location, email, bio, verified } = user;
   if (!bio) {
-    bio = "";
+    bio =
+      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic enim assumenda recusandae atque minus ipsa quidem expedita eligendi, modi accusamus consequuntur rerum? Aspernatur officia explicabo id quo? Earum, harum quidem?";
   }
   res.json({
     name,
