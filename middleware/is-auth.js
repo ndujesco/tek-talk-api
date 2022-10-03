@@ -36,7 +36,6 @@ exports.isAuthorized = (req, res, next) => {
       message: errors.array()[0].msg,
     });
   }
-  console.log(req.query.apiKey);
 
   const apiKey = req.query.apiKey || null;
   if (!API_KEYS.includes(apiKey)) {

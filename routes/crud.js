@@ -1,10 +1,12 @@
 const { Router } = require("express");
-const { getIndex } = require("../controllers/crud");
+const { getIndex, getUserProfile } = require("../controllers/crud");
 const { isAuthorized, isAuthenticated } = require("../middleware/is-auth");
 
 const router = Router();
 
 router.get("/", isAuthenticated, getIndex);
+
+router.get("/profile", isAuthenticated, getUserProfile);
 
 router.get("/sample", (req, res) => {
   const { token } = req.query;
