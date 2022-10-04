@@ -2,6 +2,7 @@ require("dotenv").config();
 const bodyParser = require("body-parser");
 const express = require("express");
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 const { catchError } = require("./utils/catch-error");
 const authRoutes = require("./routes/auth");
@@ -12,6 +13,10 @@ const {
   isAuthenticated,
   checkApi,
 } = require("./middleware/is-auth");
+
+if (!fs.existsSync("./images")) {
+  fs.mkdirSync("./images");
+}
 
 // console.log(process.env.MONGO_USERNAME, process.env.MONGO_PASSWORD);
 const MONGODB_PRACTICE_URI = "mongodb://localhost:27017/tektalkDB";
@@ -30,7 +35,18 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
-app.use(bodyParser.json());
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now().toString() + "-" + file.originalname);
+  },
+});
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ storage }).array("image"));
 app.use(checkApi, isAuthorized);
 
 app.use("/auth", authRoutes);
