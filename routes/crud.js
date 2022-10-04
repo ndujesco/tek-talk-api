@@ -1,10 +1,11 @@
 const { Router } = require("express");
+const { postPost } = require("../controllers/post-crud");
 const {
   getIndex,
   getUserProfile,
   getMyProfile,
   getUserProfileFromId,
-} = require("../controllers/crud");
+} = require("../controllers/profile-crud");
 const { isAuthenticated } = require("../middleware/is-auth");
 
 const router = Router();
@@ -17,9 +18,6 @@ router.get("/profile/:username", getUserProfile);
 
 router.get("/profile/id/:id", getUserProfileFromId);
 
-router.get("/sample", (req, res) => {
-  const { token } = req.query;
-  res.json({ message: "Sample page", token });
-});
+router.post("/post", isAuthenticated, postPost);
 
 module.exports = router;

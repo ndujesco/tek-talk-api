@@ -1,33 +1,39 @@
 const { Schema, default: mongoose } = require("mongoose");
 
-const blogPostSchema = new Schema(
+const postSchema = new Schema(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    subtitle: {
-      type: String,
-    },
-    date: {
-      type: String,
-      required: true,
-    },
     body: {
       type: String,
       required: true,
     },
-    imageUrl: {
+    firstImageLocal: {
+      type: String,
+      default: null,
+    },
+    firstImageUrl: {
+      type: String,
+      default: null,
+    },
+    firstImageId: {
+      default: null,
       type: String,
     },
-
-    comments: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Comment",
-        required: true,
-      },
-    ],
+    secondImageLocal: {
+      type: String,
+      default: null,
+    },
+    secondImageUrl: {
+      type: String,
+      default: null,
+    },
+    secondImageId: {
+      default: null,
+      type: String,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
 
     author: {
       type: Schema.Types.ObjectId,
@@ -38,4 +44,4 @@ const blogPostSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("BlogPost", blogPostSchema);
+module.exports = mongoose.model("post", postSchema);
