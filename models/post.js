@@ -6,30 +6,25 @@ const postSchema = new Schema(
       type: String,
       required: true,
     },
-    firstImageLocal: {
-      type: String,
-      default: null,
-    },
-    firstImageUrl: {
-      type: String,
-      default: null,
-    },
-    firstImageId: {
-      default: null,
-      type: String,
-    },
-    secondImageLocal: {
-      type: String,
-      default: null,
-    },
-    secondImageUrl: {
-      type: String,
-      default: null,
-    },
-    secondImageId: {
-      default: null,
-      type: String,
-    },
+    imagesLocal: [
+      {
+        type: String,
+        default: null,
+      },
+    ],
+    imagesUrl: [
+      {
+        type: String,
+        default: null,
+      },
+    ],
+    imagesId: [
+      {
+        default: null,
+        type: String,
+      },
+    ],
+
     category: {
       type: String,
       required: true,

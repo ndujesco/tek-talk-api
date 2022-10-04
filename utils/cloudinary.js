@@ -6,5 +6,9 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 
-// cloudinary.uploader.destroy("h1i8ebdlw3mjrcxhcspg");
-module.exports = cloudinary;
+exports.uploadFile = async (filePath) => {
+  const result = await cloudinary.uploader.upload(filePath, {
+    folder: "postImages",
+  });
+  console.log(result);
+};
