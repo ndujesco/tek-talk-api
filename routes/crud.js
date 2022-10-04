@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const { body } = require("express-validator");
 const { postPost } = require("../controllers/post-crud");
 const {
   getIndex,
@@ -7,6 +8,12 @@ const {
   getUserProfileFromId,
 } = require("../controllers/profile-crud");
 const { isAuthenticated } = require("../middleware/is-auth");
+
+const postValidator = [
+  body("body").isLength({ min: 1 }),
+  body("category").isLength({ min: 1 }),
+  body("author").isLength({ min: 1 }),
+];
 
 const router = Router();
 

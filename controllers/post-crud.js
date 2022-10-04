@@ -5,5 +5,6 @@ exports.postPost = async (req, res) => {
     const { body, category, author } = req.body;
     console.log(req.body);
     console.log(req.files);
+    res.json({ message: "Success!" });
   } catch (err) {}
 };

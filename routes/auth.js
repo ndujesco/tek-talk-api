@@ -32,10 +32,13 @@ router.post(
           }
         });
       }),
+
     body("password", "Passwords must have a minimum of 5 characters")
       .isLength({ min: 5 })
       .trim(),
+
     body("name", "Name field should not be empty").isLength({ min: 1 }).trim(),
+
     body("location", "Location field should not be empty")
       .isLength({ min: 1 })
       .trim(),
@@ -51,6 +54,7 @@ router.post(
         return true;
       })
       .trim(),
+
     body("stack").isLength({ min: 1 }).trim(),
   ],
   signup
