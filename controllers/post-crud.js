@@ -82,7 +82,6 @@ exports.getPostFromUserId = async (req, res) => {
     if (!id || !isValid) {
       return res.status(422).json({ status: 422, message: "Invalid user id" });
     }
-    console.log(isValid, id);
     const posts = await Post.find({
       author: id,
     }).populate("author");
