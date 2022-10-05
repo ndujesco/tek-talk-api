@@ -29,7 +29,9 @@ exports.postPost = async (req, res) => {
       post.imagesLocal.push(imageLocalPath);
     });
     await post.save();
-    res.status(200).json({ status: 200, message: "Posted Successfully!" });
+    res
+      .status(200)
+      .json({ status: 200, message: "Posted Successfully!", postId: post.id });
     uploadedImages.forEach((imgData) => {
       uploadToCloudinary(imgData.path, post.id);
     });
