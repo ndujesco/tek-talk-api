@@ -13,8 +13,6 @@ router.post(
       .isEmail()
       .normalizeEmail()
       .custom((value) => {
-        console.log(req.body);
-
         return User.findOne({ email: value }).then((userDoc) => {
           if (userDoc) {
             return Promise.reject("Email address already exists!");
