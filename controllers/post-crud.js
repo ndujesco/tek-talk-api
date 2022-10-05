@@ -79,9 +79,9 @@ exports.postPost = async (req, res) => {
 };
 
 exports.getPostFromUserId = async (req, res) => {
-  const id = req.params.id;
-  const filter = req.params.filter;
-  const pageNumber = +req.params.pageNumber;
+  const id = req.query.id;
+  const filter = req.query.filter;
+  const pageNumber = +req.query.pageNumber;
   try {
     const isValid = isValidObjectId(id);
     if (!id || !isValid) {
@@ -108,8 +108,8 @@ exports.getPostFromUserId = async (req, res) => {
 };
 
 exports.getAllPosts = async (req, res) => {
-  const filter = req.params.filter;
-  const pageNumber = req.params.pageNumber;
+  const filter = req.query.filter;
+  const pageNumber = +req.query.pageNumber;
 
   try {
     let posts = await Post.find()
@@ -117,7 +117,6 @@ exports.getAllPosts = async (req, res) => {
       .limit(25)
       .populate("author");
     if (filter) {
-      console.log(posts);
       posts = posts.filter((post) => filter === post.category);
     }
     let postsToSend = [];
