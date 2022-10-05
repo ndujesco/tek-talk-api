@@ -34,7 +34,7 @@ const userSchema = new Schema({
   following: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
   token: String,
   tokenExpiration: Date,
-  displayUrl: String,
+  displayUrl: { type: String, default: null },
   dsiplayLocal: String,
   displayId: String,
   backdropUrl: String,

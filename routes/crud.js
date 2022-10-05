@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const { body } = require("express-validator");
+const { followUser } = require("../controllers/follow");
 const {
   postPost,
   getPostFromUserId,
@@ -34,4 +35,5 @@ router.get("/post/id/:id", getPostFromUserId);
 
 router.get("/post", getAllPosts);
 
+router.post("/follow", isAuthenticated, followUser);
 module.exports = router;
