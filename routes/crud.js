@@ -12,7 +12,6 @@ const { isAuthenticated } = require("../middleware/is-auth");
 const postValidator = [
   body("body").isLength({ min: 1 }),
   body("category").isLength({ min: 1 }),
-  body("authorId").isLength({ min: 1 }),
 ];
 
 const router = Router();

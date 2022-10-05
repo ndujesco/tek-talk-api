@@ -46,6 +46,7 @@ const storage = multer.diskStorage({
   },
 });
 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ storage }).array("image"));
 app.use(checkApi, isAuthorized);

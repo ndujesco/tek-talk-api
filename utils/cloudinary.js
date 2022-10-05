@@ -1,3 +1,5 @@
+const Post = require("../models/post");
+
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
@@ -6,7 +8,7 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 
-exports.uploadFile = async (filePath) => {
+exports.uploadFile = async (filePath, id) => {
   const result = await cloudinary.uploader.upload(filePath, {
     folder: "postImages",
   });
