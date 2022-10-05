@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
-
+console.log(Date.now().toString());
 const { catchError } = require("./utils/catch-error");
 const authRoutes = require("./routes/auth");
 const crudRoutes = require("./routes/crud");

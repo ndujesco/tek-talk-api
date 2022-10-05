@@ -10,6 +10,7 @@ const { catchError } = require("../utils/catch-error");
 const { uploadFile, uploadToCloudinary } = require("../utils/cloudinary");
 
 const extractPostDetails = (posts, postsToSend, req) => {
+  console.log(post.createdAt);
   posts.forEach((post) => {
     let postToSend = {
       postId: post.id,
@@ -60,6 +61,7 @@ exports.postPost = async (req, res) => {
       imagesId: [],
       comments: [],
       likes: [],
+      createdAt: Date.now().toString(),
     });
     const uploadedImages = req.files;
     uploadedImages.forEach((imgData) => {
