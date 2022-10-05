@@ -9,11 +9,11 @@ const Post = require("../models/post");
 const { catchError } = require("../utils/catch-error");
 const { uploadFile, uploadToCloudinary } = require("../utils/cloudinary");
 
-const extractPostDetails = (posts, postsToSend, id, req) => {
+const extractPostDetails = (posts, postsToSend, req) => {
   posts.forEach((post) => {
     let postToSend = {
       postId: post.id,
-      authorId: id,
+      authorId: post.author.id,
       username: post.author.username,
       name: post.author.name,
       commentCount: post.comments.length,
@@ -78,19 +78,41 @@ exports.postPost = async (req, res) => {
 exports.getPostFromUserId = async (req, res) => {
   try {
     const id = req.params.id;
+    const filter = req.body.filter;
+
     const isValid = isValidObjectId(id);
     if (!id || !isValid) {
       return res.status(422).json({ status: 422, message: "Invalid user id" });
     }
-    const posts = await Post.find({
+    let posts = await Post.find({
       author: id,
     }).populate("author");
     if (!posts) {
       return res.status(422).json({ status: 422, message: "Post not found" });
     }
+    if (filter) {
+      posts = posts.filter((post) => filter.includes(post.category));
+    }
     let postsToSend = [];
-    extractPostDetails(posts, postsToSend, id, req);
-    res.status(200).json({ status: 200, post: postsToSend });
+    extractPostDetails(posts, postsToSend, req);
+    res.status(200).json({ status: 200, posts: postsToSend });
+  } catch (err) {
+    catchError(err, res);
+  }
+};
+
+exports.getAllPosts = async (req, res) => {
+  try {
+    let posts = await Post.find().populate("author");
+    const filter = req.body.filter;
+    console.log(filter);
+    if (filter) {
+      console.log(posts);
+      posts = posts.filter((post) => filter.includes(post.category));
+    }
+    let postsToSend = [];
+    extractPostDetails(posts, postsToSend, req);
+    res.status(200).json({ status: 200, posts: postsToSend });
   } catch (err) {
     catchError(err, res);
   }
