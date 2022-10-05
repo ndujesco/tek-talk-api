@@ -22,6 +22,7 @@ const extractPostDetails = (posts, postsToSend, req) => {
       postBody: post.body,
       postDate: post.createdAt,
       images: [],
+      category: "post",
     };
 
     post.imagesLocal.forEach((img) => {
@@ -76,17 +77,20 @@ exports.postPost = async (req, res) => {
 };
 
 exports.getPostFromUserId = async (req, res) => {
+  const id = req.params.id;
+  const filter = req.body.filter;
+  const pageNumber = req.body.pageNumber;
   try {
-    const id = req.params.id;
-    const filter = req.body.filter;
-
     const isValid = isValidObjectId(id);
     if (!id || !isValid) {
       return res.status(422).json({ status: 422, message: "Invalid user id" });
     }
     let posts = await Post.find({
       author: id,
-    }).populate("author");
+    })
+      .skip((pageNumber - 1) * 25)
+      .limit(25)
+      .populate("author");
     if (!posts) {
       return res.status(422).json({ status: 422, message: "Post not found" });
     }
@@ -102,10 +106,14 @@ exports.getPostFromUserId = async (req, res) => {
 };
 
 exports.getAllPosts = async (req, res) => {
+  const filter = req.body.filter;
+  const pageNumber = req.body.pageNumber;
+
   try {
-    let posts = await Post.find().populate("author");
-    const filter = req.body.filter;
-    console.log(filter);
+    let posts = await Post.find()
+      .skip((pageNumber - 1) * 25)
+      .limit(25)
+      .populate("author");
     if (filter) {
       console.log(posts);
       posts = posts.filter((post) => filter.includes(post.category));
