@@ -9,6 +9,34 @@ const Post = require("../models/post");
 const { catchError } = require("../utils/catch-error");
 const { uploadFile, uploadToCloudinary } = require("../utils/cloudinary");
 
+const extractPostDetails = (posts, postsToSend, id, req) => {
+  posts.forEach((post) => {
+    let postToSend = {
+      postId: post.id,
+      authorId: id,
+      username: post.author.username,
+      name: post.author.name,
+      commentCount: post.comments.length,
+      likeCount: post.likes.length,
+      postedIn: post.category,
+      postBody: post.body,
+      postDate: post.createdAt,
+      images: [],
+    };
+
+    post.imagesLocal.forEach((img) => {
+      const fileExists = fs.existsSync(img);
+
+      if (fileExists) {
+        postToSend.images.push("https://" + req.headers.host + "/" + img);
+      } else {
+        postToSend.images.push(...post.imagesUrl);
+      }
+    });
+    postsToSend.push(postToSend);
+  });
+};
+
 exports.postPost = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -47,43 +75,23 @@ exports.postPost = async (req, res) => {
   }
 };
 
-exports.getPostFromId = async (req, res) => {
+exports.getPostFromUserId = async (req, res) => {
   try {
     const id = req.params.id;
     const isValid = isValidObjectId(id);
     if (!id || !isValid) {
       return res.status(422).json({ status: 422, message: "Invalid user id" });
     }
+    console.log(isValid, id);
     const posts = await Post.find({
-      author: "633a91328cf687423b8ae549",
+      author: id,
     }).populate("author");
     if (!posts) {
       return res.status(422).json({ status: 422, message: "Post not found" });
     }
     let postsToSend = [];
-
-    posts.forEach((post) => {
-      let postToSend = {
-        postId: post.id,
-        authorId: id,
-        username: post.author.username,
-        name: post.author.name,
-        commentCount: post.comments.length,
-        likeCount: post.likes.length,
-        postedIn: post.category,
-        postBody: post.body,
-        postDate: post.createdAt,
-        images: [],
-      };
-      post.imagesLocal.forEach((img) => {
-        console.log(img);
-
-        const fileExists = fs.existsSync(img);
-        console.log(fileExists);
-      });
-      //   console.log(postToSend);
-    });
-    res.json({ posts });
+    extractPostDetails(posts, postsToSend, id, req);
+    res.status(200).json({ status: 200, post: postsToSend });
   } catch (err) {
     catchError(err, res);
   }
