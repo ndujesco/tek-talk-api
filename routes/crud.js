@@ -1,6 +1,10 @@
 const { Router } = require("express");
 const { body } = require("express-validator");
-const { postPost, getPostFromUserId } = require("../controllers/post-crud");
+const {
+  postPost,
+  getPostFromUserId,
+  getAllPosts,
+} = require("../controllers/post-crud");
 const {
   getIndex,
   getUserProfile,
@@ -27,5 +31,7 @@ router.get("/profile/id/:id", getUserProfileFromId);
 router.post("/post", isAuthenticated, postValidator, postPost);
 
 router.get("/post/id/:id", getPostFromUserId);
+
+router.get("/post", getAllPosts);
 
 module.exports = router;
