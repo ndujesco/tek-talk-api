@@ -80,8 +80,8 @@ exports.postPost = async (req, res) => {
 
 exports.getPostFromUserId = async (req, res) => {
   const id = req.params.id;
-  const filter = req.body.filter;
-  const pageNumber = req.body.pageNumber;
+  const filter = req.params.filter;
+  const pageNumber = +req.params.pageNumber;
   try {
     const isValid = isValidObjectId(id);
     if (!id || !isValid) {
@@ -97,7 +97,7 @@ exports.getPostFromUserId = async (req, res) => {
       return res.status(422).json({ status: 422, message: "Post not found" });
     }
     if (filter) {
-      posts = posts.filter((post) => filter.includes(post.category));
+      posts = posts.filter((post) => filter === post.category);
     }
     let postsToSend = [];
     extractPostDetails(posts, postsToSend, req);
@@ -108,8 +108,8 @@ exports.getPostFromUserId = async (req, res) => {
 };
 
 exports.getAllPosts = async (req, res) => {
-  const filter = req.body.filter;
-  const pageNumber = req.body.pageNumber;
+  const filter = req.params.filter;
+  const pageNumber = req.params.pageNumber;
 
   try {
     let posts = await Post.find()
@@ -118,7 +118,7 @@ exports.getAllPosts = async (req, res) => {
       .populate("author");
     if (filter) {
       console.log(posts);
-      posts = posts.filter((post) => filter.includes(post.category));
+      posts = posts.filter((post) => filter === post.category);
     }
     let postsToSend = [];
     extractPostDetails(posts, postsToSend, req);
