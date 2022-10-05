@@ -16,6 +16,7 @@ const extractPostDetails = (posts, postsToSend, req) => {
       authorId: post.author.id,
       username: post.author.username,
       authorImage: "https://placeimg.com/640/360/any",
+      isVerified: post.author.verified,
       name: post.author.name,
       commentCount: post.comments.length,
       likeCount: post.likes.length,
