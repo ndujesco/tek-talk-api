@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const { catchError } = require("./catch-error");
 
 const cloudinary = require("cloudinary").v2;
 
@@ -8,9 +9,16 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 
-exports.uploadFile = async (filePath, id) => {
-  const result = await cloudinary.uploader.upload(filePath, {
-    folder: "postImages",
-  });
-  console.log(result);
+exports.uploadToCloudinary = async (filePath, id) => {
+  try {
+    const result = await cloudinary.uploader.upload(filePath, {
+      folder: "postImages",
+    });
+    const post = await Post.findById(id);
+    post.imagesUrl.push(result.secure_url);
+    post.imagesId.push(result.public_id);
+    await post.save();
+  } catch (err) {
+    console.log(err);
+  }
 };

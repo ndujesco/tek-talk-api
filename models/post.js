@@ -9,18 +9,16 @@ const postSchema = new Schema(
     imagesLocal: [
       {
         type: String,
-        default: null,
+        required: true,
       },
     ],
     imagesUrl: [
       {
         type: String,
-        default: null,
       },
     ],
     imagesId: [
       {
-        default: null,
         type: String,
       },
     ],

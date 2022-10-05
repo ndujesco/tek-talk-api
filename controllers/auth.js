@@ -8,7 +8,6 @@ const { catchError } = require("../utils/catch-error");
 exports.signup = async (req, res) => {
   const errors = validationResult(req);
   const { password } = req.body;
-  console.log(req.body);
 
   if (!errors.isEmpty()) {
     return res.status(422).json({

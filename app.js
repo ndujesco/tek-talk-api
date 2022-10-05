@@ -4,6 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const fs = require("fs");
 const multer = require("multer");
+const path = require("path");
 
 const { catchError } = require("./utils/catch-error");
 const authRoutes = require("./routes/auth");
@@ -49,6 +50,8 @@ const storage = multer.diskStorage({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ storage }).array("image"));
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 app.use(checkApi, isAuthorized);
 
 app.use("/auth", authRoutes);
