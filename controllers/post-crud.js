@@ -10,7 +10,6 @@ const { catchError } = require("../utils/catch-error");
 const { uploadFile, uploadToCloudinary } = require("../utils/cloudinary");
 
 const extractPostDetails = (posts, postsToSend, req) => {
-  console.log(post.createdAt);
   posts.forEach((post) => {
     let postToSend = {
       postId: post.id,
@@ -84,8 +83,10 @@ exports.getPostFromUserId = async (req, res) => {
   const id = req.query.id;
   const filter = req.query.filter;
   const pageNumber = +req.query.pageNumber;
+  const isValid = isValidObjectId(id);
+
+  console.log(id, isValid);
   try {
-    const isValid = isValidObjectId(id);
     if (!id || !isValid) {
       return res.status(422).json({ status: 422, message: "Invalid user id" });
     }
