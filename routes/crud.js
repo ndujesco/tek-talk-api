@@ -4,10 +4,10 @@ const { editProfile } = require("../controllers/edit-profile");
 const { followUser, unFollowUser } = require("../controllers/like-follow");
 const {
   postPost,
-  getPostFromUserId,
   getAllPosts,
   getPostFromId,
   getPostsWithOrOutFeed,
+  getPostFromUserName,
 } = require("../controllers/post-crud");
 
 const {
@@ -39,7 +39,7 @@ router.post("/profile/edit", isAuthenticated, editProfile);
 
 router.post("/post", isAuthenticated, postValidator, postPost);
 
-router.get("/post/userId/:userId", getPostFromUserId);
+router.get("/post/username/:username", getPostFromUserName);
 
 router.get("/post", getAllPosts);
 

@@ -78,17 +78,18 @@ exports.postPost = async (req, res) => {
   }
 };
 
-exports.getPostFromUserId = async (req, res) => {
-  const id = req.params.userId;
+exports.getPostFromUserName = async (req, res) => {
+  const username = req.params.username;
   const filter = req.query.filter;
   const pageNumber = +req.query.pageNumber;
-  const isValid = isValidObjectId(id);
   try {
-    if (!id || !isValid) {
-      return res.status(422).json({ status: 422, message: "Invalid user id" });
+    if (!username) {
+      return res
+        .status(422)
+        .json({ status: 422, message: "How about putting username" });
     }
     let posts = await Post.find({
-      author: id,
+      username,
     })
       .skip((pageNumber - 1) * 25)
       .limit(25)
