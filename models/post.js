@@ -36,7 +36,7 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
-  createdAt: String,
+  createdAt: Date,
   comments: [
     {
       type: Schema.Types.ObjectId,

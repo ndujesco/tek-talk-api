@@ -112,6 +112,7 @@ exports.getPostFromUserId = async (req, res) => {
 };
 
 exports.getAllPosts = async (req, res) => {
+  console.log(2);
   const filter = req.query.filter;
   const pageNumber = +req.query.pageNumber;
 
@@ -123,6 +124,7 @@ exports.getAllPosts = async (req, res) => {
     if (filter) {
       posts = posts.filter((post) => filter === post.category);
     }
+    console.log(posts);
     let postsToSend = [];
     posts.forEach((post) => {
       const postToSend = extractPostToSend(post, req);
