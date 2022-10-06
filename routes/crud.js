@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { body } = require("express-validator");
 const { editProfile } = require("../controllers/edit-profile");
-const { followUser } = require("../controllers/follow-crud");
+const { followUser, unFollowUser } = require("../controllers/like-follow");
 const {
   postPost,
   getPostFromUserId,
@@ -45,8 +45,10 @@ router.get("/post", getAllPosts);
 
 router.get("/post/:postId", getPostFromId);
 
-router.post("/follow", isAuthenticated, followUser);
-
 router.get("/post/feed/:bool", getPostsWithOrOutFeed);
+
+router.put("/follow", isAuthenticated, followUser);
+
+router.patch("/unfollow", isAuthenticated, unFollowUser);
 
 module.exports = router;

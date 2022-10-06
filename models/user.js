@@ -30,8 +30,8 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  followers: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
-  following: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
+  followers: [{ type: String, required: true, default: [] }],
+  following: [{ type: String, required: true, default: [] }],
   token: String,
   tokenExpiration: Date,
   displayUrl: { type: String, default: null },
@@ -41,5 +41,21 @@ const userSchema = new Schema({
   backdropLocal: { type: String, default: null },
   backdropId: { type: String, default: null },
 });
+
+userSchema.methods.addToFollowers = function (id) {
+  if (!this.followers.includes(id)) {
+    this.followers.push(id);
+  }
+  return this.save();
+};
+
+userSchema.methods.addToFollowing = function (id) {
+  console.log(id);
+  if (!this.following.includes(id)) {
+    this.following.push(id);
+  }
+
+  return this.save();
+};
 
 module.exports = mongoose.model("User", userSchema);

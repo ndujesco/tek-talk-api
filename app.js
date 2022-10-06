@@ -6,8 +6,6 @@ const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
 
-console.log(+Date.now().toString());
-
 const { catchError } = require("./utils/catch-error");
 const authRoutes = require("./routes/auth");
 const crudRoutes = require("./routes/crud");
@@ -71,6 +69,7 @@ app.use((req, res) => {
 main()
   .then((connected) => {
     app.listen(process.env.PORT || 8080);
+    console.log("E deh run boss");
   })
   .catch((err) => {
     console.log(err);
