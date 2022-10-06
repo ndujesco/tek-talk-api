@@ -78,19 +78,16 @@ exports.postPost = async (req, res) => {
   }
 };
 
-exports.getPostFromUserName = async (req, res) => {
-  const username = req.params.username;
+exports.getPostFromUserId = async (req, res) => {
+  const id = req.params.id;
   const filter = req.query.filter;
   const pageNumber = +req.query.pageNumber;
+  const isValid = isValidObjectId(id);
   try {
-    if (!username) {
-      return res
-        .status(422)
-        .json({ status: 422, message: "How about putting username" });
+    if (!id || !isValid) {
+      return res.status(422).json({ status: 422, message: "Id is invalid" });
     }
-    let posts = await Post.find({
-      username,
-    })
+    let posts = await Post.find({ author: id })
       .skip((pageNumber - 1) * 25)
       .limit(25)
       .populate("author");
@@ -98,7 +95,7 @@ exports.getPostFromUserName = async (req, res) => {
       return res.status(422).json({ status: 422, message: "Post not found" });
     }
     if (filter) {
-      posts = posts.filter((post) => filter === post.category);
+      posts = posts.filter((post) => filter === post.postedIn);
     }
     let postsToSend = [];
     posts.forEach((post) => {
@@ -161,16 +158,30 @@ exports.getPostFromId = async (req, res) => {
 };
 
 exports.getPostsWithOrOutFeed = async (req, res) => {
-  const bool = req.params.bool;
+  const userId = req.params.userId;
+  const bool = req.query.feed || false;
   const isFeed = bool === "true" ? true : false;
-  let posts = await Post.findById(req.userId).populate("author");
-  posts = posts.filter((post) => (post.postedIn === "Feed" ? isFeed : !isFeed));
+  const isValid = isValidObjectId(userId);
+  console.log(isFeed);
+  try {
+    if (!userId || !isValid) {
+      const error = new Error("Id???");
+      error.statusCode = 422;
+      throw error;
+    }
+    let posts = await Post.find({ author: userId }).populate("author");
+    posts = posts.filter((post) =>
+      post.postedIn === "Feed" ? isFeed : !isFeed
+    );
 
-  let postsToSend = [];
-  posts.forEach((post) => {
-    let postToSend;
-    postToSend = extractPostToSend(postToSend, post, req);
-    postsToSend.push(postToSend);
-  });
-  res.status(200).json({ status: 200, posts: postsToSend });
+    let postsToSend = [];
+    posts.forEach((post) => {
+      let postToSend;
+      postToSend = extractPostToSend(postToSend, post, req);
+      postsToSend.push(postToSend);
+    });
+    res.status(200).json({ status: 200, posts: postsToSend });
+  } catch (err) {
+    catchError(err, res);
+  }
 };
