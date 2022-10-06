@@ -60,10 +60,12 @@ userSchema.methods.addToFollowing = function (id) {
 userSchema.methods.removeFollower = function (id) {
   const position = this.followers.indexOf(id);
   if (position > -1) this.followers.splice(position, 1);
+  return this.save();
 };
 
 userSchema.methods.removeFollowing = function (id) {
   const position = this.following.indexOf(id);
   if (position > -1) this.following.splice(position, 1);
+  return this.save();
 };
 module.exports = mongoose.model("User", userSchema);
