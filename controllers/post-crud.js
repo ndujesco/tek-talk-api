@@ -59,7 +59,7 @@ exports.postPost = async (req, res) => {
       imagesId: [],
       comments: [],
       likes: [],
-      createdAt: Date.now().toString(),
+      createdAt: new Date().toString(),
     });
     const uploadedImages = req.files;
     uploadedImages.forEach((imgData) => {
