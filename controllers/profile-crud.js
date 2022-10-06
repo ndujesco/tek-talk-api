@@ -91,7 +91,6 @@ exports.getUserProfileFromUserName = async (req, res) => {
       error.statusCode = 401;
       throw error;
     }
-    console.log(user.following, user.followers);
     const profileToReturn = extractProfile(user, req);
     res.status(200).json(profileToReturn);
   } catch (err) {

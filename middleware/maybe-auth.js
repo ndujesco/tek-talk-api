@@ -6,17 +6,20 @@ exports.maybeAuthenticated = (req, res, next) => {
   const authHeader = req.get("Authorization");
 
   if (!authHeader) {
-    return (req.userId = null);
+    req.userId = null;
+    return next();
   }
   const token = authHeader.split(" ")[1];
   let decodedToken;
   try {
     decodedToken = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
   } catch (err) {
-    return (req.userId = null);
+    req.userId = null;
+    return next();
   }
   if (!decodedToken) {
-    return (req.userId = null);
+    req.userId = null;
+    return next();
   }
   req.userId = decodedToken.userId;
   next();
