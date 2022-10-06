@@ -97,28 +97,3 @@ exports.getUserProfileFromUserName = async (req, res) => {
     catchError(err, res);
   }
 };
-
-/*s.getUserProfileFromId = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const isValid = isValidObjectId(id);
-    console.log(id, isValid);
-    if (!id || !isValid) {
-      const error = new Error("Errmm. id is not valid");
-      error.statusCode = 401;
-      throw error;
-    }
-    const user = await User.findById(id);
-    if (!user) {
-      const error = new Error("User not found");
-      error.statusCode = 401;
-      throw error;
-    }
-    const profileToReturn = extractProfile(user);
-    res.status(200).json(profileToReturn);
-  } catch (err) {
-    catchError(err, res);
-  }
-};
-
-*/

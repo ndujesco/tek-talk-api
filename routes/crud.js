@@ -55,7 +55,7 @@ router.get("/post", getAllPosts);
 
 router.get("/post/postId/:postId", getPostFromId);
 
-router.get("/post/feed/:userId", getPostsWithOrOutFeed);
+// router.get("/post/feed/:userId", getPostsWithOrOutFeed);
 
 router.get("/post/feed", getFeedOrNotUserName);
 

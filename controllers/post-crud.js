@@ -157,40 +157,6 @@ exports.getPostFromId = async (req, res) => {
   }
 };
 
-exports.getPostsWithOrOutFeed = async (req, res) => {
-  const userId = req.params.userId;
-  const bool = req.query.feed || false;
-  const isFeed = bool === "true" ? true : false;
-  const pageNumber = +req.query.pageNumber || 1;
-
-  const isValid = isValidObjectId(userId);
-  try {
-    if (!userId || !isValid) {
-      const error = new Error("Id???");
-      error.statusCode = 422;
-      throw error;
-    }
-    let posts = await Post.find({ author: userId })
-      .populate("author")
-      .skip((pageNumber - 1) * 25)
-      .limit(25);
-    posts = posts.filter((post) =>
-      post.postedIn === "Feed" ? isFeed : !isFeed
-    );
-
-    let postsToSend = [];
-    posts.forEach((post) => {
-      const postToSend = extractPostToSend(post, req);
-      postsToSend.push(postToSend);
-    });
-    postsToSend.reverse();
-
-    res.status(200).json({ status: 200, posts: postsToSend });
-  } catch (err) {
-    catchError(err, res);
-  }
-};
-
 exports.getFeedOrNotUserName = async (req, res) => {
   const username = req.query.username;
   const bool = req.query.feed || false;
