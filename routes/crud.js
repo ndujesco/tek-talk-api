@@ -2,13 +2,17 @@ const { Router } = require("express");
 const { body } = require("express-validator");
 const { editProfile } = require("../controllers/edit-profile");
 const { followUser, unFollowUser } = require("../controllers/follow");
-const { postComment, getComments } = require("../controllers/like-comment");
+const {
+  postComment,
+  getCommentsFromPostId,
+} = require("../controllers/like-comment");
 const {
   postPost,
   getAllPosts,
   getPostFromId,
   getPostsWithOrOutFeed,
   getPostsFromUserId,
+  getFeedOrNotUserName,
 } = require("../controllers/post-crud");
 
 const {
@@ -53,12 +57,14 @@ router.get("/post/postId/:postId", getPostFromId);
 
 router.get("/post/feed/:userId", getPostsWithOrOutFeed);
 
+router.get("/post/feed", getFeedOrNotUserName);
+
 router.put("/follow", isAuthenticated, followUser);
 
 router.patch("/unfollow", isAuthenticated, unFollowUser);
 
 router.post("/comment", isAuthenticated, postComment);
 
-router.get("/comment", getComments);
+router.get("/comment", getCommentsFromPostId);
 
 module.exports = router;

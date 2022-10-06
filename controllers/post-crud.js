@@ -6,6 +6,7 @@ const Post = require("../models/post");
 
 const { catchError } = require("../utils/catch-error");
 const { uploadToCloudinary } = require("../utils/cloudinary");
+const User = require("../models/user");
 
 const extractPostToSend = (post, req) => {
   const postToSend = {
@@ -21,7 +22,6 @@ const extractPostToSend = (post, req) => {
     postBody: post.body,
     postDate: post.createdAt,
     images: [],
-    category: post.category,
   };
 
   post.imagesLocal.forEach((img, index) => {
@@ -174,6 +174,47 @@ exports.getPostsWithOrOutFeed = async (req, res) => {
       .populate("author")
       .skip((pageNumber - 1) * 25)
       .limit(25);
+    posts = posts.filter((post) =>
+      post.postedIn === "Feed" ? isFeed : !isFeed
+    );
+
+    let postsToSend = [];
+    posts.forEach((post) => {
+      const postToSend = extractPostToSend(post, req);
+      postsToSend.push(postToSend);
+    });
+    postsToSend.reverse();
+
+    res.status(200).json({ status: 200, posts: postsToSend });
+  } catch (err) {
+    catchError(err, res);
+  }
+};
+
+exports.getFeedOrNotUserName = async (req, res) => {
+  const username = req.query.username;
+  const bool = req.query.feed || false;
+  const isFeed = bool === "true" ? true : false;
+  const pageNumber = +req.query.pageNumber || 1;
+
+  try {
+    if (!username) {
+      const error = new Error("username???");
+      error.statusCode = 422;
+      throw error;
+    }
+    const user = await User.findOne({ username });
+    if (!user) {
+      const error = new Error("Username Does not exist.");
+      error.statusCode = 422;
+      throw error;
+    }
+    const userId = user.id;
+    let posts = await Post.find({ author: userId })
+      .populate("author")
+      .skip((pageNumber - 1) * 25)
+      .limit(25);
+    console.log(posts);
     posts = posts.filter((post) =>
       post.postedIn === "Feed" ? isFeed : !isFeed
     );
