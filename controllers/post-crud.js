@@ -2,8 +2,6 @@ const { body, validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 const fs = require("fs");
 
-const Comment = require("../models/comment");
-const Like = require("../models/like");
 const Post = require("../models/post");
 
 const { catchError } = require("../utils/catch-error");
@@ -48,10 +46,9 @@ exports.postPost = async (req, res) => {
     });
   }
   try {
-    const { body, category, postedIn } = req.body;
+    const { body, postedIn } = req.body;
     const post = new Post({
       body,
-      category,
       postedIn,
       author: req.userId,
       imagesLocal: [],
@@ -78,7 +75,7 @@ exports.postPost = async (req, res) => {
   }
 };
 
-exports.getPostFromUserId = async (req, res) => {
+exports.getPostsFromUserId = async (req, res) => {
   const id = req.params.id;
   const filter = req.query.filter;
   const pageNumber = +req.query.pageNumber;
@@ -102,6 +99,7 @@ exports.getPostFromUserId = async (req, res) => {
       const postToSend = extractPostToSend(post, req);
       postsToSend.push(postToSend);
     });
+    postsToSend.reverse();
     res.status(200).json({ status: 200, posts: postsToSend });
   } catch (err) {
     catchError(err, res);
@@ -127,6 +125,8 @@ exports.getAllPosts = async (req, res) => {
       const postToSend = extractPostToSend(post, req);
       postsToSend.push(postToSend);
     });
+    postsToSend.reverse();
+
     res.status(200).json({ status: 200, posts: postsToSend });
   } catch (err) {
     catchError(err, res);
@@ -179,6 +179,8 @@ exports.getPostsWithOrOutFeed = async (req, res) => {
       const postToSend = extractPostToSend(post, req);
       postsToSend.push(postToSend);
     });
+    postsToSend.reverse();
+
     res.status(200).json({ status: 200, posts: postsToSend });
   } catch (err) {
     catchError(err, res);

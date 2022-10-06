@@ -8,7 +8,7 @@ const {
   getAllPosts,
   getPostFromId,
   getPostsWithOrOutFeed,
-  getPostFromUserId,
+  getPostsFromUserId,
 } = require("../controllers/post-crud");
 
 const {
@@ -40,7 +40,7 @@ router.post("/profile/edit", isAuthenticated, editProfile);
 
 router.post("/post", isAuthenticated, postValidator, postPost);
 
-router.get("/post/id/:id", getPostFromUserId);
+router.get("/post/id/:id", getPostsFromUserId);
 
 router.get("/post", getAllPosts);
 
