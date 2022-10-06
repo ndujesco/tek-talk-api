@@ -2,7 +2,7 @@ const crypto = require("crypto");
 bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 
-const { catchError } = require("../utils/catch-error");
+const { catchError } = require("../utils/help-functions");
 const User = require("../models/user");
 const { sendEmail } = require("../utils/send-mail");
 

@@ -4,7 +4,7 @@ const fs = require("fs");
 
 const Post = require("../models/post");
 
-const { catchError } = require("../utils/catch-error");
+const { catchError } = require("../utils/help-functions");
 const { uploadToCloudinary } = require("../utils/cloudinary");
 const User = require("../models/user");
 

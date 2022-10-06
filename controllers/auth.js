@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
-const { catchError } = require("../utils/catch-error");
+const { catchError } = require("../utils/help-functions");
 
 exports.signup = async (req, res) => {
   const errors = validationResult(req);

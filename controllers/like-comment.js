@@ -1,7 +1,7 @@
 const { isValidObjectId } = require("mongoose");
 const Comment = require("../models/comment");
 const Post = require("../models/post");
-const { catchError } = require("../utils/catch-error");
+const { catchError } = require("../utils/help-functions");
 
 const extractCommentToSend = (comment) => {
   return {

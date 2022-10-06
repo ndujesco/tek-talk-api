@@ -1,4 +1,4 @@
-const { catchError } = require("../utils/catch-error");
+const { catchError } = require("../utils/help-functions");
 const User = require("../models/user");
 const fs = require("fs");
 const { isValidObjectId } = require("mongoose");

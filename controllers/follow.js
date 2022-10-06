@@ -1,7 +1,7 @@
 const { isValidObjectId } = require("mongoose");
 const User = require("../models/user");
 
-const { catchError } = require("../utils/catch-error");
+const { catchError } = require("../utils/help-functions");
 
 exports.followUser = async (req, res) => {
   const userToFollowId = req.query.userId;

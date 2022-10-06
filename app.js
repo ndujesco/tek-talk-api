@@ -6,7 +6,7 @@ const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
 
-const { catchError } = require("./utils/catch-error");
+const { catchError } = require("./utils/help-functions");
 const authRoutes = require("./routes/auth");
 const crudRoutes = require("./routes/crud");
 const passwordRoutes = require("./routes/password-reset");

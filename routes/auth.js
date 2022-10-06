@@ -26,8 +26,11 @@ router.post(
         if (!value) {
           throw new Error("username field cannot be empty");
         }
-        return User.findOne({ username: value }).then((userDoc) => {
-          if (userDoc) {
+        return User.find().then((users) => {
+          const matches = users.some(
+            (user) => user.username.toLowerCase() === value.toLowerCase()
+          );
+          if (matches) {
             return Promise.reject("The username is already taken.");
           }
         });

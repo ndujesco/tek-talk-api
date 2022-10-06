@@ -1,5 +1,5 @@
 const Post = require("../models/post");
-const { catchError } = require("./catch-error");
+const { catchError } = require("./help-functions");
 
 const cloudinary = require("cloudinary").v2;
 
