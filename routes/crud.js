@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const { body } = require("express-validator");
+const { editProfile } = require("../controllers/edit-profile");
 const { followUser } = require("../controllers/follow-crud");
 const {
   postPost,
@@ -11,11 +12,9 @@ const {
 
 const {
   getIndex,
-  getUserProfile,
   getMyProfile,
   getUserProfileFromId,
   getUserProfileFromUserName,
-  editProfile,
 } = require("../controllers/profile-crud");
 
 const { isAuthenticated } = require("../middleware/is-auth");
