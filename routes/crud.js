@@ -8,12 +8,16 @@ const {
   getPostFromId,
   getPostsWithOrOutFeed,
 } = require("../controllers/post-crud");
+
 const {
   getIndex,
   getUserProfile,
   getMyProfile,
   getUserProfileFromId,
+  getUserProfileFromUserName,
+  editProfile,
 } = require("../controllers/profile-crud");
+
 const { isAuthenticated } = require("../middleware/is-auth");
 
 const postValidator = [
@@ -28,9 +32,11 @@ router.get("/", isAuthenticated, getIndex);
 
 router.get("/profile", isAuthenticated, getMyProfile);
 
-router.get("/profile/:username", getUserProfile);
+router.get("/profile/username/:username", getUserProfileFromUserName);
 
 router.get("/profile/id/:id", getUserProfileFromId);
+
+router.post("/profile/edit", isAuthenticated, editProfile);
 
 router.post("/post", isAuthenticated, postValidator, postPost);
 

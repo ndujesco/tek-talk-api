@@ -9,8 +9,8 @@ const Post = require("../models/post");
 const { catchError } = require("../utils/catch-error");
 const { uploadToCloudinary } = require("../utils/cloudinary");
 
-const extractPostToSend = (postToSend, post, req) => {
-  postToSend = {
+const extractPostToSend = (post, req) => {
+  const postToSend = {
     postId: post.id,
     authorId: post.author.id,
     username: post.author.username,
@@ -102,8 +102,7 @@ exports.getPostFromUserId = async (req, res) => {
     }
     let postsToSend = [];
     posts.forEach((post) => {
-      let postToSend;
-      postToSend = extractPostToSend(postToSend, post, req);
+      const postToSend = extractPostToSend(post, req);
       postsToSend.push(postToSend);
     });
     res.status(200).json({ status: 200, posts: postsToSend });
@@ -126,8 +125,7 @@ exports.getAllPosts = async (req, res) => {
     }
     let postsToSend = [];
     posts.forEach((post) => {
-      let postToSend;
-      postToSend = extractPostToSend(postToSend, post, req);
+      const postToSend = extractPostToSend(post, req);
       postsToSend.push(postToSend);
     });
     res.status(200).json({ status: 200, posts: postsToSend });

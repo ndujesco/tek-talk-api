@@ -25,7 +25,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  bio: String,
+  bio: { type: String, default: null },
   verified: {
     type: Boolean,
     default: false,
@@ -35,11 +35,11 @@ const userSchema = new Schema({
   token: String,
   tokenExpiration: Date,
   displayUrl: { type: String, default: null },
-  dsiplayLocal: String,
-  displayId: String,
-  backdropUrl: String,
-  backdropLocal: String,
-  backdropId: String,
+  dsiplayLocal: { type: String, default: null },
+  displayId: { type: String, default: null },
+  backdropUrl: { type: String, default: null },
+  backdropLocal: { type: String, default: null },
+  backdropId: { type: String, default: null },
 });
 
 module.exports = mongoose.model("User", userSchema);

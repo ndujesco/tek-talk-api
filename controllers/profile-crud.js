@@ -1,5 +1,47 @@
 const { catchError } = require("../utils/catch-error");
 const User = require("../models/user");
+const fs = require("fs");
+const { isValidObjectId } = require("mongoose");
+
+const extractProfile = (user) => {
+  const {
+    name,
+    username,
+    stack,
+    location,
+    email,
+    bio,
+    verified,
+    displayUrl,
+    displayLocal,
+    backdropLocal,
+    backdropUrl,
+  } = user;
+  let profileToReturn = {
+    name,
+    username,
+    stack,
+    location,
+    email,
+    bio,
+    followingCount: user.following.length,
+    followersCount: user.followers.length,
+    verified,
+  };
+  if (displayLocal || displayUrl) {
+    const fileExists = fs.existsSync(displayLocal);
+    profileToReturn.displayUrl = fileExists ? displayLocal : displayUrl;
+  } else {
+    profileToReturn.displayUrl = null;
+  }
+  if (backdropLocal || backdropUrl) {
+    const fileExists = fs.existsSync(backdropLocal);
+    profileToReturn.backdropUrl = fileExists ? backdropLocal : backdropUrl;
+  } else {
+    profileToReturn.backdropUrl = null;
+  }
+  return profileToReturn;
+};
 
 exports.getIndex = async (req, res) => {
   try {
@@ -13,43 +55,14 @@ exports.getIndex = async (req, res) => {
 exports.getMyProfile = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
-    let followingCount = Math.floor(Math.random() * 1000);
-    let followersCount = Math.floor(Math.random() * 1000);
-    let backdropUrl = "https://placeimg.com/640/360/any";
-    let displayUrl = "https://placeimg.com/640/360/any";
-    if (user.username === "HoodieDan") {
-      backdropUrl =
-        "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664820980/profileImages/c8otiaauqetohvrdpq2z.jpg";
-      displayUrl =
-        "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664821014/profileImages/dkqvt00s5i5n70djouc5.jpg";
-      followingCount = 2;
-      followersCount = 500;
-    }
-    // const bio = ""
-    let { name, username, stack, location, email, bio, verified } = user;
-    if (!bio) {
-      bio =
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic enim assumenda recusandae atque minus ipsa quidem expedita eligendi, modi accusamus consequuntur rerum? Aspernatur officia explicabo id quo? Earum, harum quidem?";
-    }
-    res.json({
-      name,
-      username,
-      stack,
-      location,
-      email,
-      backdropUrl,
-      displayUrl,
-      bio,
-      followingCount,
-      followersCount,
-      verified,
-    });
+    const profileToReturn = extractProfile(user);
+    res.status(200).json(profileToReturn);
   } catch (err) {
     catchError(err, res);
   }
 };
 
-exports.getUserProfile = async (req, res) => {
+exports.getUserProfileFromUserName = async (req, res) => {
   try {
     const userName = req.params.username;
     if (!userName) {
@@ -63,37 +76,8 @@ exports.getUserProfile = async (req, res) => {
       error.statusCode = 401;
       throw error;
     }
-    let followingCount = Math.floor(Math.random() * 1000);
-    let followersCount = Math.floor(Math.random() * 1000);
-    let backdropUrl = "https://placeimg.com/640/360/any";
-    let displayUrl = "https://placeimg.com/640/360/any";
-    if (user.username === "HoodieDan") {
-      backdropUrl =
-        "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664820980/profileImages/c8otiaauqetohvrdpq2z.jpg";
-      displayUrl =
-        "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664821014/profileImages/dkqvt00s5i5n70djouc5.jpg";
-      followingCount = 2;
-      followersCount = 500;
-    }
-    // const bio = ""
-    let { name, username, stack, location, email, bio, verified } = user;
-    if (!bio) {
-      bio =
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic enim assumenda recusandae atque minus ipsa quidem expedita eligendi, modi accusamus consequuntur rerum? Aspernatur officia explicabo id quo? Earum, harum quidem?";
-    }
-    res.json({
-      name,
-      username,
-      stack,
-      location,
-      email,
-      backdropUrl,
-      displayUrl,
-      bio,
-      followingCount,
-      followersCount,
-      verified,
-    });
+    const profileToReturn = extractProfile(user);
+    res.status(200).json(profileToReturn);
   } catch (err) {
     catchError(err, res);
   }
@@ -102,9 +86,10 @@ exports.getUserProfile = async (req, res) => {
 exports.getUserProfileFromId = async (req, res) => {
   try {
     const id = req.params.id;
-
-    if (!id) {
-      const error = new Error("Add /id na");
+    const isValid = isValidObjectId(id);
+    console.log(id, isValid);
+    if (!id || !isValid) {
+      const error = new Error("Errmm. id is not valid");
       error.statusCode = 401;
       throw error;
     }
@@ -114,38 +99,55 @@ exports.getUserProfileFromId = async (req, res) => {
       error.statusCode = 401;
       throw error;
     }
-    let followingCount = Math.floor(Math.random() * 1000);
-    let followersCount = Math.floor(Math.random() * 1000);
-    let backdropUrl = "https://placeimg.com/640/360/any";
-    let displayUrl = "https://placeimg.com/640/360/any";
-    if (user.username === "HoodieDan") {
-      backdropUrl =
-        "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664820980/profileImages/c8otiaauqetohvrdpq2z.jpg";
-      displayUrl =
-        "https://res.cloudinary.com/dtgigdp2j/image/upload/v1664821014/profileImages/dkqvt00s5i5n70djouc5.jpg";
-      followingCount = 2;
-      followersCount = 500;
-    }
-    // const bio = ""
-    let { name, username, stack, location, email, bio, verified } = user;
-    if (!bio) {
-      bio =
-        "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic enim assumenda recusandae atque minus ipsa quidem expedita eligendi, modi accusamus consequuntur rerum? Aspernatur officia explicabo id quo? Earum, harum quidem?";
-    }
-    res.json({
-      name,
-      username,
-      stack,
-      location,
-      email,
-      backdropUrl,
-      displayUrl,
-      bio,
-      followingCount,
-      followersCount,
-      verified,
-    });
+    const profileToReturn = extractProfile(user);
+    res.status(200).json(profileToReturn);
   } catch (err) {
     catchError(err, res);
   }
+};
+
+exports.editProfile = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      status: 422,
+      message: "Validation failed",
+      errors: errors.array(),
+    });
+  }
+
+  res.json({ message: "Oyaaa!" });
+  // try {
+  //   const { body, category, postedIn } = req.body;
+  //   const post = new Post({
+  //     body,
+  //     category,
+  //     postedIn,
+  //     author: req.userId,
+  //     imagesLocal: [],
+  //     imagesUrl: [],
+  //     imagesId: [],
+  //     comments: [],
+  //     likes: [],
+  //     createdAt: Date.now().toString(),
+  //   });
+  //   const uploadedImages = req.files;
+  //   uploadedImages.forEach((imgData) => {
+  //     const imageLocalPath = imgData.path.replace("\\", "/");
+  //     post.imagesLocal.push(imageLocalPath);
+  //   });
+  //   await post.save();
+  //   res
+  //     .status(200)
+  //     .json({
+  //       status: 200,
+  //       message: "Posted Successfully!",
+  //       postId: post.id,
+  //     });
+  //   uploadedImages.forEach((imgData) => {
+  //     uploadToCloudinary(imgData.path, post.id);
+  //   });
+  // } catch (err) {
+  //   catchError(err, res);
+  // }
 };
