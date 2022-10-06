@@ -26,13 +26,13 @@ const extractPostToSend = (post, req) => {
     category: post.category,
   };
 
-  post.imagesLocal.forEach((img) => {
+  post.imagesLocal.forEach((img, index) => {
     const fileExists = fs.existsSync(img);
 
     if (fileExists) {
       postToSend.images.push("https://" + req.headers.host + "/" + img);
     } else {
-      postToSend.images.push(...post.imagesUrl);
+      postToSend.images.push(post.imagesUrl[index]);
     }
   });
   return postToSend;
@@ -176,8 +176,7 @@ exports.getPostsWithOrOutFeed = async (req, res) => {
 
     let postsToSend = [];
     posts.forEach((post) => {
-      let postToSend;
-      postToSend = extractPostToSend(postToSend, post, req);
+      const postToSend = extractPostToSend(post, req);
       postsToSend.push(postToSend);
     });
     res.status(200).json({ status: 200, posts: postsToSend });
