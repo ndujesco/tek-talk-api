@@ -2,7 +2,7 @@ const { Schema, default: mongoose } = require("mongoose");
 
 const commentSchema = new Schema(
   {
-    text: {
+    body: {
       type: String,
       required: true,
     },

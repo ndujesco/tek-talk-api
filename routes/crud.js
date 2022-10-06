@@ -1,7 +1,8 @@
 const { Router } = require("express");
 const { body } = require("express-validator");
 const { editProfile } = require("../controllers/edit-profile");
-const { followUser, unFollowUser } = require("../controllers/like-follow");
+const { followUser, unFollowUser } = require("../controllers/follow");
+const { postComment } = require("../controllers/like-comment");
 const {
   postPost,
   getAllPosts,
@@ -50,5 +51,7 @@ router.get("/post/feed/:bool", isAuthenticated, getPostsWithOrOutFeed);
 router.put("/follow", isAuthenticated, followUser);
 
 router.patch("/unfollow", isAuthenticated, unFollowUser);
+
+router.post("/comment", isAuthenticated, postComment);
 
 module.exports = router;

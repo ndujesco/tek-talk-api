@@ -154,7 +154,7 @@ exports.getPostFromId = async (req, res) => {
       throw error;
     }
     const postToSend = extractPostToSend(post, req);
-    res.status(200).json({ status: 200, post: postToSend });
+    res.status(200).json({ status: 200, post: [postToSend] });
   } catch (err) {
     catchError(err, res);
   }
