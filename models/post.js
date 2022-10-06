@@ -26,6 +26,10 @@ const postSchema = new Schema({
     type: String,
     required: true,
   },
+  postedIn: {
+    type: String,
+    required: true,
+  },
 
   author: {
     type: Schema.Types.ObjectId,

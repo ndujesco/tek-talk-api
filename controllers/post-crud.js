@@ -85,7 +85,6 @@ exports.getPostFromUserId = async (req, res) => {
   const pageNumber = +req.query.pageNumber;
   const isValid = isValidObjectId(id);
 
-  console.log(id, isValid);
   try {
     if (!id || !isValid) {
       return res.status(422).json({ status: 422, message: "Invalid user id" });
