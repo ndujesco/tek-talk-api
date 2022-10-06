@@ -54,8 +54,16 @@ userSchema.methods.addToFollowing = function (id) {
   if (!this.following.includes(id)) {
     this.following.push(id);
   }
-
   return this.save();
 };
 
+userSchema.methods.removeFollower = function (id) {
+  const position = this.followers.indexOf(id);
+  if (position > -1) this.followers.splice(position, 1);
+};
+
+userSchema.methods.removeFollowing = function (id) {
+  const position = this.following.indexOf(id);
+  if (position > -1) this.following.splice(position, 1);
+};
 module.exports = mongoose.model("User", userSchema);

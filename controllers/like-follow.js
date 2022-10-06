@@ -58,6 +58,9 @@ exports.unFollowUser = async (req, res) => {
       throw error;
     }
 
+    loggedInUser.removeFollowing(userToUnFollowId);
+    userToUnFollow.removeFollower(loggedInUserId);
+
     res.status(200).json({ userUnFollowedId: userToUnFollowId });
   } catch (err) {
     catchError(err, res);

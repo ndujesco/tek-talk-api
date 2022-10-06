@@ -146,8 +146,14 @@ exports.getPostFromId = async (req, res) => {
 
   try {
     const post = await Post.findById(postId).populate("author");
-    let postToSend;
-    postToSend = extractPostToSend(postToSend, post, req);
+    if (!post) {
+      const error = new Error(
+        "Errmm. postId does not exist again or never existed"
+      );
+      error.statusCode = 401;
+      throw error;
+    }
+    const postToSend = extractPostToSend(post, req);
     res.status(200).json({ status: 200, post: postToSend });
   } catch (err) {
     catchError(err, res);
