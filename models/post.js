@@ -22,10 +22,6 @@ const postSchema = new Schema({
     },
   ],
 
-  category: {
-    type: String,
-    required: true,
-  },
   postedIn: {
     type: String,
     required: true,
