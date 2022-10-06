@@ -19,7 +19,7 @@ const extractPostToSend = (postToSend, post, req) => {
     name: post.author.name,
     commentCount: post.comments.length,
     likeCount: post.likes.length,
-    postedIn: post.posteIn,
+    postedIn: post.postedIn,
     postBody: post.body,
     postDate: post.createdAt,
     images: [],
@@ -152,4 +152,19 @@ exports.getPostFromId = async (req, res) => {
   } catch (err) {
     catchError(err, res);
   }
+};
+
+exports.getPostsWithOrOutFeed = async (req, res) => {
+  const bool = req.params.bool;
+  const isFeed = bool === "true" ? true : false;
+  let posts = await Post.find().populate("author");
+  posts = posts.filter((post) => (post.postedIn === "Feed" ? isFeed : !isFeed));
+
+  let postsToSend = [];
+  posts.forEach((post) => {
+    let postToSend;
+    postToSend = extractPostToSend(postToSend, post, req);
+    postsToSend.push(postToSend);
+  });
+  res.status(200).json({ status: 200, posts: postsToSend });
 };

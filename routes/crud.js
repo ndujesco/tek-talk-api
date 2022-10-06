@@ -1,11 +1,12 @@
 const { Router } = require("express");
 const { body } = require("express-validator");
-const { followUser } = require("../controllers/follow");
+const { followUser } = require("../controllers/follow-crud");
 const {
   postPost,
   getPostFromUserId,
   getAllPosts,
   getPostFromId,
+  getPostsWithOrOutFeed,
 } = require("../controllers/post-crud");
 const {
   getIndex,
@@ -40,4 +41,7 @@ router.get("/post", getAllPosts);
 router.get("/post/:postId", getPostFromId);
 
 router.post("/follow", isAuthenticated, followUser);
+
+router.get("/post/feed/:bool", getPostsWithOrOutFeed);
+
 module.exports = router;
