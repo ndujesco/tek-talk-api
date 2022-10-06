@@ -39,11 +39,11 @@ router.post("/profile/edit", isAuthenticated, editProfile);
 
 router.post("/post", isAuthenticated, postValidator, postPost);
 
-router.get("/post/id/:id", getPostFromUserId);
+router.get("/post/userId/:userId", getPostFromUserId);
 
 router.get("/post", getAllPosts);
 
-router.get("/post/:postId", getPostFromId);
+router.get("/post/postId/:postId", getPostFromId);
 
 router.get("/post/feed/:bool", getPostsWithOrOutFeed);
 
