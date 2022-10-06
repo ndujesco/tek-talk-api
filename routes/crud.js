@@ -19,6 +19,7 @@ const {
 } = require("../controllers/profile-crud");
 
 const { isAuthenticated } = require("../middleware/is-auth");
+const { maybeAuthenticated } = require("../middleware/maybe-auth");
 
 const postValidator = [
   body("body", "Add 'body'.").isLength({ min: 1 }),
@@ -32,9 +33,13 @@ router.get("/", isAuthenticated, getIndex);
 
 router.get("/profile", isAuthenticated, getMyProfile);
 
-router.get("/profile/username/:username", getUserProfileFromUserName);
+router.get(
+  "/profile/username/:username",
+  maybeAuthenticated,
+  getUserProfileFromUserName
+);
 
-router.get("/profile/id/:id", getUserProfileFromId);
+// router.get("/profile/id/:id", getUserProfileFromId);
 
 router.post("/profile/edit", isAuthenticated, editProfile);
 

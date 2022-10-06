@@ -47,9 +47,7 @@ const extractProfile = (user, req) => {
   let isFollowing = false;
   let isFollowedBy = false;
   const isValid = isValidObjectId(req.userId);
-  console.log(req.userId, isValid);
   if (req.userId && isValid) {
-    console.log("Hmmm");
     isFollowing = user.followers.includes(req.userId);
     isFollowedBy = user.following.includes(req.userId);
   }
@@ -93,7 +91,7 @@ exports.getUserProfileFromUserName = async (req, res) => {
       error.statusCode = 401;
       throw error;
     }
-
+    console.log(user.following, user.followers);
     const profileToReturn = extractProfile(user, req);
     res.status(200).json(profileToReturn);
   } catch (err) {
@@ -101,6 +99,7 @@ exports.getUserProfileFromUserName = async (req, res) => {
   }
 };
 
+/*
 exports.getUserProfileFromId = async (req, res) => {
   try {
     const id = req.params.id;
@@ -123,3 +122,5 @@ exports.getUserProfileFromId = async (req, res) => {
     catchError(err, res);
   }
 };
+
+*/
