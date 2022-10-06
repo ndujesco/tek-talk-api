@@ -83,7 +83,6 @@ exports.getPostFromUserId = async (req, res) => {
   const filter = req.query.filter;
   const pageNumber = +req.query.pageNumber;
   const isValid = isValidObjectId(id);
-  console.log(id, isValid, pageNumber);
   try {
     if (!id || !isValid) {
       return res.status(422).json({ status: 422, message: "Invalid user id" });
@@ -163,7 +162,7 @@ exports.getPostFromId = async (req, res) => {
 exports.getPostsWithOrOutFeed = async (req, res) => {
   const bool = req.params.bool;
   const isFeed = bool === "true" ? true : false;
-  let posts = await Post.find().populate("author");
+  let posts = await Post.findById(req.userId).populate("author");
   posts = posts.filter((post) => (post.postedIn === "Feed" ? isFeed : !isFeed));
 
   let postsToSend = [];

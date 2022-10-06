@@ -45,7 +45,7 @@ router.get("/post", getAllPosts);
 
 router.get("/post/postId/:postId", getPostFromId);
 
-router.get("/post/feed/:bool", getPostsWithOrOutFeed);
+router.get("/post/feed/:bool", isAuthenticated, getPostsWithOrOutFeed);
 
 router.put("/follow", isAuthenticated, followUser);
 
