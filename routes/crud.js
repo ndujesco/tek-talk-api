@@ -2,7 +2,7 @@ const { Router } = require("express");
 const { body } = require("express-validator");
 const { editProfile } = require("../controllers/edit-profile");
 const { followUser, unFollowUser } = require("../controllers/follow");
-const { postComment } = require("../controllers/like-comment");
+const { postComment, getComments } = require("../controllers/like-comment");
 const {
   postPost,
   getAllPosts,
@@ -14,7 +14,7 @@ const {
 const {
   getIndex,
   getMyProfile,
-  getUserProfileFromId,
+  // getUserProfileFromId,
   getUserProfileFromUserName,
 } = require("../controllers/profile-crud");
 
@@ -58,5 +58,7 @@ router.put("/follow", isAuthenticated, followUser);
 router.patch("/unfollow", isAuthenticated, unFollowUser);
 
 router.post("/comment", isAuthenticated, postComment);
+
+router.get("/comment", getComments);
 
 module.exports = router;

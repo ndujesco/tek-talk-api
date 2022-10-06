@@ -69,7 +69,7 @@ exports.getIndex = async (req, res) => {
 exports.getMyProfile = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
-    const profileToReturn = extractProfile(user);
+    const profileToReturn = extractProfile(user, req);
     res.status(200).json(profileToReturn);
   } catch (err) {
     catchError(err, res);
@@ -98,8 +98,7 @@ exports.getUserProfileFromUserName = async (req, res) => {
   }
 };
 
-/*
-exports.getUserProfileFromId = async (req, res) => {
+/*s.getUserProfileFromId = async (req, res) => {
   try {
     const id = req.params.id;
     const isValid = isValidObjectId(id);
