@@ -30,8 +30,13 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  followers: [{ type: String, required: true, default: [] }],
-  following: [{ type: String, required: true, default: [] }],
+  followers: [{ type: String, required: true }],
+  following: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   token: String,
   tokenExpiration: Date,
   displayUrl: { type: String, default: null },

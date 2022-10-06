@@ -32,8 +32,17 @@ exports.postComment = async (req, res) => {
 };
 
 exports.getComments = async (req, res) => {
+  const commentId = req.query.commentId;
+  const isValid = isValidObjectId(commentId);
+
   try {
-    const postId = req.params.postId;
+    if (!isValid) {
+      const error = new Error("Errmm. postId is a invalid ");
+      error.statusCode = 401;
+      throw error;
+    }
+    const comment = await Comment.findById(commentId);
+    res.json({ commentId: "ff" });
   } catch (err) {
     catchError(err, res);
   }

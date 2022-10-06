@@ -19,6 +19,9 @@ exports.signup = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = User({
+      following: ["633dae0b84db7a1a751fe468", "633b45a338ad34f4b8940219"],
+      followers: [],
+
       ...req.body,
       password: hashedPassword,
     });

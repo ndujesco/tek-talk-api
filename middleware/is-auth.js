@@ -8,7 +8,7 @@ exports.isAuthenticated = (req, res, next) => {
   if (!authHeader) {
     const error = new Error("Add Authorization Header");
     error.statusCode = 401;
-    throw error;
+    throw error; // it'll catch it prolly because of next()
   }
   const token = authHeader.split(" ")[1];
   let decodedToken;
