@@ -5,6 +5,7 @@ const {
   postPost,
   getPostFromUserId,
   getAllPosts,
+  getPostFromId,
 } = require("../controllers/post-crud");
 const {
   getIndex,
@@ -15,8 +16,9 @@ const {
 const { isAuthenticated } = require("../middleware/is-auth");
 
 const postValidator = [
-  body("body").isLength({ min: 1 }),
-  body("category").isLength({ min: 1 }),
+  body("body", "Add 'body'.").isLength({ min: 1 }),
+  body("category", "Add 'category'.").isLength({ min: 1 }),
+  body("postedIn", "Add 'postedIn'.").isLength({ min: 1 }),
 ];
 
 const router = Router();
@@ -34,6 +36,8 @@ router.post("/post", isAuthenticated, postValidator, postPost);
 router.get("/post/id/:id", getPostFromUserId);
 
 router.get("/post", getAllPosts);
+
+router.get("/post/:postId", getPostFromId);
 
 router.post("/follow", isAuthenticated, followUser);
 module.exports = router;

@@ -7,37 +7,35 @@ const Like = require("../models/like");
 const Post = require("../models/post");
 
 const { catchError } = require("../utils/catch-error");
-const { uploadFile, uploadToCloudinary } = require("../utils/cloudinary");
+const { uploadToCloudinary } = require("../utils/cloudinary");
 
-const extractPostDetails = (posts, postsToSend, req) => {
-  posts.forEach((post) => {
-    let postToSend = {
-      postId: post.id,
-      authorId: post.author.id,
-      username: post.author.username,
-      authorImage: post.author.displayUrl,
-      isVerified: post.author.verified,
-      name: post.author.name,
-      commentCount: post.comments.length,
-      likeCount: post.likes.length,
-      postedIn: post.category,
-      postBody: post.body,
-      postDate: post.createdAt,
-      images: [],
-      category: "post",
-    };
+const extractPostToSend = (postToSend, post, req) => {
+  postToSend = {
+    postId: post.id,
+    authorId: post.author.id,
+    username: post.author.username,
+    authorImage: post.author.displayUrl,
+    isVerified: post.author.verified,
+    name: post.author.name,
+    commentCount: post.comments.length,
+    likeCount: post.likes.length,
+    postedIn: post.posteIn,
+    postBody: post.body,
+    postDate: post.createdAt,
+    images: [],
+    category: post.category,
+  };
 
-    post.imagesLocal.forEach((img) => {
-      const fileExists = fs.existsSync(img);
+  post.imagesLocal.forEach((img) => {
+    const fileExists = fs.existsSync(img);
 
-      if (fileExists) {
-        postToSend.images.push("https://" + req.headers.host + "/" + img);
-      } else {
-        postToSend.images.push(...post.imagesUrl);
-      }
-    });
-    postsToSend.push(postToSend);
+    if (fileExists) {
+      postToSend.images.push("https://" + req.headers.host + "/" + img);
+    } else {
+      postToSend.images.push(...post.imagesUrl);
+    }
   });
+  return postToSend;
 };
 
 exports.postPost = async (req, res) => {
@@ -50,10 +48,11 @@ exports.postPost = async (req, res) => {
     });
   }
   try {
-    const { body, category } = req.body;
+    const { body, category, postedIn } = req.body;
     const post = new Post({
       body,
       category,
+      postedIn,
       author: req.userId,
       imagesLocal: [],
       imagesUrl: [],
@@ -102,7 +101,11 @@ exports.getPostFromUserId = async (req, res) => {
       posts = posts.filter((post) => filter === post.category);
     }
     let postsToSend = [];
-    extractPostDetails(posts, postsToSend, req);
+    posts.forEach((post) => {
+      let postToSend;
+      postToSend = extractPostToSend(postToSend, post, req);
+      postsToSend.push(postToSend);
+    });
     res.status(200).json({ status: 200, posts: postsToSend });
   } catch (err) {
     catchError(err, res);
@@ -122,8 +125,30 @@ exports.getAllPosts = async (req, res) => {
       posts = posts.filter((post) => filter === post.category);
     }
     let postsToSend = [];
-    extractPostDetails(posts, postsToSend, req);
+    posts.forEach((post) => {
+      let postToSend;
+      postToSend = extractPostToSend(postToSend, post, req);
+      postsToSend.push(postToSend);
+    });
     res.status(200).json({ status: 200, posts: postsToSend });
+  } catch (err) {
+    catchError(err, res);
+  }
+};
+
+exports.getPostFromId = async (req, res) => {
+  const postId = req.params.postId;
+  const isValid = isValidObjectId(postId);
+
+  if (!postId || !isValid) {
+    return res.status(422).json({ status: 422, message: "Invalid post id" });
+  }
+
+  try {
+    const post = await Post.findById(postId).populate("author");
+    let postToSend;
+    postToSend = extractPostToSend(postToSend, post, req);
+    res.status(200).json({ status: 200, post: postToSend });
   } catch (err) {
     catchError(err, res);
   }
