@@ -85,7 +85,10 @@ exports.getUserProfileFromUserName = async (req, res) => {
       error.statusCode = 401;
       throw error;
     }
-    const user = await User.findOne({ username: userName });
+    const users = await User.find();
+    const user = users.find(
+      (user) => user.username.toLowerCase() === userName.toLowerCase()
+    );
     if (!user) {
       const error = new Error("User not found");
       error.statusCode = 401;
