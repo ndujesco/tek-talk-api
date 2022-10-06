@@ -78,7 +78,7 @@ exports.postPost = async (req, res) => {
 exports.getPostsFromUserId = async (req, res) => {
   const id = req.params.id;
   const filter = req.query.filter;
-  const pageNumber = +req.query.pageNumber;
+  const pageNumber = +req.query.pageNumber || 1;
   const isValid = isValidObjectId(id);
   try {
     if (!id || !isValid) {
@@ -109,7 +109,7 @@ exports.getPostsFromUserId = async (req, res) => {
 exports.getAllPosts = async (req, res) => {
   console.log(2);
   const filter = req.query.filter;
-  const pageNumber = +req.query.pageNumber;
+  const pageNumber = +req.query.pageNumber || 1;
 
   try {
     let posts = await Post.find()
@@ -161,15 +161,19 @@ exports.getPostsWithOrOutFeed = async (req, res) => {
   const userId = req.params.userId;
   const bool = req.query.feed || false;
   const isFeed = bool === "true" ? true : false;
+  const pageNumber = +req.query.pageNumber || 1;
+
   const isValid = isValidObjectId(userId);
-  console.log(isFeed);
   try {
     if (!userId || !isValid) {
       const error = new Error("Id???");
       error.statusCode = 422;
       throw error;
     }
-    let posts = await Post.find({ author: userId }).populate("author");
+    let posts = await Post.find({ author: userId })
+      .populate("author")
+      .skip((pageNumber - 1) * 25)
+      .limit(25);
     posts = posts.filter((post) =>
       post.postedIn === "Feed" ? isFeed : !isFeed
     );
