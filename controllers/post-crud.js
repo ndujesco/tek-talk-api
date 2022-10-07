@@ -120,7 +120,6 @@ exports.getAllPosts = async (req, res) => {
     if (filter) {
       posts = posts.filter((post) => filter === post.category);
     }
-    console.log(posts);
     let postsToSend = [];
     posts.forEach((post) => {
       const postToSend = extractPostToSend(post, req);
