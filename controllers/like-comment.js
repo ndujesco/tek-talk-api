@@ -143,7 +143,7 @@ exports.getLikers = async (req, res) => {
       model: "User",
     });
     const infoToReturn = extractLikersInfo(post.likes, loggedInUserId);
-
+    infoToReturn.reverse();
     res.status(200).json({ users: infoToReturn });
   } catch (err) {
     catchError(err, res);

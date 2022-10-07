@@ -3,6 +3,22 @@ const User = require("../models/user");
 
 const { catchError } = require("../utils/help-functions");
 
+const extractFollowersInfo = (users, userId) => {
+  infosToReturn = [];
+  users.forEach((user) => {
+    let infoToReturn = {
+      username: user.username,
+      name: user.name,
+      displayUrl: user.displayUrl,
+      verified: user.verified,
+      isFollowing: user.followers.includes(userId),
+      isFollowedBy: user.following.includes(userId),
+    };
+    infosToReturn.push(infoToReturn);
+  });
+  return infosToReturn;
+};
+
 exports.followUser = async (req, res) => {
   const userToFollowId = req.query.userId;
   const loggedInUserId = req.userId;
@@ -72,18 +88,22 @@ exports.getFollowFromUserName = async (req, res) => {
   const field = req.query.field || null;
   const correctField = field === "followers" || field === "following";
   if (!username || !correctField) {
-    res.status(422).json({ status: 422, message: "Input correct fields" });
+    return res
+      .status(422)
+      .json({ status: 422, message: "Input correct fields" });
   }
   try {
-    const users = await User.find();
-    const user = users.find(
-      (user) => user.username.toLowerCase() === username.toLowerCase()
-    );
+    const user = await User.findOne({ username }).populate({
+      path: field,
+      model: "User",
+    });
+
     if (!user) {
-      const error = new Error("User not found");
-      error.statusCode = 401;
-      throw error;
+      return res.status(401).json({ status: 401, message: "User not found" });
     }
+    const usersToReturn = extractFollowersInfo(user[field], req.userId);
+    usersToReturn.reverse();
+    res.json({ users: usersToReturn });
   } catch (err) {
     catchError(err, res);
   }
