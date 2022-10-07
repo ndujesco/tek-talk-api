@@ -169,7 +169,10 @@ exports.getFeedOrNotUserName = async (req, res) => {
       error.statusCode = 422;
       throw error;
     }
-    const user = await User.findOne({ username });
+    const users = await User.find();
+    const user = users.find(
+      (user) => user.username.toLowerCase() === username.toLowerCase()
+    );
     if (!user) {
       const error = new Error("Username Does not exist.");
       error.statusCode = 422;
