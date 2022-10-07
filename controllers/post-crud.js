@@ -88,7 +88,9 @@ exports.getPostsFromUserId = async (req, res) => {
     let posts = await Post.find({ author: id })
       .skip((pageNumber - 1) * 25)
       .limit(25)
-      .populate("author");
+      .populate("author")
+      .sort({ $natural: -1 });
+
     if (!posts) {
       return res.status(422).json({ status: 422, message: "Post not found" });
     }
@@ -100,7 +102,6 @@ exports.getPostsFromUserId = async (req, res) => {
       const postToSend = extractPostToSend(post, req);
       postsToSend.push(postToSend);
     });
-    postsToSend.reverse();
     res.status(200).json({ status: 200, posts: postsToSend });
   } catch (err) {
     catchError(err, res);
@@ -108,15 +109,16 @@ exports.getPostsFromUserId = async (req, res) => {
 };
 
 exports.getAllPosts = async (req, res) => {
-  console.log(2);
   const filter = req.query.filter;
   const pageNumber = +req.query.pageNumber || 1;
+  console.log(req.query);
 
   try {
     let posts = await Post.find()
       .skip((pageNumber - 1) * 25)
       .limit(25)
-      .populate("author");
+      .populate("author")
+      .sort({ $natural: -1 });
     if (filter) {
       posts = posts.filter((post) => filter === post.category);
     }
@@ -125,7 +127,6 @@ exports.getAllPosts = async (req, res) => {
       const postToSend = extractPostToSend(post, req);
       postsToSend.push(postToSend);
     });
-    postsToSend.reverse();
 
     res.status(200).json({ status: 200, posts: postsToSend });
   } catch (err) {
@@ -182,7 +183,9 @@ exports.getFeedOrNotUserName = async (req, res) => {
     let posts = await Post.find({ author: userId })
       .populate("author")
       .skip((pageNumber - 1) * 25)
-      .limit(25);
+      .limit(25)
+      .sort({ $natural: -1 });
+
     console.log(posts);
     posts = posts.filter((post) =>
       post.postedIn === "Feed" ? isFeed : !isFeed
@@ -193,7 +196,6 @@ exports.getFeedOrNotUserName = async (req, res) => {
       const postToSend = extractPostToSend(post, req);
       postsToSend.push(postToSend);
     });
-    postsToSend.reverse();
 
     res.status(200).json({ status: 200, posts: postsToSend });
   } catch (err) {
