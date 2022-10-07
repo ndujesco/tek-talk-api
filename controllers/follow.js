@@ -68,18 +68,23 @@ exports.unFollowUser = async (req, res) => {
 };
 
 exports.getFollowFromUserName = async (req, res) => {
-  const ids = [
-    "633c4e6745ce1436895d9f4e",
-    "633eb11b1d4864912055f4f2",
-    "63400b1aa83b4fb6fa58ed40",
-    "63401e8d9648bdec7cd48700",
-    "63401f789648bdec7cd4870c",
-    "6340205a9648bdec7cd48732",
-  ];
-
-  const ugo = await User.findById("633dae0b84db7a1a751fe468");
-  ugo.addToFollowers(id);
-  const osemu = await User.findById("633dae0b84db7a1a751fe468");
-  osemu.addToFollowers(id);
-  osemu.save();
+  const username = req.params.username;
+  const field = req.query.field || null;
+  const correctField = field === "followers" || field === "following";
+  if (!username || !correctField) {
+    res.status(422).json({ status: 422, message: "Input correct fields" });
+  }
+  try {
+    const users = await User.find();
+    const user = users.find(
+      (user) => user.username.toLowerCase() === username.toLowerCase()
+    );
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 401;
+      throw error;
+    }
+  } catch (err) {
+    catchError(err, res);
+  }
 };

@@ -70,7 +70,7 @@ router.put("/follow", isAuthenticated, followUser);
 
 router.patch("/unfollow", isAuthenticated, unFollowUser);
 
-router.get("/follow/:follow", getFollowFromUserName);
+router.get("/follow/:username", getFollowFromUserName);
 
 router.post("/comment", isAuthenticated, postComment);
 

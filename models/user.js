@@ -48,6 +48,7 @@ const userSchema = new Schema({
 });
 
 userSchema.methods.addToFollowers = function (id) {
+  if (id === this.id) return;
   if (!this.followers.includes(id)) {
     this.followers.push(id);
   }
@@ -55,7 +56,7 @@ userSchema.methods.addToFollowers = function (id) {
 };
 
 userSchema.methods.addToFollowing = function (id) {
-  console.log(id);
+  if (id === this.id) return;
   if (!this.following.includes(id)) {
     this.following.push(id);
   }

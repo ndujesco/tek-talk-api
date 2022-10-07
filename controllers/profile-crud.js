@@ -70,7 +70,6 @@ exports.getMyProfile = async (req, res) => {
 
 exports.getUserProfileFromUserName = async (req, res) => {
   const userName = req.params.username;
-
   try {
     if (!userName) {
       const error = new Error("Add /username na");
