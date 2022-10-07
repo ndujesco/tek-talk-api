@@ -52,15 +52,15 @@ router.post("/profile/edit", isAuthenticated, editProfile);
 
 router.post("/post", isAuthenticated, postValidator, postPost);
 
-router.get("/post/id/:id", getPostsFromUserId);
+router.get("/post/id/:id", maybeAuthenticated, getPostsFromUserId);
 
-router.get("/post", getAllPosts);
+router.get("/post", maybeAuthenticated, getAllPosts);
 
-router.get("/post/postId/:postId", getPostFromId);
+router.get("/post/postId/:postId", maybeAuthenticated, getPostFromId);
+
+router.get("/post/feed", maybeAuthenticated, getFeedOrNotUserName);
 
 // router.get("/post/feed/:userId", getPostsWithOrOutFeed);
-
-router.get("/post/feed", getFeedOrNotUserName);
 
 router.put("/follow", isAuthenticated, followUser);
 

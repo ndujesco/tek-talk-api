@@ -22,6 +22,7 @@ const extractPostToSend = (post, req) => {
     postBody: post.body,
     postDate: post.createdAt,
     images: [],
+    isLiked: post.likes.includes(req.userId),
   };
 
   post.imagesLocal.forEach((img, index) => {
