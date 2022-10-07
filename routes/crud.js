@@ -1,7 +1,11 @@
 const { Router } = require("express");
 const { body } = require("express-validator");
 const { editProfile } = require("../controllers/edit-profile");
-const { followUser, unFollowUser } = require("../controllers/follow");
+const {
+  followUser,
+  unFollowUser,
+  getFollowFromUserName,
+} = require("../controllers/follow");
 const {
   postComment,
   getCommentsFromPostId,
@@ -65,6 +69,8 @@ router.get("/post/feed", maybeAuthenticated, getFeedOrNotUserName);
 router.put("/follow", isAuthenticated, followUser);
 
 router.patch("/unfollow", isAuthenticated, unFollowUser);
+
+router.get("/follow/:follow", getFollowFromUserName);
 
 router.post("/comment", isAuthenticated, postComment);
 

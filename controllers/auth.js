@@ -10,7 +10,7 @@ const followAdmins = async (userId) => {
   const ugo = await User.findById("633dae0b84db7a1a751fe468");
   ugo.followers.push(userId);
   ugo.save();
-  const osemu = await User.findById("633dae0b84db7a1a751fe468");
+  const osemu = await User.findById("633b45a338ad34f4b8940219");
   osemu.followers.push(userId);
   osemu.save();
 };
