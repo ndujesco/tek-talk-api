@@ -49,7 +49,13 @@ const storage = multer.diskStorage({
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ storage }).array("image"));
+app.use(
+  multer({ storage }).fields([
+    { name: "image" },
+    { name: "profileImage" },
+    { name: "backdropImage" },
+  ])
+);
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use(checkApi, isAuthorized);

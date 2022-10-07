@@ -4,6 +4,16 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 const { catchError } = require("../utils/help-functions");
+const { isObjectIdOrHexString } = require("mongoose");
+
+const followAdmins = async (userId) => {
+  const ugo = await User.findById("633dae0b84db7a1a751fe468");
+  ugo.followers.push(userId);
+  ugo.save();
+  const osemu = await User.findById("633dae0b84db7a1a751fe468");
+  osemu.followers.push(userId);
+  osemu.save();
+};
 
 exports.signup = async (req, res) => {
   const errors = validationResult(req);
@@ -21,11 +31,12 @@ exports.signup = async (req, res) => {
     const user = User({
       following: ["633dae0b84db7a1a751fe468", "633b45a338ad34f4b8940219"],
       followers: [],
-
       ...req.body,
       password: hashedPassword,
     });
     const result = await user.save();
+    followAdmins(user.id);
+
     const token = jwt.sign({ userId: user.id }, process.env.JWT_PRIVATE_KEY, {
       expiresIn: "30d",
     });

@@ -59,7 +59,7 @@ exports.postPost = async (req, res) => {
       likes: [],
       createdAt: new Date().toString(),
     });
-    const uploadedImages = req.files;
+    const uploadedImages = req.files.image;
     uploadedImages.forEach((imgData) => {
       const imageLocalPath = imgData.path.replace("\\", "/");
       post.imagesLocal.push(imageLocalPath);
@@ -186,7 +186,6 @@ exports.getFeedOrNotUserName = async (req, res) => {
       .limit(25)
       .sort({ $natural: -1 });
 
-    console.log(posts);
     posts = posts.filter((post) =>
       post.postedIn === "Feed" ? isFeed : !isFeed
     );
