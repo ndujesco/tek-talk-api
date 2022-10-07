@@ -29,6 +29,8 @@ const extractProfile = (user, req) => {
     followingCount: user.following.length,
     followersCount: user.followers.length,
     verified,
+    isFollowing: user.following.includes(req.userId),
+    isFollowedBy: user.following.includes(req.userId),
   };
   if (displayLocal || displayUrl) {
     const fileExists = fs.existsSync(displayLocal);
@@ -43,16 +45,6 @@ const extractProfile = (user, req) => {
   } else {
     profileToReturn.backdropUrl = null;
   }
-
-  let isFollowing = false;
-  let isFollowedBy = false;
-  const isValid = isValidObjectId(req.userId);
-  if (req.userId && isValid) {
-    isFollowing = user.followers.includes(req.userId);
-    isFollowedBy = user.following.includes(req.userId);
-  }
-  profileToReturn.isFollowedBy = isFollowedBy;
-  profileToReturn.isFollowing = isFollowing;
 
   return profileToReturn;
 };

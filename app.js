@@ -69,7 +69,7 @@ app.use((req, res) => {
 main()
   .then((connected) => {
     app.listen(process.env.PORT || 8080);
-    console.log("E deh run");
+    console.log("E deh rush!!🚿");
   })
   .catch((err) => {
     console.log(err);

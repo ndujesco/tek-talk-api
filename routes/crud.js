@@ -5,6 +5,9 @@ const { followUser, unFollowUser } = require("../controllers/follow");
 const {
   postComment,
   getCommentsFromPostId,
+  likePost,
+  unLikePost,
+  getLikers,
 } = require("../controllers/like-comment");
 const {
   postPost,
@@ -66,5 +69,11 @@ router.patch("/unfollow", isAuthenticated, unFollowUser);
 router.post("/comment", isAuthenticated, postComment);
 
 router.get("/comment", getCommentsFromPostId);
+
+router.put("/like", isAuthenticated, likePost);
+
+router.patch("/unlike", isAuthenticated, unLikePost);
+
+router.get("/likers", maybeAuthenticated, getLikers);
 
 module.exports = router;

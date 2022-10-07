@@ -41,8 +41,7 @@ const postSchema = new Schema({
   ],
   likes: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "Like",
+      type: String, //I will store the user (that liked) ids.
     },
   ],
 });
