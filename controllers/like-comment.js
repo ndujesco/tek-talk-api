@@ -17,9 +17,20 @@ const extractCommentToSend = (comment) => {
   };
 };
 
-const extractLikersInfo = (likes) => {
+const extractLikersInfo = (users, userId) => {
   infosToReturn = [];
-  let infoToReturn = {};
+  users.forEach((user) => {
+    let infoToReturn = {
+      username: user.username,
+      name: user.name,
+      displayUrl: user.displayUrl,
+      verified: user.verified,
+      isFollowing: user.followers.includes(userId),
+      isFollowedBy: user.following.includes(userId),
+    };
+    infosToReturn.push(infoToReturn);
+  });
+  return infosToReturn;
 };
 exports.postComment = async (req, res) => {
   const userId = req.userId;
@@ -131,9 +142,9 @@ exports.getLikers = async (req, res) => {
       path: "likes",
       model: "User",
     });
-    const likers = post.likes;
+    const infoToReturn = extractLikersInfo(post.likes, loggedInUserId);
 
-    res.json({ postId });
+    res.status(200).json({ users: infoToReturn });
   } catch (err) {
     catchError(err, res);
   }

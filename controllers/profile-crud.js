@@ -26,10 +26,10 @@ const extractProfile = (user, req) => {
     location,
     email,
     bio,
+    verified,
     followingCount: user.following.length,
     followersCount: user.followers.length,
-    verified,
-    isFollowing: user.following.includes(req.userId),
+    isFollowing: user.followers.includes(req.userId),
     isFollowedBy: user.following.includes(req.userId),
   };
   if (displayLocal || displayUrl) {
