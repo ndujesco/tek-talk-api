@@ -38,7 +38,6 @@ const extractProfile = (user, req) => {
   } else {
     profileToReturn.displayUrl = null;
   }
-  img;
   if (backdropLocal || backdropUrl) {
     const fileExists = fs.existsSync(backdropLocal);
     profileToReturn.backdropUrl = fileExists
