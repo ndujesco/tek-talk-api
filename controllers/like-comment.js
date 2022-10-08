@@ -101,8 +101,8 @@ exports.deleteComment = async (req, res) => {
     if (post) {
       const position = post.comments.indexOf(commentId);
       post.comments.splice(position, 1);
+      post.save();
     }
-    posts.save();
 
     res.status(200).json({ message: "Deleted successfully" });
   } catch (err) {

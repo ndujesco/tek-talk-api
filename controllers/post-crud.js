@@ -92,6 +92,7 @@ exports.getPostsFromUserId = async (req, res) => {
       .skip((pageNumber - 1) * 25)
       .limit(25)
       .populate("author")
+      .populate({ path: "comments", model: "Comment" })
       .sort({ $natural: -1 });
 
     if (!posts) {
@@ -119,6 +120,7 @@ exports.getAllPosts = async (req, res) => {
     let posts = await Post.find()
       .skip((pageNumber - 1) * 25)
       .limit(25)
+      .populate({ path: "comments", model: "Comment" })
       .populate("author")
       .sort({ $natural: -1 });
     if (filter) {
@@ -145,7 +147,10 @@ exports.getPostFromId = async (req, res) => {
   }
 
   try {
-    const post = await Post.findById(postId).populate("author");
+    const post = await Post.findById(postId)
+      .populate("author")
+      .populate({ path: "comments", model: "Comment" });
+
     if (!post) {
       const error = new Error(
         "Errmm. postId does not exist again or never existed"
@@ -183,6 +188,7 @@ exports.getFeedOrNotUserName = async (req, res) => {
     }
     const userId = user.id;
     let posts = await Post.find({ author: userId })
+      .populate({ path: "comments", model: "Comment" })
       .populate("author")
       .skip((pageNumber - 1) * 25)
       .limit(25)
