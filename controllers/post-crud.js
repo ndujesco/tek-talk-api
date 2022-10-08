@@ -39,6 +39,7 @@ const extractPostToSend = (post, req) => {
 };
 
 exports.postPost = async (req, res) => {
+  console.log(1);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -60,7 +61,8 @@ exports.postPost = async (req, res) => {
       likes: [],
       createdAt: new Date().toString(),
     });
-    const uploadedImages = req.files.image;
+    const uploadedImages = req.files.image || []; //important
+
     uploadedImages.forEach((imgData) => {
       const imageLocalPath = imgData.path.replace("\\", "/");
       post.imagesLocal.push(imageLocalPath);
