@@ -5,7 +5,7 @@ const fs = require("fs");
 const Post = require("../models/post");
 
 const { catchError } = require("../utils/help-functions");
-const { uploadToCloudinary } = require("../utils/cloudinary");
+const { uploadPostToCloudinary } = require("../utils/cloudinary");
 const User = require("../models/user");
 
 const extractPostToSend = (post, req) => {
@@ -69,7 +69,7 @@ exports.postPost = async (req, res) => {
       .status(200)
       .json({ status: 200, message: "Posted Successfully!", postId: post.id });
     uploadedImages.forEach((imgData) => {
-      uploadToCloudinary(imgData.path, post.id);
+      uploadToPostToCloudinary(imgData.path, post.id);
     });
   } catch (err) {
     catchError(err, res);
@@ -111,7 +111,6 @@ exports.getPostsFromUserId = async (req, res) => {
 exports.getAllPosts = async (req, res) => {
   const filter = req.query.filter;
   const pageNumber = +req.query.pageNumber || 1;
-  console.log(req.query);
 
   try {
     let posts = await Post.find()

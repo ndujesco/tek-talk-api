@@ -52,7 +52,7 @@ router.get(
 
 // router.get("/profile/id/:id", getUserProfileFromId);
 
-router.post("/profile/edit", isAuthenticated, editProfile);
+router.patch("/profile/edit", isAuthenticated, editProfile);
 
 router.post("/post", isAuthenticated, postValidator, postPost);
 

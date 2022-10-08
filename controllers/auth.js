@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 const { catchError } = require("../utils/help-functions");
-const { isObjectIdOrHexString } = require("mongoose");
 
 const followAdmins = async (userId) => {
   const ugo = await User.findById("633dae0b84db7a1a751fe468");

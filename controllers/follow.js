@@ -7,6 +7,7 @@ const extractFollowersInfo = (users, userId) => {
   infosToReturn = [];
   users.forEach((user) => {
     let infoToReturn = {
+      userId: user.id,
       username: user.username,
       name: user.name,
       displayUrl: user.displayUrl,
