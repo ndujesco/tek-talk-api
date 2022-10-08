@@ -40,7 +40,7 @@ const userSchema = new Schema({
   token: String,
   tokenExpiration: Date,
   displayUrl: { type: String, default: null },
-  dsiplayLocal: { type: String, default: null },
+  displayLocal: { type: String, default: null },
   displayId: { type: String, default: null },
   backdropUrl: { type: String, default: null },
   backdropLocal: { type: String, default: null },

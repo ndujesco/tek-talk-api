@@ -38,6 +38,6 @@ exports.uploadProfileToCloudinary = async (filePath, id, field, fieldId) => {
     await user.save();
     console.log(field);
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 };

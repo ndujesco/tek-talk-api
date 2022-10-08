@@ -1,8 +1,6 @@
 const { catchError } = require("../utils/help-functions");
 const User = require("../models/user");
 const fs = require("fs");
-const { isValidObjectId } = require("mongoose");
-const { validationResult } = require("express-validator");
 
 const extractProfile = (user, req) => {
   const {

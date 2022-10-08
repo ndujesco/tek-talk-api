@@ -1,10 +1,10 @@
 const { body, validationResult } = require("express-validator");
 const User = require("../models/user");
 const { uploadProfileToCloudinary } = require("../utils/cloudinary");
+const { catchError } = require("../utils/help-functions");
 
 exports.editProfile = async (req, res) => {
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     return res.status(422).json({
       status: 422,
@@ -12,22 +12,30 @@ exports.editProfile = async (req, res) => {
       errors: errors.array(),
     });
   }
-  const { name, username, stack, location, email, bio } = req.body;
+  const toUpdate = req.body;
   const images = req.files;
 
   for (key in images) {
     const field = key + "Local";
-    console.log(images[key][0]);
+    const filePath = images[key][0].path;
+    toUpdate[field] = filePath.replace("\\", "/");
   }
 
-  // ? backdropImage.path.replace("\\", "/")
-
   try {
-    // const user = await User.findByIdAndUpdate(req.userId, {
-    //   ...req.body,
-    // });
+    const user = await User.findById(req.userId);
+    for (key in toUpdate) {
+      user[key] = toUpdate[key];
+    }
+    await user.save();
 
     res.json({ user: 2 });
+
+    for (key in images) {
+      const field = key + "Local";
+      const fieldId = key + "Id";
+      const filePath = images[key][0].path;
+      uploadProfileToCloudinary(filePath, req.userId, field, fieldId);
+    }
   } catch (err) {
     catchError(err, res);
   }
