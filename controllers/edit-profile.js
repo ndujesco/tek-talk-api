@@ -13,47 +13,20 @@ exports.editProfile = async (req, res) => {
     });
   }
   const { name, username, stack, location, email, bio } = req.body;
-  const profileImage = req.files.profileImage
-    ? req.files.profileImage[0]
-    : null;
+  const images = req.files;
 
-  const backdropImage = req.files.backdropImage
-    ? req.files.backdropImage[0]
-    : null;
+  for (key in images) {
+    console.log(images[key]);
+  }
 
-  const displayLocal = profileImage
-    ? profileImage.path.replace("\\", "/")
-    : null;
-
-  const backdropLocal = backdropImage
-    ? backdropImage.path.replace("\\", "/")
-    : null;
+  // ? backdropImage.path.replace("\\", "/")
 
   try {
-    const user = await User.findByIdAndUpdate(req.userId, {
-      ...req.body,
-      displayLocal,
-      backdropLocal,
-    });
+    // const user = await User.findByIdAndUpdate(req.userId, {
+    //   ...req.body,
+    // });
 
-    backdropImage
-      ? uploadProfileToCloudinary(
-          backdropImage.path,
-          req.userId,
-          "backdropUrl",
-          "backdropId"
-        )
-      : null;
-    profileImage
-      ? uploadProfileToCloudinary(
-          profileImage.path,
-          req.userId,
-          "displayUrl",
-          "displayId"
-        )
-      : null;
-
-    res.json({ user });
+    res.json({ user: 2 });
   } catch (err) {
     catchError(err, res);
   }
@@ -82,6 +55,7 @@ exports.editProfileValidator = [
             user.username.toLowerCase() === value.toLowerCase() &&
             user.id !== req.userId
         );
+
         if (matches) {
           return Promise.reject("The username is already taken.");
         }

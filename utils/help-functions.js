@@ -4,3 +4,7 @@ exports.catchError = (error, res) => {
   const message = error.message;
   res.status(status).json({ message, status });
 };
+
+for (key in { name: "Ugo", age: 1 }) {
+  console.log(key);
+}

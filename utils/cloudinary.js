@@ -36,6 +36,7 @@ exports.uploadProfileToCloudinary = async (filePath, id, field, fieldId) => {
     user[field] = result.secure_url;
     user[fieldId] = result.public_id;
     await user.save();
+    console.log(field);
   } catch (err) {
     console.log(err);
   }
