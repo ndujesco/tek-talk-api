@@ -16,6 +16,7 @@ const extractProfile = (user, req) => {
     backdropLocal,
     backdropUrl,
   } = user;
+
   let profileToReturn = {
     userId: user.id,
     name,
