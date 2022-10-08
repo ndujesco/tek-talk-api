@@ -16,7 +16,8 @@ exports.editProfile = async (req, res) => {
   const images = req.files;
 
   for (key in images) {
-    console.log(images[key]);
+    const field = key + "Local";
+    console.log(images[key][0]);
   }
 
   // ? backdropImage.path.replace("\\", "/")

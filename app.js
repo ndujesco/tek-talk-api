@@ -52,8 +52,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   multer({ storage }).fields([
     { name: "image" },
-    { name: "profileImage" },
-    { name: "backdropImage" },
+    { name: "display" },
+    { name: "backdrop" },
   ])
 );
 app.use("/images", express.static(path.join(__dirname, "images")));

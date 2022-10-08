@@ -24,6 +24,7 @@ const {
   getPostsWithOrOutFeed,
   getPostsFromUserId,
   getFeedOrNotUserName,
+  deletePost,
 } = require("../controllers/post-crud");
 
 const {
@@ -72,6 +73,8 @@ router.get("/post", maybeAuthenticated, getAllPosts);
 router.get("/post/postId/:postId", maybeAuthenticated, getPostFromId);
 
 router.get("/post/feed", maybeAuthenticated, getFeedOrNotUserName);
+
+router.delete("/post", isAuthenticated, deletePost);
 
 // router.get("/post/feed/:userId", getPostsWithOrOutFeed);
 
