@@ -1,8 +1,8 @@
 const bcrypt = require("bcryptjs");
+const User = require("../models/user");
 
 exports.editProfile = async (req, res) => {
-  // const user =
-  const { name, username, stack, location, email, bio } = req.body;
+  const { name, username, stack, location, email, bio, password } = req.body;
   const profileImage = req.files.profileImage ? req.files.profileImage : null;
   const backdropImage = req.files.backdropImage
     ? req.files.backdropImage
@@ -10,6 +10,7 @@ exports.editProfile = async (req, res) => {
 
   res.json({ message: "Oyaaa!" });
   try {
+    const user = await User.findByIdAndUpdate();
   } catch (err) {
     catchError(err, res);
   }
