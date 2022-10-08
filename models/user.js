@@ -37,13 +37,20 @@ const userSchema = new Schema({
       required: true,
     },
   ],
+
   token: String,
+
   tokenExpiration: Date,
   displayUrl: { type: String, default: null },
+
   displayLocal: { type: String, default: null },
+
   displayId: { type: String, default: null },
+
   backdropUrl: { type: String, default: null },
+
   backdropLocal: { type: String, default: null },
+
   backdropId: { type: String, default: null },
 });
 
