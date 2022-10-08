@@ -33,6 +33,7 @@ exports.signup = async (req, res) => {
       ...req.body,
       password: hashedPassword,
     });
+
     const result = await user.save();
     followAdmins(user.id);
 
