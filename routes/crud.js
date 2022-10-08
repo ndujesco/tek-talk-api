@@ -1,6 +1,9 @@
 const { Router } = require("express");
 const { body } = require("express-validator");
-const { editProfile } = require("../controllers/edit-profile");
+const {
+  editProfile,
+  editProfileValidator,
+} = require("../controllers/edit-profile");
 const {
   followUser,
   unFollowUser,
@@ -53,7 +56,12 @@ router.get(
 
 // router.get("/profile/id/:id", getUserProfileFromId);
 
-router.patch("/profile/edit", isAuthenticated, editProfile);
+router.patch(
+  "/profile/edit",
+  isAuthenticated,
+  editProfileValidator,
+  editProfile
+);
 
 router.post("/post", isAuthenticated, postValidator, postPost);
 
