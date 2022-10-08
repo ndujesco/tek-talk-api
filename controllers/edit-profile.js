@@ -4,6 +4,7 @@ const { uploadProfileToCloudinary } = require("../utils/cloudinary");
 const { catchError } = require("../utils/help-functions");
 
 exports.editProfile = async (req, res) => {
+  console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({
