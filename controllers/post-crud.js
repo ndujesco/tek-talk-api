@@ -43,7 +43,6 @@ const extractPostToSend = (post, req) => {
 };
 
 exports.postPost = async (req, res) => {
-  console.log(1);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({

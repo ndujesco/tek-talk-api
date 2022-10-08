@@ -32,14 +32,18 @@ const extractProfile = (user, req) => {
   };
   if (displayLocal || displayUrl) {
     const fileExists = fs.existsSync(displayLocal);
-    profileToReturn.displayUrl = fileExists ? displayLocal : displayUrl;
+    profileToReturn.displayUrl = fileExists
+      ? "https://" + req.headers.host + "/" + displayLocal
+      : displayUrl;
   } else {
     profileToReturn.displayUrl = null;
   }
-
+  img;
   if (backdropLocal || backdropUrl) {
     const fileExists = fs.existsSync(backdropLocal);
-    profileToReturn.backdropUrl = fileExists ? backdropLocal : backdropUrl;
+    profileToReturn.backdropUrl = fileExists
+      ? "https://" + req.headers.host + "/" + backdropLocal
+      : backdropUrl;
   } else {
     profileToReturn.backdropUrl = null;
   }
