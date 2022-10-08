@@ -5,9 +5,13 @@ const fs = require("fs");
 const Post = require("../models/post");
 
 const { catchError } = require("../utils/help-functions");
-const { uploadPostToCloudinary } = require("../utils/cloudinary");
+const {
+  uploadPostToCloudinary,
+  deletePostUrl,
+} = require("../utils/cloudinary");
 const User = require("../models/user");
 const Comment = require("../models/comment");
+const { lookupService } = require("dns");
 
 const extractPostToSend = (post, req) => {
   const postToSend = {
@@ -220,8 +224,12 @@ exports.deletePost = async (req, res) => {
 
   try {
     const post = await Post.findByIdAndDelete(postId);
-    res.status(200).json({ message: "Deleted successfully" });
     await Comment.deleteMany({ post: postId });
+    res.status(200).json({ message: "Deleted successfully" });
+    post.imagesId.forEach((id) => {
+      deletePostUrl(id);
+    });
+    console.log(post);
   } catch (err) {
     catchError(err, res);
   }

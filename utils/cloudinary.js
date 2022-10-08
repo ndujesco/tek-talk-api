@@ -41,3 +41,7 @@ exports.uploadProfileToCloudinary = async (filePath, id, field, fieldId) => {
     console.log(err.message);
   }
 };
+
+exports.deletePostUrl = (id) => {
+  cloudinary.uploader.destroy(id);
+};
