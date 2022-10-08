@@ -31,7 +31,7 @@ exports.editProfile = async (req, res) => {
     res.json({ user: 2 });
 
     for (key in images) {
-      const field = key + "Local";
+      const field = key + "Url";
       const fieldId = key + "Id";
       const filePath = images[key][0].path;
       uploadProfileToCloudinary(filePath, req.userId, field, fieldId);
