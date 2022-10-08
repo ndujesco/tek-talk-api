@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const User = require("../models/user");
 const { catchError } = require("./help-functions");
 
 const cloudinary = require("cloudinary").v2;
@@ -18,6 +19,23 @@ exports.uploadPostToCloudinary = async (filePath, id) => {
     post.imagesUrl.push(result.secure_url);
     post.imagesId.push(result.public_id);
     await post.save();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.uploadProfileToCloudinary = async (filePath, id, field, fieldId) => {
+  try {
+    const result = await cloudinary.uploader.upload(filePath, {
+      folder: "postImages",
+    });
+    const user = await User.findById(id);
+    if (user[field]) {
+      cloudinary.uploader.destroy(user["field"]);
+    }
+    user[field] = result.secure_url;
+    user[fieldId] = result.public_id;
+    await user.save();
   } catch (err) {
     console.log(err);
   }
