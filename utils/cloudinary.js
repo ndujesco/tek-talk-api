@@ -27,11 +27,11 @@ exports.uploadPostToCloudinary = async (filePath, id) => {
 exports.uploadProfileToCloudinary = async (filePath, id, field, fieldId) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
-      folder: "postImages",
+      folder: "profileImages",
     });
     const user = await User.findById(id);
     if (user[field]) {
-      cloudinary.uploader.destroy(user["field"]);
+      cloudinary.uploader.destroy(user[fieldId]);
     }
     user[field] = result.secure_url;
     user[fieldId] = result.public_id;

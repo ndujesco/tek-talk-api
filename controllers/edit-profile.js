@@ -19,7 +19,6 @@ exports.editProfile = async (req, res) => {
   const backdropLocal = backdropImage
     ? backdropImage.path.replace("\\", "/")
     : null;
-  console.log(backdropLocal, displayLocal);
 
   try {
     const user = await User.findByIdAndUpdate(req.userId, {
