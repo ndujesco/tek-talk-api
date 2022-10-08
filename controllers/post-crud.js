@@ -75,7 +75,7 @@ exports.postPost = async (req, res) => {
       .status(200)
       .json({ status: 200, message: "Posted Successfully!", postId: post.id });
     uploadedImages.forEach((imgData) => {
-      uploadToPostToCloudinary(imgData.path, post.id);
+      uploadPostToCloudinary(imgData.path, post.id);
     });
   } catch (err) {
     catchError(err, res);
