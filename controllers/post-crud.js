@@ -7,6 +7,7 @@ const Post = require("../models/post");
 const { catchError } = require("../utils/help-functions");
 const { uploadPostToCloudinary } = require("../utils/cloudinary");
 const User = require("../models/user");
+const Comment = require("../models/comment");
 
 const extractPostToSend = (post, req) => {
   const postToSend = {
@@ -196,6 +197,24 @@ exports.getFeedOrNotUserName = async (req, res) => {
     });
 
     res.status(200).json({ status: 200, posts: postsToSend });
+  } catch (err) {
+    catchError(err, res);
+  }
+};
+
+exports.deletePost = async (req, res) => {
+  const { postId } = req.query;
+  const isValid = isValidObjectId(postId);
+
+  if (!isValid) {
+    res.status(422).json({ status: 422, message: "This your id sha" });
+  }
+
+  try {
+    await Post.findByIdAndDelete(postId);
+    res.status(200).json({ message: "Deleted successfully" });
+
+    Comment.updateMany;
   } catch (err) {
     catchError(err, res);
   }

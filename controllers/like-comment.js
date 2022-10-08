@@ -1,4 +1,4 @@
-const { isValidObjectId } = require("mongoose");
+const { isValidObjectId, Types } = require("mongoose");
 const Comment = require("../models/comment");
 const Post = require("../models/post");
 const { catchError } = require("../utils/help-functions");
@@ -84,6 +84,32 @@ exports.getCommentsFromPostId = async (req, res) => {
   }
 };
 
+exports.deleteComment = async (req, res) => {
+  const { commentId, postId } = req.query;
+  const isValid = isValidObjectId(commentId);
+
+  if (!isValid) {
+    res.status(422).json({ status: 422, message: "This your id sha" });
+  }
+
+  try {
+    await Comment.findByIdAndDelete(commentId);
+    const posts = await Post.find();
+    const post = posts.find((post) => {
+      return post.comments.includes(commentId);
+    });
+    if (post) {
+      const position = post.comments.indexOf(commentId);
+      post.comments.splice(position, 1);
+    }
+    posts.save();
+
+    res.status(200).json({ message: "Deleted successfully" });
+  } catch (err) {
+    catchError(err, res);
+  }
+};
+
 exports.likePost = async (req, res) => {
   const postId = req.query.postId;
   const loggedInUserId = req.userId;
@@ -150,3 +176,6 @@ exports.getLikers = async (req, res) => {
     catchError(err, res);
   }
 };
+
+// const update = { $pull: { "lists.$[list].items": { _id: checkedId } } };
+// const options = { arrayFilters: [{ "list.name": listName }] };

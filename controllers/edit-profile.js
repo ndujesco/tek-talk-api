@@ -26,7 +26,6 @@ exports.editProfile = async (req, res) => {
       displayLocal,
       backdropLocal,
     });
-    await user.save();
 
     backdropImage
       ? uploadProfileToCloudinary(

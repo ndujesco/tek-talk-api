@@ -12,6 +12,7 @@ const {
   likePost,
   unLikePost,
   getLikers,
+  deleteComment,
 } = require("../controllers/like-comment");
 const {
   postPost,
@@ -75,6 +76,8 @@ router.get("/follow/:username", maybeAuthenticated, getFollowFromUserName);
 router.post("/comment", isAuthenticated, postComment);
 
 router.get("/comment", getCommentsFromPostId);
+
+router.delete("/comment", isAuthenticated, deleteComment);
 
 router.put("/like", isAuthenticated, likePost);
 
