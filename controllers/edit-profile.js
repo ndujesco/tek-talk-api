@@ -19,7 +19,7 @@ exports.editProfile = async (req, res) => {
 
   const emptyProfile = [];
   toUpdate.noDisplay ? emptyProfile.push("display") : null;
-  toUpdate.Backrop ? emptyProfile.push("backdrop") : null;
+  toUpdate.noBackdrop ? emptyProfile.push("backdrop") : null;
   console.log(emptyProfile);
 
   for (key in images) {
