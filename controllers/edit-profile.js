@@ -20,7 +20,6 @@ exports.editProfile = async (req, res) => {
   const emptyProfile = [];
   toUpdate.noDisplay ? emptyProfile.push("display") : null;
   toUpdate.noBackdrop ? emptyProfile.push("backdrop") : null;
-  console.log(emptyProfile);
 
   for (key in images) {
     const field = key + "Local";
@@ -31,7 +30,11 @@ exports.editProfile = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
     for (key in toUpdate) {
-      user[key] = toUpdate[key];
+      if (key !== "noDisplay" || key !== "noBackdrop") {
+        user[key] = toUpdate[key];
+      } else {
+        console.log(key);
+      }
     }
     await user.save();
 
