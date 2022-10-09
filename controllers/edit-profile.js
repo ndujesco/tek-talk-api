@@ -4,7 +4,6 @@ const { uploadProfileToCloudinary } = require("../utils/cloudinary");
 const { catchError } = require("../utils/help-functions");
 
 exports.editProfile = async (req, res) => {
-  console.log(req.files);
   console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -17,10 +16,10 @@ exports.editProfile = async (req, res) => {
   const toUpdate = req.body;
   const images = req.files;
 
-  const emptyProfile = [];
-  toUpdate.noDisplay ? emptyProfile.push("display") : null;
-  toUpdate.noBackdrop ? emptyProfile.push("backdrop") : null;
-
+  const emptyProfiles = [];
+  toUpdate.noDisplay ? emptyProfiles.push("display") : null;
+  toUpdate.noBackdrop ? emptyProfiles.push("backdrop") : null;
+  console.log(emptyProfiles);
   for (key in images) {
     const field = key + "Local";
     const filePath = images[key][0].path;
