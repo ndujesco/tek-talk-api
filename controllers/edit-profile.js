@@ -29,7 +29,7 @@ exports.editProfile = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
     for (key in toUpdate) {
-      if (key !== "noDisplay" || key !== "noBackdrop") {
+      if (key !== "noDisplay" && key !== "noBackdrop") {
         user[key] = toUpdate[key];
       } else {
         console.log(key);
