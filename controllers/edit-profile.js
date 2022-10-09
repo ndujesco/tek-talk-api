@@ -39,7 +39,7 @@ exports.editProfile = async (req, res) => {
     emptyProfiles.forEach((value) => {
       user[value + "Local"] = null;
       user[value + "Url"] = null;
-      user[value + "Id"] = null;
+      // user[value + "Id"] = null;
     });
 
     await user.save();
@@ -47,6 +47,7 @@ exports.editProfile = async (req, res) => {
 
     //should either delete the current Urls from cloudinary or upload or do nothing
     emptyProfiles.forEach((value) => {
+      console.log(user[value + "Url"]);
       deleteFromCloudinary(user[value + "Id"]);
     });
 
