@@ -7,7 +7,7 @@ const Post = require("../models/post");
 const { catchError } = require("../utils/help-functions");
 const {
   uploadPostToCloudinary,
-  deletePostUrl,
+  deleteFromCloudinary,
 } = require("../utils/cloudinary");
 const User = require("../models/user");
 const Comment = require("../models/comment");
@@ -226,7 +226,7 @@ exports.deletePost = async (req, res) => {
     await Comment.deleteMany({ post: postId });
     res.status(200).json({ message: "Deleted successfully" });
     post.imagesId.forEach((id) => {
-      deletePostUrl(id);
+      deleteFromCloudinary(id);
     });
     console.log(post);
   } catch (err) {
