@@ -17,6 +17,11 @@ exports.editProfile = async (req, res) => {
   const toUpdate = req.body;
   const images = req.files;
 
+  const emptyProfile = [];
+  toUpdate.noDisplay ? emptyProfile.push("display") : null;
+  toUpdate.Backrop ? emptyProfile.push("backdrop") : null;
+  console.log(emptyProfile);
+
   for (key in images) {
     const field = key + "Local";
     const filePath = images[key][0].path;
@@ -38,6 +43,8 @@ exports.editProfile = async (req, res) => {
       const filePath = images[key][0].path;
       uploadProfileToCloudinary(filePath, req.userId, field, fieldId);
     }
+
+    console.log();
   } catch (err) {
     catchError(err, res);
   }
