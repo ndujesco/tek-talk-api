@@ -21,7 +21,6 @@ const {
   postPost,
   getAllPosts,
   getPostFromId,
-  getPostsWithOrOutFeed,
   getPostsFromUserId,
   getFeedOrNotUserName,
   deletePost,
