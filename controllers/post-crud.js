@@ -257,14 +257,10 @@ exports.getUserRelatedPosts = async (req, res) => {
           post.author.id === "633b45a338ad34f4b8940219" ||
           post.author.id === "633dae0b84db7a1a751fe468";
         const followsPoster = loggedUser.following.includes(post.author.id);
-        const postedInFeed = post.postedIn === "Feed";
         const sameStack = loggedUser.stack === post.author.stack;
         const hasPlentyFollowers = post.author.followers.length > 10;
         return (
-          (followsPoster ||
-            (sameStack && hasPlentyFollowers) ||
-            postedByAdmin) &&
-          postedInFeed
+          followsPoster || (sameStack && hasPlentyFollowers) || postedByAdmin
         );
       });
     }
