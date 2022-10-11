@@ -93,3 +93,12 @@ exports.getUserProfileFromUserName = async (req, res) => {
     catchError(err, res);
   }
 };
+
+exports.getUserSuggestions = async (req, res) => {
+  const user = await User.findById(req.userId);
+  let allUsers = await User.find();
+  allUsers1 = allUsers.filter((foundUser) => {
+    foundUser.stack === user.stack && !foundUser.following.includes(req.userId);
+  });
+  allUsers2 = allUsers1.sort();
+};

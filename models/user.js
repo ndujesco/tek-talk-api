@@ -41,6 +41,7 @@ const userSchema = new Schema({
   token: String,
 
   tokenExpiration: Date,
+
   displayUrl: { type: String, default: null },
 
   displayLocal: { type: String, default: null },

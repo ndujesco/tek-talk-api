@@ -95,7 +95,7 @@ exports.getPostsFromUserId = async (req, res) => {
       .skip((pageNumber - 1) * 25)
       .limit(25)
       .populate("author")
-      .populate({ path: "comments", model: "Comment" })
+      .populate({ path: "comments", model: "Comment" }) //so the comment count will always be accurate.
       .sort({ $natural: -1 });
 
     if (!posts) {
@@ -127,7 +127,7 @@ exports.getAllPosts = async (req, res) => {
       .populate("author")
       .sort({ $natural: -1 });
     if (filter) {
-      posts = posts.filter((post) => filter === post.category);
+      posts = posts.filter((post) => filter === post.postedIn);
     }
     let postsToSend = [];
     posts.forEach((post) => {
@@ -233,3 +233,5 @@ exports.deletePost = async (req, res) => {
     catchError(err, res);
   }
 };
+
+exports.getUserRelatedPosts = async (req, res) => {};

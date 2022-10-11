@@ -32,6 +32,7 @@ const {
   getMyProfile,
   // getUserProfileFromId,
   getUserProfileFromUserName,
+  getUserSuggestions,
 } = require("../controllers/profile-crud");
 
 const { isAuthenticated } = require("../middleware/is-auth");
@@ -62,6 +63,8 @@ router.patch(
   editProfileValidator,
   editProfile
 );
+
+router.get("/suggestions", isAuthenticated, getUserSuggestions);
 
 router.post("/post", isAuthenticated, postValidator, postPost);
 
