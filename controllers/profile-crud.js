@@ -1,6 +1,7 @@
 const { catchError } = require("../utils/help-functions");
 const User = require("../models/user");
 const fs = require("fs");
+const Post = require("../models/post");
 
 const extractProfile = (user, req) => {
   const {
@@ -51,6 +52,22 @@ const extractProfile = (user, req) => {
   return profileToReturn;
 };
 
+const extractSuggestionsInfo = (users, userId) => {
+  infosToReturn = [];
+  users.forEach((user) => {
+    let infoToReturn = {
+      userId: user.id,
+      username: user.username,
+      name: user.name,
+      displayUrl: user.displayUrl,
+      verified: user.verified,
+      isFollowedBy: user.following.includes(userId),
+    };
+    infosToReturn.push(infoToReturn);
+  });
+  return infosToReturn;
+};
+
 exports.getIndex = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
@@ -95,10 +112,31 @@ exports.getUserProfileFromUserName = async (req, res) => {
 };
 
 exports.getUserSuggestions = async (req, res) => {
-  const user = await User.findById(req.userId);
-  let allUsers = await User.find();
-  allUsers1 = allUsers.filter((foundUser) => {
-    foundUser.stack === user.stack && !foundUser.following.includes(req.userId);
-  });
-  allUsers2 = allUsers1.sort();
+  try {
+    const posts = await Post.find();
+    const user = await User.findById(req.userId);
+    let allUsers = await User.find();
+    const allUsers1 = allUsers.filter(
+      (thisUser) =>
+        thisUser.id !== user.id && !thisUser.followers.includes(req.userId)
+      //
+    );
+    const allUsers2 = allUsers1.sort((first, second) => {
+      const firstLength = posts.filter(
+        (thisPost) => thisPost.author.toString() === first.id
+      ).length;
+
+      const secondLength = posts.filter(
+        (thisPost) => thisPost.author.toString() === second.id
+      ).length;
+
+      return firstLength > secondLength ? -1 : 1;
+    });
+
+    const toReturn = extractSuggestionsInfo(allUsers2, req.userId);
+
+    res.status(200).json({ users: toReturn.slice(0, 5) });
+  } catch (err) {
+    catchError(err, res);
+  }
 };
