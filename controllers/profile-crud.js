@@ -62,6 +62,7 @@ const extractSuggestionsInfo = (users, userId) => {
       displayUrl: user.displayUrl,
       verified: user.verified,
       isFollowedBy: user.following.includes(userId),
+      isFollowing: user.followers.includes(userId),
     };
     infosToReturn.push(infoToReturn);
   });
