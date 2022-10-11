@@ -234,4 +234,50 @@ exports.deletePost = async (req, res) => {
   }
 };
 
-exports.getUserRelatedPosts = async (req, res) => {};
+exports.getUserRelatedPosts = async (req, res) => {
+  const pageNumber = +req.query.pageNumber || 1;
+  const isValid = isValidObjectId(req.userId);
+  const start = (pageNumber - 1) * 25;
+  const end = (pageNumber - 1) * 25 + 25;
+  let loggedUser;
+
+  try {
+    let posts = await Post.find()
+      .populate({ path: "comments", model: "Comment" })
+      .populate("author")
+      .sort({ $natural: -1 });
+
+    if (isValid) {
+      loggedUser = await User.findById(req.userId);
+    }
+
+    if (loggedUser) {
+      posts = posts.filter((post) => {
+        const postedByAdmin =
+          post.author.id === "633b45a338ad34f4b8940219" ||
+          post.author.id === "633dae0b84db7a1a751fe468";
+        const followsPoster = loggedUser.following.includes(post.author.id);
+        const postedInFeed = post.postedIn === "Feed";
+        const sameStack = loggedUser.stack === post.author.stack;
+        const hasPlentyFollowers = post.author.followers.length > 10;
+        return (
+          (followsPoster ||
+            (sameStack && hasPlentyFollowers) ||
+            postedByAdmin) &&
+          postedInFeed
+        );
+      });
+    }
+
+    let postsToSend = [];
+    posts.forEach((post) => {
+      const postToSend = extractPostToSend(post, req);
+      postsToSend.push(postToSend);
+    });
+
+    const limPostToSend = postsToSend.slice(start, end);
+    res.status(200).json({ status: 200, posts: limPostToSend });
+  } catch (err) {
+    catchError(err, res);
+  }
+};

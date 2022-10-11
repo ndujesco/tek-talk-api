@@ -25,6 +25,7 @@ const {
   getPostsFromUserId,
   getFeedOrNotUserName,
   deletePost,
+  getUserRelatedPosts,
 } = require("../controllers/post-crud");
 
 const {
@@ -71,6 +72,8 @@ router.post("/post", isAuthenticated, postValidator, postPost);
 router.get("/post/id/:id", maybeAuthenticated, getPostsFromUserId);
 
 router.get("/post", maybeAuthenticated, getAllPosts);
+
+router.get("/post/related-posts", maybeAuthenticated, getUserRelatedPosts);
 
 router.get("/post/postId/:postId", maybeAuthenticated, getPostFromId);
 
