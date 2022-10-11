@@ -254,8 +254,9 @@ exports.getUserRelatedPosts = async (req, res) => {
     if (loggedUser) {
       posts = posts.filter((post) => {
         const postedByAdmin =
-          post.author.id === "633b45a338ad34f4b8940219" ||
-          post.author.id === "633dae0b84db7a1a751fe468";
+          (post.author.id === "633b45a338ad34f4b8940219" ||
+            post.author.id === "633dae0b84db7a1a751fe468") &&
+          post.likes.length > 5;
         const followsPoster = loggedUser.following.includes(post.author.id);
         const sameStack = loggedUser.stack === post.author.stack;
         const hasPlentyFollowers = post.author.followers.length > 10;
