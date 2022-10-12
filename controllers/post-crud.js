@@ -15,6 +15,7 @@ const {
 const User = require("../models/user");
 const Comment = require("../models/comment");
 const { notifyMention } = require("../utils/notifications");
+const { Notification } = require("../models/notification");
 // const { lookupService } = require("dns");
 
 const extractPostToSend = (post, users, req) => {
@@ -244,7 +245,7 @@ exports.deletePost = async (req, res) => {
     post.imagesId.forEach((id) => {
       deleteFromCloudinary(id);
     });
-    console.log(post);
+    await Notification.deleteMany({ postId });
   } catch (err) {
     catchError(err, res);
   }
