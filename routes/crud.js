@@ -17,7 +17,10 @@ const {
   getLikers,
   deleteComment,
 } = require("../controllers/like-comment");
-const { getNotifications } = require("../controllers/notifications");
+const {
+  getNotifications,
+  readNotifications,
+} = require("../controllers/notifications");
 const {
   postPost,
   getAllPosts,
@@ -102,5 +105,7 @@ router.patch("/unlike", isAuthenticated, unLikePost);
 router.get("/likers", maybeAuthenticated, getLikers);
 
 router.get("/notifications", isAuthenticated, getNotifications);
+
+router.patch("/seen-notifications", isAuthenticated, readNotifications);
 
 module.exports = router;
