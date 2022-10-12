@@ -4,16 +4,19 @@ const fs = require("fs");
 
 const Post = require("../models/post");
 
-const { catchError } = require("../utils/help-functions");
+const {
+  catchError,
+  checkForMentionedUser,
+} = require("../utils/help-functions");
 const {
   uploadPostToCloudinary,
   deleteFromCloudinary,
 } = require("../utils/cloudinary");
 const User = require("../models/user");
 const Comment = require("../models/comment");
-const { lookupService } = require("dns");
+// const { lookupService } = require("dns");
 
-const extractPostToSend = (post, req) => {
+const extractPostToSend = (post, users, req) => {
   const postToSend = {
     postId: post.id,
     authorId: post.author.id,
@@ -28,6 +31,7 @@ const extractPostToSend = (post, req) => {
     postDate: post.createdAt,
     images: [],
     isLiked: post.likes.includes(req.userId),
+    mentions: checkForMentionedUser(post.body, users),
   };
 
   post.imagesLocal.forEach((img, index) => {
@@ -105,8 +109,10 @@ exports.getPostsFromUserId = async (req, res) => {
       posts = posts.filter((post) => filter === post.postedIn);
     }
     let postsToSend = [];
+    const users = await User.find();
+
     posts.forEach((post) => {
-      const postToSend = extractPostToSend(post, req);
+      const postToSend = extractPostToSend(post, users, req);
       postsToSend.push(postToSend);
     });
     res.status(200).json({ status: 200, posts: postsToSend });
@@ -130,8 +136,10 @@ exports.getAllPosts = async (req, res) => {
       posts = posts.filter((post) => filter === post.postedIn);
     }
     let postsToSend = [];
+    const users = await User.find();
+
     posts.forEach((post) => {
-      const postToSend = extractPostToSend(post, req);
+      const postToSend = extractPostToSend(post, users, req);
       postsToSend.push(postToSend);
     });
 
@@ -161,7 +169,9 @@ exports.getPostFromId = async (req, res) => {
       error.statusCode = 401;
       throw error;
     }
-    const postToSend = extractPostToSend(post, req);
+    const users = await User.find();
+
+    const postToSend = extractPostToSend(post, users, req);
     res.status(200).json({ status: 200, post: [postToSend] });
   } catch (err) {
     catchError(err, res);
@@ -202,8 +212,9 @@ exports.getFeedOrNotUserName = async (req, res) => {
     );
 
     let postsToSend = [];
+
     posts.forEach((post) => {
-      const postToSend = extractPostToSend(post, req);
+      const postToSend = extractPostToSend(post, users, req);
       postsToSend.push(postToSend);
     });
 
@@ -265,10 +276,11 @@ exports.getUserRelatedPosts = async (req, res) => {
         );
       });
     }
+    const users = await User.find();
 
     let postsToSend = [];
     posts.forEach((post) => {
-      const postToSend = extractPostToSend(post, req);
+      const postToSend = extractPostToSend(post, users, req);
       postsToSend.push(postToSend);
     });
 

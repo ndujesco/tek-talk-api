@@ -5,6 +5,19 @@ exports.catchError = (error, res) => {
   res.status(status).json({ message, status });
 };
 
-for (key in { name: "Ugo", age: 1 }) {
-  console.log(key);
-}
+exports.checkForMentionedUser = (string, users) => {
+  const mentions = string.match(/@\w+/g);
+  let toReturn = [];
+  if (mentions) {
+    mentions.forEach((mentioned) => {
+      const found = users.find(
+        (user) =>
+          user.username.toLowerCase() === mentioned.substring(1).toLowerCase()
+      );
+      if (found) {
+        toReturn.push(found.username);
+      }
+    });
+  }
+  return toReturn;
+};

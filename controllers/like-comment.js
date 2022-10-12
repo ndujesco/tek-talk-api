@@ -1,10 +1,14 @@
 const { isValidObjectId, Types } = require("mongoose");
 const Comment = require("../models/comment");
 const Post = require("../models/post");
-const { catchError } = require("../utils/help-functions");
+const User = require("../models/user");
+const {
+  catchError,
+  checkForMentionedUser,
+} = require("../utils/help-functions");
 
-const extractCommentToSend = (comment) => {
-  return {
+const extractCommentToSend = (comment, users) => {
+  const commentInfoToReturn = {
     commentId: comment.id,
     authorId: comment.author.id,
     postId: comment.post,
@@ -14,7 +18,10 @@ const extractCommentToSend = (comment) => {
     name: comment.author.name,
     commentBody: comment.body,
     commentDate: comment.createdAt,
+    mentions: checkForMentionedUser(comment.body, users),
   };
+
+  return commentInfoToReturn;
 };
 
 const extractLikersInfo = (users, userId) => {
@@ -72,9 +79,10 @@ exports.getCommentsFromPostId = async (req, res) => {
       throw error;
     }
     const comments = await Comment.find({ post: postId }).populate("author");
+    const users = await User.find();
     let commentsToSend = [];
     comments.forEach((comm) => {
-      const commentToSend = extractCommentToSend(comm);
+      const commentToSend = extractCommentToSend(comm, users);
       commentsToSend.push(commentToSend);
     });
     commentsToSend.reverse();
