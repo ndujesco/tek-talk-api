@@ -58,17 +58,19 @@ exports.notifyMention = async (body, postAuthorId, location, postId) => {
     const postAuthor = await User.findById(postAuthorId);
     const toNotify = await User.findOne({ username });
     if (postAuthor) {
-      const notification = new Notification({
-        postId,
-        userId: toNotify.id,
-        class: "mention",
-        mentionLocation: location,
-        postBody: body,
-        name: postAuthor.name,
-        username: postAuthor.username,
-        seen: false,
-      });
-      notification.save();
+      if (postAuthor.id !== toNotify.id) {
+        const notification = new Notification({
+          postId,
+          userId: toNotify.id,
+          class: "mention",
+          mentionLocation: location,
+          postBody: body,
+          name: postAuthor.name,
+          username: postAuthor.username,
+          seen: false,
+        });
+        notification.save();
+      }
     }
   });
 };
