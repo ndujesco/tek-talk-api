@@ -14,6 +14,7 @@ const {
 } = require("../utils/cloudinary");
 const User = require("../models/user");
 const Comment = require("../models/comment");
+const { notifyMention } = require("../utils/notifications");
 // const { lookupService } = require("dns");
 
 const extractPostToSend = (post, users, req) => {
@@ -43,6 +44,7 @@ const extractPostToSend = (post, users, req) => {
       postToSend.images.push(post.imagesUrl[index]);
     }
   });
+
   return postToSend;
 };
 
@@ -78,6 +80,9 @@ exports.postPost = async (req, res) => {
     res
       .status(200)
       .json({ status: 200, message: "Posted Successfully!", postId: post.id });
+
+    notifyMention(body, req.userId, "post", post.id);
+
     uploadedImages.forEach((imgData) => {
       uploadPostToCloudinary(imgData.path, post.id);
     });

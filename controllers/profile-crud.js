@@ -2,6 +2,7 @@ const { catchError } = require("../utils/help-functions");
 const User = require("../models/user");
 const fs = require("fs");
 const Post = require("../models/post");
+const { Notification } = require("../models/notification");
 
 const extractProfile = (user, req) => {
   const {
@@ -82,6 +83,10 @@ exports.getMyProfile = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
     const profileToReturn = extractProfile(user, req);
+
+    const myNotifications = await Notification.find({ userId: req.userId });
+    const unRead = myNotifications.some((notification) => !notification.seen);
+    profileToReturn.unreadNotifications = unRead;
     res.status(200).json(profileToReturn);
   } catch (err) {
     catchError(err, res);

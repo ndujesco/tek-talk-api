@@ -1,11 +1,17 @@
 const { isValidObjectId, Types } = require("mongoose");
 const Comment = require("../models/comment");
+const { Notification } = require("../models/notification");
 const Post = require("../models/post");
 const User = require("../models/user");
 const {
   catchError,
   checkForMentionedUser,
 } = require("../utils/help-functions");
+const {
+  notifyLike,
+  notifyComment,
+  notifyMention,
+} = require("../utils/notifications");
 
 const extractCommentToSend = (comment, users) => {
   const commentInfoToReturn = {
@@ -61,8 +67,12 @@ exports.postComment = async (req, res) => {
 
     const post = await Post.findById(postId);
     post.comments.push(comment.id);
+
     post.save();
     res.json({ commentId: comment.id });
+
+    if (post.author.toString() !== userId) notifyComment(req.userId, post);
+    notifyMention(body, req.userId, "comment", postId);
   } catch (err) {
     catchError(err, res);
   }
@@ -74,7 +84,7 @@ exports.getCommentsFromPostId = async (req, res) => {
 
   try {
     if (!isValid) {
-      const error = new Error("Errmm. postId is a invalid ");
+      const error = new Error("Errmm. postId is a invalid");
       error.statusCode = 401;
       throw error;
     }
@@ -128,12 +138,14 @@ exports.likePost = async (req, res) => {
       error.statusCode = 401;
       throw error;
     }
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("author");
     if (!post.likes.includes(loggedInUserId)) {
       post.likes.push(loggedInUserId);
     }
     post.save();
     res.status(200).json({ message: "Liked!" });
+
+    if (post.author.toString() !== req.userId) notifyLike(req.userId, post);
   } catch (err) {
     catchError(err, res);
   }
