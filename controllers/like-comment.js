@@ -65,7 +65,7 @@ exports.postComment = async (req, res) => {
     });
     comment.save();
 
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("author");
     post.comments.push(comment.id);
 
     post.save();

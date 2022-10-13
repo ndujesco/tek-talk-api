@@ -47,7 +47,8 @@ exports.notifyComment = async (userId, post) => {
   notification.count = post.comments.length - 1;
   notification.seen = false;
   notification.postBody = post.body;
-  notification.save();
+  await notification.save();
+  console.log(notification);
 };
 
 exports.notifyMention = async (body, postAuthorId, location, postId) => {
