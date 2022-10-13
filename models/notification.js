@@ -14,6 +14,7 @@ const notificationSchema = new Schema({
   postBody: String,
   commentBody: String,
   followersId: [String],
+  commentId: String,
 });
 
 exports.Notification = mongoose.model("Notification", notificationSchema);

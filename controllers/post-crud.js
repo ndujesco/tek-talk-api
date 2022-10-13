@@ -82,7 +82,7 @@ exports.postPost = async (req, res) => {
       .status(200)
       .json({ status: 200, message: "Posted Successfully!", postId: post.id });
 
-    notifyMention(body, req.userId, "post", post.id);
+    notifyMention(body, req.userId, "post", post.id, "dummy");
 
     uploadedImages.forEach((imgData) => {
       uploadPostToCloudinary(imgData.path, post.id);

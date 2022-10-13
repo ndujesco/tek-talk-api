@@ -26,12 +26,13 @@ exports.notifyLike = async (userId, post) => {
   notification.save();
 };
 
-exports.notifyComment = async (userId, post) => {
+exports.notifyComment = async (userId, post, commentId) => {
   const loggedUser = await User.findById(userId);
   let notification = await Notification.findOne({
     postId: post.id,
     userId: post.author.id,
     class: "comment",
+    commentId,
   });
 
   if (!notification) {
@@ -39,6 +40,7 @@ exports.notifyComment = async (userId, post) => {
       postId: post.id,
       userId: post.author.id,
       class: "comment",
+      commentId,
     });
   }
 
@@ -50,7 +52,13 @@ exports.notifyComment = async (userId, post) => {
   await notification.save();
 };
 
-exports.notifyMention = async (body, postAuthorId, location, postId) => {
+exports.notifyMention = async (
+  body,
+  postAuthorId,
+  location,
+  postId,
+  commentId
+) => {
   const users = await User.find();
 
   const mentions = checkForMentionedUser(body, users);
@@ -68,6 +76,7 @@ exports.notifyMention = async (body, postAuthorId, location, postId) => {
           name: postAuthor.name,
           username: postAuthor.username,
           seen: false,
+          commentId: location === "comment" ? commentId : null,
         });
         notification.save();
       }
