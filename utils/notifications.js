@@ -74,3 +74,42 @@ exports.notifyMention = async (body, postAuthorId, location, postId) => {
     }
   });
 };
+
+exports.notifyFollow = async (userToFollow, loggedInUser) => {
+  let notification = await Notification.findOne({
+    class: "follow",
+    userId: userToFollow.id,
+    count: { $lte: 5 },
+  });
+
+  if (!notification) {
+    notification = new Notification({
+      userId: userToFollow.id,
+      class: "follow",
+      count: 0,
+      followersId: [],
+    });
+  }
+  if (!notification.followersId.includes(loggedInUser.id)) {
+    notification.username = loggedInUser.username;
+    notification.name = loggedInUser.name;
+    notification.count += 1;
+    notification.seen = false;
+    notification.followersId.push(loggedInUser.id);
+  }
+
+  notification.save();
+};
+
+// class: String, //like, comment, follow, mention
+// mentionLocation: String,
+// seen: Boolean,
+// postId: String,
+// userId: String,
+// postId: String,
+// username: String,
+// name: String,
+// count: { type: Number, default: 0 },
+// loggedUserId: String,
+// postBody: String,
+// commentBody: String,

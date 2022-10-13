@@ -2,6 +2,7 @@ const { isValidObjectId } = require("mongoose");
 const User = require("../models/user");
 
 const { catchError } = require("../utils/help-functions");
+const { notifyFollow } = require("../utils/notifications");
 
 const extractFollowersInfo = (users, userId) => {
   infosToReturn = [];
@@ -42,8 +43,9 @@ exports.followUser = async (req, res) => {
       throw error;
     }
 
-    userToFollow.addToFollowers(loggedInUserId);
-    loggedInUser.addToFollowing(userToFollowId);
+    const a = await userToFollow.addToFollowers(loggedInUserId);
+    const b = await loggedInUser.addToFollowing(userToFollowId);
+    notifyFollow(userToFollow, loggedInUser);
 
     res.status(200).json({ userFollowedId: userToFollowId });
   } catch (err) {

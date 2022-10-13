@@ -13,6 +13,7 @@ const notificationSchema = new Schema({
   loggedUserId: String,
   postBody: String,
   commentBody: String,
+  followersId: [String],
 });
 
 exports.Notification = mongoose.model("Notification", notificationSchema);
