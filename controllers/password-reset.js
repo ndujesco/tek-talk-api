@@ -31,7 +31,7 @@ exports.getReset = async (req, res) => {
   }
 };
 
-exports.checkToken = async (req, res) => {
+exports.verifyToken = async (req, res) => {
   const { token } = req.query;
   const user = await User.findOne({
     token,
@@ -43,29 +43,21 @@ exports.checkToken = async (req, res) => {
       message: "The token is either expired or invalid.",
     });
   }
-  res.status(200).json({ status: 200, message: "Valid token!" });
+  res
+    .status(200)
+    .json({ status: 200, message: "Valid token!", email: user.email });
 };
 
 exports.updatePassword = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      status: 422,
-      message: errors.array()[0].msg,
-    });
-  }
-  const { email, newPassword, token } = req.query;
+  const { email, newPassword } = req.query;
   try {
     const user = await User.findOne({
       email,
-      token,
-      tokenExpiration: { $gt: Date.now() },
     });
     if (!user) {
       return res.status(422).json({
         status: 422,
-        message:
-          "Unable to update. The token is either expired or invalid. Check the email also",
+        message: "Email not found.",
       });
     }
     const hashedPassword = await bcrypt.hash(newPassword, 12);
