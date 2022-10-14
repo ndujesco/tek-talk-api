@@ -25,7 +25,7 @@ exports.getReset = async (req, res) => {
       token: updatedUser.token,
       expires: updatedUser.tokenExpiration,
     });
-    sendEmail({ email, url, token });
+    sendEmail({ email, token });
   } catch (err) {
     catchError(err, res);
   }
