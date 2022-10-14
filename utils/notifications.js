@@ -23,6 +23,7 @@ exports.notifyLike = async (userId, post) => {
   notification.count = post.likes.length - 1;
   notification.seen = false;
   notification.postBody = post.body;
+  notification.displayUrl = loggedUser.displayUrl;
   notification.save();
 };
 
@@ -49,6 +50,8 @@ exports.notifyComment = async (userId, post, commentId) => {
   notification.count = post.comments.length - 1;
   notification.seen = false;
   notification.postBody = post.body;
+  notification.displayUrl = loggedUser.displayUrl;
+
   await notification.save();
 };
 
@@ -79,6 +82,7 @@ exports.notifyMention = async (
           seen: false,
           commentId: location === "comment" ? commentId : null,
           postedIn: location === "post" ? postedIn : null,
+          displayUrl: postAuthor.displayUrl,
         });
         notification.save();
       }
@@ -104,6 +108,7 @@ exports.notifyFollow = async (userToFollow, loggedInUser) => {
   if (!notification.followersId.includes(loggedInUser.id)) {
     notification.username = loggedInUser.username;
     notification.name = loggedInUser.name;
+    notification.displayUrl = loggedInUser.displayUrl;
     notification.count += 1;
     notification.seen = false;
     notification.followersId.push(loggedInUser.id);
