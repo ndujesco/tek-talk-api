@@ -7,7 +7,7 @@ const User = require("../models/user");
 const { sendEmail } = require("../utils/send-mail");
 
 exports.getReset = async (req, res) => {
-  const { email, url } = req.query;
+  const { email } = req.query;
 
   try {
     const user = await User.findOne({ email });
@@ -17,7 +17,7 @@ exports.getReset = async (req, res) => {
     const buf = crypto.randomBytes(12);
     const token = buf.toString("hex");
     user.token = token;
-    user.tokenExpiration = Date.now() + 3600000;
+    user.tokenExpiration = Date.now() + 1800000;
     const updatedUser = await user.save();
     res.status(200).json({
       status: 200,
@@ -56,8 +56,8 @@ exports.updatePassword = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(newPassword, 12);
     user.password = hashedPassword;
-    // user.token = undefined;
-    // user.tokenExpiration = undefined;
+    user.token = undefined;
+    user.tokenExpiration = undefined;
     const updatedUser = await user.save();
     if (updatedUser) {
       res.status(200).json({ status: 200, message: "Password has been reset" });
