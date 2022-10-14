@@ -39,6 +39,7 @@ exports.updatePassword = async (req, res) => {
       message: errors.array()[0].msg,
     });
   }
+
   const { email, newPassword, token } = req.query;
   try {
     const user = await User.findOne({
