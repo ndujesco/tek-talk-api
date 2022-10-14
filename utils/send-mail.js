@@ -11,6 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.sendEmail = async (details) => {
+  console.log(2);
   return transporter.sendMail({
     from: "emailforpython26@gmail.com", // sender address
     to: details.email, // list of receivers
