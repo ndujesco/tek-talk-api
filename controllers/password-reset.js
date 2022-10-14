@@ -31,6 +31,21 @@ exports.getReset = async (req, res) => {
   }
 };
 
+exports.checkToken = async (req, res) => {
+  const { token } = req.query;
+  const user = await User.findOne({
+    token,
+    tokenExpiration: { $gt: Date.now() },
+  });
+  if (!user) {
+    return res.status(422).json({
+      status: 422,
+      message: "The token is either expired or invalid.",
+    });
+  }
+  res.status(200).json({ status: 200, message: "Valid token!" });
+};
+
 exports.updatePassword = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -39,7 +54,6 @@ exports.updatePassword = async (req, res) => {
       message: errors.array()[0].msg,
     });
   }
-
   const { email, newPassword, token } = req.query;
   try {
     const user = await User.findOne({

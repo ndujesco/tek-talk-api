@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 exports.sendEmail = async (details) => {
   return transporter.sendMail({
     from: "emailforpython26@gmail.com", // sender address
-    to: details.email, // list of receivers Q\\]'
+    to: details.email, // list of receivers
     subject: "Password Reset",
     html: `<!doctype html>
     <html>
@@ -28,7 +28,6 @@ exports.sendEmail = async (details) => {
           </div>
         </div>
         <!-- Example of invalid for email html/css, will be detected by Mailtrap: -->
-        
       </body>
     </html>`,
   });
