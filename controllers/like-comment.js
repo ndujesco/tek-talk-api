@@ -73,7 +73,7 @@ exports.postComment = async (req, res) => {
 
     if (post.author.toString() !== userId)
       notifyComment(req.userId, post, comment.id);
-    notifyMention(body, req.userId, "comment", postId, comment.id);
+    notifyMention(body, req.userId, "comment", postId, comment.id, "dummy");
   } catch (err) {
     catchError(err, res);
   }

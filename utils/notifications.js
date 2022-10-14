@@ -57,7 +57,8 @@ exports.notifyMention = async (
   postAuthorId,
   location,
   postId,
-  commentId
+  commentId,
+  postedIn
 ) => {
   const users = await User.find();
 
@@ -77,6 +78,7 @@ exports.notifyMention = async (
           username: postAuthor.username,
           seen: false,
           commentId: location === "comment" ? commentId : null,
+          postedIn: location === "post" ? postedIn : null,
         });
         notification.save();
       }

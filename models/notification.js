@@ -16,6 +16,7 @@ const notificationSchema = new Schema(
     commentBody: String,
     followersId: [String],
     commentId: String,
+    postedIn: String,
   },
   {
     timestamps: true,
