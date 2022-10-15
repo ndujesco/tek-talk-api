@@ -160,7 +160,7 @@ exports.checkUserName = async (req, res) => {
     if (!found) {
       return res
         .status(200)
-        .json({ status: 200, message: "User does not exist" });
+        .json({ status: 204, message: "User does not exist" });
     }
     res.status(200).json({ status: 200, message: "User exists!" });
   } catch (err) {
