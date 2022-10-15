@@ -10,6 +10,7 @@ const { catchError } = require("./utils/help-functions");
 const authRoutes = require("./routes/auth");
 const crudRoutes = require("./routes/crud");
 const passwordRoutes = require("./routes/password-reset");
+
 const {
   isAuthorized,
   isAuthenticated,
