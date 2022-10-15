@@ -146,3 +146,21 @@ exports.getUserSuggestions = async (req, res) => {
     catchError(err, res);
   }
 };
+
+exports.checkUserName = async (req, res) => {
+  const username = req.query.username || "cvbsbsvbsvbssk";
+  if (username === "cvbsbsvbsvbssk") {
+    return res.status(422).json({ status: 422, message: "Add username boss" });
+  }
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res
+        .status(200)
+        .json({ status: 200, message: "User does not exist" });
+    }
+    res.status(200).json({ status: 200, message: "User exists!" });
+  } catch (err) {
+    catchError(err, res);
+  }
+};
