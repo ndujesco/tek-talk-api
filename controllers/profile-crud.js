@@ -153,8 +153,11 @@ exports.checkUserName = async (req, res) => {
     return res.status(422).json({ status: 422, message: "Add username boss" });
   }
   try {
-    const user = await User.findOne({ username });
-    if (!user) {
+    const users = await User.find();
+    const found = users.find(
+      (user) => user.username.toLowerCase() === username.toLowerCase()
+    );
+    if (!found) {
       return res
         .status(200)
         .json({ status: 200, message: "User does not exist" });

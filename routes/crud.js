@@ -37,6 +37,7 @@ const {
   // getUserProfileFromId,
   getUserProfileFromUserName,
   getUserSuggestions,
+  checkUserName,
 } = require("../controllers/profile-crud");
 
 const { isAuthenticated } = require("../middleware/is-auth");
@@ -50,6 +51,8 @@ const postValidator = [
 const router = Router();
 
 router.get("/", isAuthenticated, getIndex);
+
+router.get("/check-username", checkUserName);
 
 router.get("/profile", isAuthenticated, getMyProfile);
 
