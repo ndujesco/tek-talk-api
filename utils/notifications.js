@@ -4,28 +4,30 @@ const User = require("../models/user");
 const { checkForMentionedUser } = require("./help-functions");
 
 exports.notifyLike = async (userId, post) => {
-  const loggedUser = await User.findById(userId);
-  let notification = await Notification.findOne({
-    postId: post.id,
-    userId: post.author.id,
-    class: "like",
-  });
-
-  if (!notification) {
-    notification = new Notification({
+  if (userId !== post.author.id) {
+    const loggedUser = await User.findById(userId);
+    let notification = await Notification.findOne({
       postId: post.id,
       userId: post.author.id,
       class: "like",
     });
-  }
 
-  notification.username = loggedUser.username;
-  notification.name = loggedUser.name;
-  notification.count = post.likes.length - 1;
-  notification.seen = false;
-  notification.postBody = post.body;
-  notification.displayUrl = loggedUser.displayUrl;
-  notification.save();
+    if (!notification) {
+      notification = new Notification({
+        postId: post.id,
+        userId: post.author.id,
+        class: "like",
+      });
+    }
+
+    notification.username = loggedUser.username;
+    notification.name = loggedUser.name;
+    notification.count = post.likes.length - 1;
+    notification.seen = false;
+    notification.postBody = post.body;
+    notification.displayUrl = loggedUser.displayUrl;
+    notification.save();
+  }
 };
 
 exports.notifyComment = async (userId, post, commentId) => {
