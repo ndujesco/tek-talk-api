@@ -5,14 +5,17 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+
   password: {
     type: String,
     required: true,
   },
+
   name: {
     type: String,
     required: true,
   },
+
   username: {
     type: String,
     required: true,
@@ -31,6 +34,7 @@ const userSchema = new Schema({
     default: false,
   },
   followers: [{ type: String, required: true }],
+
   following: [
     {
       type: String,
@@ -53,6 +57,8 @@ const userSchema = new Schema({
   backdropLocal: { type: String, default: null },
 
   backdropId: { type: String, default: null },
+
+  talksId: [{ type: String }],
 });
 
 userSchema.methods.addToFollowers = function (id) {

@@ -1,4 +1,5 @@
 const Talk = require("../models/talk");
+const User = require("../models/user");
 const { catchError } = require("../utils/help-functions");
 
 exports.getTalks = async (req, res) => {
