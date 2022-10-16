@@ -6,7 +6,6 @@ const { catchError } = require("../utils/help-functions");
 exports.getTalks = async (req, res) => {
   try {
     const talks = await Talk.find().populate({ path: "users", model: "User" });
-    const users = await User.find();
     const allTalks = [];
     const userTalks = [];
 
@@ -19,9 +18,8 @@ exports.getTalks = async (req, res) => {
         usersDisplayUrl: [],
       };
 
-      users.forEach((user) => {
-        if (talk.users.includes(user.id) && user.displayUrl)
-          usersDisplayUrl.push(user.displayUrl);
+      talk.users.forEach((user) => {
+        if (user.displayUrl) toPush.usersDisplayUrl.push(user.displayUrl);
       });
 
       if (toPush.memberOf) userTalks.push(toPush);
@@ -43,6 +41,7 @@ exports.joinTalk = async (req, res) => {
       .json({ status: 422, message: "The talkId is not valid" });
 
   const user = await User.findById(req.userId);
+
   const talk = await Talk.findById(talkId);
 
   if (!user || !talk)
@@ -50,11 +49,42 @@ exports.joinTalk = async (req, res) => {
       .status(422)
       .json({ status: 422, message: "User or talk was not found" });
 
-  user.talksId.push(talk.id);
-  talk.users.push(user.id);
+  if (!user.talksId.includes(talk.id)) user.talksId.push(talk.id);
+  if (!talk.users.includes(user.id)) talk.users.push(user.id);
 
   user.save();
   talk.save();
 
   res.status(200).json({ status: 200, message: "Joined " + talk.name });
+};
+
+exports.leaveTalk = async (req, res) => {
+  const { talkId } = req.query;
+  const isValid = isValidObjectId(talkId);
+  if (!isValid)
+    return res
+      .status(422)
+      .json({ status: 422, message: "The talkId is not valid" });
+
+  const user = await User.findById(req.userId);
+
+  const talk = await Talk.findById(talkId);
+
+  if (!user || !talk)
+    return res
+      .status(422)
+      .json({ status: 422, message: "User or talk was not found" });
+
+  const userPosition = talk.users.indexOf(req.userId);
+  const talkPosition = user.talksId.indexOf(talkId);
+
+  if (userPosition > -1) talk.users.splice(userPosition, 1);
+  if (talkPosition > -1) user.talksId.splice(talkPosition, 1);
+
+  user.save();
+  talk.save();
+
+  res
+    .status(200)
+    .json({ status: 200, message: "Successfully left " + talk.name + "!" });
 };
