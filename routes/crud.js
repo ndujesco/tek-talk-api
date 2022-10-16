@@ -39,6 +39,7 @@ const {
   getUserSuggestions,
   checkUserName,
 } = require("../controllers/profile-crud");
+const { getTalks } = require("../controllers/talks");
 
 const { isAuthenticated } = require("../middleware/is-auth");
 const { maybeAuthenticated } = require("../middleware/maybe-auth");
@@ -111,6 +112,6 @@ router.get("/notifications", isAuthenticated, getNotifications);
 
 router.patch("/seen-notifications", isAuthenticated, readNotifications);
 
-router.get("talk", isAuthenticated);
+router.get("/talk", isAuthenticated, getTalks);
 
 module.exports = router;
