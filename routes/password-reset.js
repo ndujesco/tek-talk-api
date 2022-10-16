@@ -1,11 +1,14 @@
 const { Router } = require("express");
 
+const user = require("../models/user");
+
 const {
   getReset,
   updatePassword,
   verifyToken,
   changePassword,
 } = require("../controllers/password-reset");
+
 const { isAuthenticated } = require("../middleware/is-auth");
 
 const router = Router();
@@ -20,5 +23,5 @@ router.patch("/change-password", isAuthenticated, changePassword);
 module.exports = router;
 
 router.post("/post-talk", async (req, res) => {
-  // const
+  const talk = user.fi;
 });
