@@ -18,3 +18,7 @@ router.patch("/update-password", updatePassword);
 
 router.patch("/change-password", isAuthenticated, changePassword);
 module.exports = router;
+
+router.post("/post-talk", async (req, res) => {
+  // const
+});
