@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 
 const { catchError } = require("../utils/help-functions");
@@ -77,4 +77,28 @@ exports.updatePassword = async (req, res) => {
   }
 };
 
-exports.changePassword = async (req, res) => {};
+exports.changePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  try {
+    const user = await User.findById(req.userId);
+    if (!user)
+      return res
+        .status(401)
+        .json({ status: 401, message: "User wasn't found somehow" });
+
+    const matches = await bcrypt.compare(oldPassword, user.password);
+    if (!matches)
+      return res
+        .status(422)
+        .json({ status: 422, message: "Your old password is incorrect" });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    user.password = hashedPassword;
+    user.save();
+
+    return res.status(200).json({ status: 200, message: "Password changed!" });
+  } catch (err) {
+    catchError(err, res);
+  }
+};
