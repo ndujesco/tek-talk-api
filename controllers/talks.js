@@ -42,7 +42,6 @@ exports.joinTalk = async (req, res) => {
       .json({ status: 422, message: "The talkId is not valid" });
 
   const user = await User.findById(req.userId);
-
   const talk = await Talk.findById(talkId);
 
   if (!user || !talk)
