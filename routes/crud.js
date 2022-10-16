@@ -111,4 +111,6 @@ router.get("/notifications", isAuthenticated, getNotifications);
 
 router.patch("/seen-notifications", isAuthenticated, readNotifications);
 
+router.get("talk", isAuthenticated);
+
 module.exports = router;
