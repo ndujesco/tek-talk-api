@@ -76,3 +76,5 @@ exports.updatePassword = async (req, res) => {
     catchError(err, res);
   }
 };
+
+exports.changePassword = async (req, res) => {};
