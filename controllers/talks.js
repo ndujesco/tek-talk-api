@@ -11,6 +11,7 @@ exports.getTalks = async (req, res) => {
 
     talks.forEach((talk) => {
       let toPush = {
+        id: talk.id,
         name: talk.name,
         displayUrl: talk.displayUrl,
         description: talk.description,
