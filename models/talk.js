@@ -7,7 +7,7 @@ const talkSchema = new Schema({
 
   displayUrl: String,
 
-  userImages: [String],
+  users: [String],
 });
 
 module.exports = mongoose.model("talk", talkSchema);
