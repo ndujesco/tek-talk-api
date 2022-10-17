@@ -256,7 +256,7 @@ exports.getUserRelatedPosts = async (req, res) => {
   const isValid = isValidObjectId(req.userId);
   const start = (pageNumber - 1) * 25;
   const end = (pageNumber - 1) * 25 + 25;
-  let loggedUser;
+  let loggedUser; // might not exist if user is not logged in
 
   try {
     let posts = await Post.find()
@@ -265,7 +265,10 @@ exports.getUserRelatedPosts = async (req, res) => {
       .sort({ $natural: -1 });
 
     if (isValid) {
-      loggedUser = await User.findById(req.userId);
+      loggedUser = await User.findById(req.userId).populate({
+        path: "talksId",
+        model: "Talk",
+      });
     }
 
     if (loggedUser) {
@@ -274,13 +277,15 @@ exports.getUserRelatedPosts = async (req, res) => {
           (post.author.id === "633b45a338ad34f4b8940219" ||
             post.author.id === "633dae0b84db7a1a751fe468") &&
           post.likes.length > 5;
+
         const followsPoster = loggedUser.following.includes(post.author.id);
         const postedInFeed = post.postedIn === "Feed";
-        return (
-          (followsPoster && postedInFeed) ||
-          (sameStack && hasPlentyFollowers) ||
-          postedByAdmin
+        const postedByUser = post.author.toString() === req.userId;
+        const inTalkPosted = loggedUser.talksId.some(
+          (talk) => talk.name === post.postedIn
         );
+
+        return (followsPoster && postedInFeed) || postedByUser || postedByAdmin;
       });
     }
     const users = await User.find();
