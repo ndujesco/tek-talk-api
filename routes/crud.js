@@ -39,7 +39,12 @@ const {
   getUserSuggestions,
   checkUserName,
 } = require("../controllers/profile-crud");
-const { getTalks, joinTalk, leaveTalk } = require("../controllers/talks");
+const {
+  getTalks,
+  joinTalk,
+  leaveTalk,
+  popularAndSuggestedTalks,
+} = require("../controllers/talks");
 
 const { isAuthenticated } = require("../middleware/is-auth");
 const { maybeAuthenticated } = require("../middleware/maybe-auth");
@@ -117,5 +122,11 @@ router.get("/talk", isAuthenticated, getTalks);
 router.put("/talk/join", isAuthenticated, joinTalk);
 
 router.patch("/talk/leave", isAuthenticated, leaveTalk);
+
+router.get(
+  "/talk/suggested-popular",
+  isAuthenticated,
+  popularAndSuggestedTalks
+);
 
 module.exports = router;

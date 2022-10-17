@@ -87,3 +87,18 @@ exports.leaveTalk = async (req, res) => {
     .status(200)
     .json({ status: 200, message: "Successfully left " + talk.name + "!" });
 };
+
+exports.popularAndSuggestedTalks = async (req, res) => {
+  try {
+    const talks = await Talk.find().populate({ path: "users", model: "User" });
+    let popularTalks = talks
+      .sort((a, b) => (a.users.length > b.users.length ? -1 : 1))
+      .slice(0, 5);
+
+    let suggestedTalks = talks.filter((talk) => talk);
+
+    res.status(200).json({ status: 200, popularTalks });
+  } catch (err) {
+    catchError(err, res);
+  }
+};
