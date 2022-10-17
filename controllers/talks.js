@@ -23,8 +23,7 @@ exports.getTalks = async (req, res) => {
         if (user.displayUrl) toPush.usersDisplayUrl.push(user.displayUrl);
       });
 
-      if (toPush.memberOf) userTalks.push(toPush);
-      allTalks.push(toPush);
+      toPush.memberOf ? userTalks.push(toPush) : allTalks.push(toPush);
     });
 
     return res.status(200).json({ status: 200, allTalks, userTalks });
