@@ -10,4 +10,4 @@ const talkSchema = new Schema({
   users: [String],
 });
 
-module.exports = mongoose.model("talk", talkSchema);
+module.exports = mongoose.model("talk", talkSchema); //kai, should've used capital t for consistenccy

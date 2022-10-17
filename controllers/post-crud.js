@@ -267,8 +267,8 @@ exports.getUserRelatedPosts = async (req, res) => {
     if (isValid) {
       loggedUser = await User.findById(req.userId).populate({
         path: "talksId",
-        model: "Talk",
-      });
+        model: "talk",
+      }); // should've used capital t for consistenccy
     }
 
     if (loggedUser) {
