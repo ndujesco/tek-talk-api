@@ -285,7 +285,12 @@ exports.getUserRelatedPosts = async (req, res) => {
           (talk) => talk.name === post.postedIn
         );
 
-        return (followsPoster && postedInFeed) || postedByUser || postedByAdmin;
+        return (
+          (followsPoster && postedInFeed) ||
+          postedByUser ||
+          postedByAdmin ||
+          inTalkPosted
+        );
       });
     }
     const users = await User.find();
