@@ -15,7 +15,7 @@ exports.getTalks = async (req, res) => {
         name: talk.name,
         displayUrl: talk.displayUrl,
         description: talk.description,
-        memberOf: talk.users.includes(req.userId),
+        memberOf: talk.users.some((user) => user.id === req.userId),
         usersDisplayUrl: [],
       };
 
