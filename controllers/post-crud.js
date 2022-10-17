@@ -275,10 +275,11 @@ exports.getUserRelatedPosts = async (req, res) => {
             post.author.id === "633dae0b84db7a1a751fe468") &&
           post.likes.length > 5;
         const followsPoster = loggedUser.following.includes(post.author.id);
-        const sameStack = loggedUser.stack === post.author.stack;
-        const hasPlentyFollowers = post.author.followers.length > 10;
+        const postedInFeed = post.postedIn === "Feed";
         return (
-          followsPoster || (sameStack && hasPlentyFollowers) || postedByAdmin
+          (followsPoster && postedInFeed) ||
+          (sameStack && hasPlentyFollowers) ||
+          postedByAdmin
         );
       });
     }
