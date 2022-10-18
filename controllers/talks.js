@@ -3,6 +3,25 @@ const Talk = require("../models/talk");
 const User = require("../models/user");
 const { catchError } = require("../utils/help-functions");
 
+const extractTalkInfo = (talk) => {
+  talks.forEach((talk) => {
+    let toReturn = {
+      id: talk.id,
+      name: talk.name,
+      displayUrl: talk.displayUrl,
+      description: talk.description,
+      memberOf: talk.users.some((user) => user.id === req.userId),
+      usersDisplayUrl: [],
+      memberCount: talk.users.length,
+    };
+
+    talk.users.forEach((user) => {
+      if (user.displayUrl) toReturn.usersDisplayUrl.push(user.displayUrl);
+    });
+  });
+  return toReturn;
+};
+
 exports.getTalks = async (req, res) => {
   try {
     const talks = await Talk.find().populate({ path: "users", model: "User" });
@@ -101,6 +120,9 @@ exports.popularAndSuggestedTalks = async (req, res) => {
         (talk) => !talk.users.some((user) => user.id === req.userId)
       );
     }
+
+    popularTalks = extractTalkInfo(popularTalks);
+    suggestedTalks = extractTalkInfo(suggestedTalks);
 
     res.status(200).json({ status: 200, popularTalks, suggestedTalks });
   } catch (err) {
