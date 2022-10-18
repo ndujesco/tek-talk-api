@@ -3,21 +3,24 @@ const Talk = require("../models/talk");
 const User = require("../models/user");
 const { catchError } = require("../utils/help-functions");
 
-const extractTalkInfo = (talk) => {
+const extractTalkInfo = (talks, userId) => {
+  const toReturn = [];
+
   talks.forEach((talk) => {
-    let toReturn = {
+    let toPush = {
       id: talk.id,
       name: talk.name,
       displayUrl: talk.displayUrl,
       description: talk.description,
       memberOf: talk.users.some((user) => user.id === req.userId),
       usersDisplayUrl: [],
-      memberCount: talk.users.length,
     };
 
     talk.users.forEach((user) => {
-      if (user.displayUrl) toReturn.usersDisplayUrl.push(user.displayUrl);
+      if (user.displayUrl) toPush.usersDisplayUrl.push(user.displayUrl);
     });
+
+    toReturn.push(toPush);
   });
   return toReturn;
 };
@@ -121,8 +124,8 @@ exports.popularAndSuggestedTalks = async (req, res) => {
       );
     }
 
-    popularTalks = extractTalkInfo(popularTalks);
-    suggestedTalks = extractTalkInfo(suggestedTalks);
+    popularTalks = extractTalkInfo(popularTalks, req.userId);
+    suggestedTalks = extractTalkInfo(suggestedTalks, req.userId);
 
     res.status(200).json({ status: 200, popularTalks, suggestedTalks });
   } catch (err) {
