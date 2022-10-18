@@ -280,7 +280,7 @@ exports.getUserRelatedPosts = async (req, res) => {
 
         const followsPoster = loggedUser.following.includes(post.author.id);
         const postedInFeed = post.postedIn === "Feed";
-        const postedByUser = post.author.toString() === req.userId;
+        const postedByUser = post.author.id.toString() === req.userId;
         const inTalkPosted = loggedUser.talksId.some(
           (talk) => talk.name === post.postedIn
         );
