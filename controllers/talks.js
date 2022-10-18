@@ -100,10 +100,9 @@ exports.popularAndSuggestedTalks = async (req, res) => {
       suggestedTalks = talks.filter(
         (talk) => !talk.users.some((user) => user.id === req.userId)
       );
-      // suggestedTalks =
     }
 
-    res.status(200).json({ status: 200, popularTalks });
+    res.status(200).json({ status: 200, popularTalks, suggestedTalks });
   } catch (err) {
     catchError(err, res);
   }
