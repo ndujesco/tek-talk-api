@@ -91,11 +91,17 @@ exports.leaveTalk = async (req, res) => {
 exports.popularAndSuggestedTalks = async (req, res) => {
   try {
     const talks = await Talk.find().populate({ path: "users", model: "User" });
+    let suggestedTalks = [];
     let popularTalks = talks
       .sort((a, b) => (a.users.length > b.users.length ? -1 : 1))
       .slice(0, 5);
 
-    let suggestedTalks = talks.filter((talk) => talk);
+    if (req.userId) {
+      suggestedTalks = talks.filter(
+        (talk) => !talk.users.some(user.id === "633b45a338ad34f4b8940219")
+      );
+      console.log(suggestedTalks);
+    }
 
     res.status(200).json({ status: 200, popularTalks });
   } catch (err) {
