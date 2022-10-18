@@ -12,7 +12,7 @@ const extractTalkInfo = (talks, userId) => {
       name: talk.name,
       displayUrl: talk.displayUrl,
       description: talk.description,
-      memberOf: talk.users.some((user) => user.id === req.userId),
+      memberOf: talk.users.some((user) => user.id === userId),
       usersDisplayUrl: [],
     };
 
