@@ -125,7 +125,7 @@ router.patch("/talk/leave", isAuthenticated, leaveTalk);
 
 router.get(
   "/talk/suggested-popular",
-  isAuthenticated,
+  maybeAuthenticated,
   popularAndSuggestedTalks
 );
 

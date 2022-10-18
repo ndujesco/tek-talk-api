@@ -98,9 +98,9 @@ exports.popularAndSuggestedTalks = async (req, res) => {
 
     if (req.userId) {
       suggestedTalks = talks.filter(
-        (talk) => !talk.users.some(user.id === "633b45a338ad34f4b8940219")
+        (talk) => !talk.users.some((user) => user.id === req.userId)
       );
-      console.log(suggestedTalks);
+      // suggestedTalks =
     }
 
     res.status(200).json({ status: 200, popularTalks });
