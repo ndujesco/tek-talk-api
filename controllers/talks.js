@@ -139,10 +139,8 @@ exports.getUserTalks = async () => {
       path: "talksId",
       model: "talk",
     });
-    const usersTalks = user.talksId;
-    const toReturn = extractTalkInfo(userTalks, req.userId);
-
-    res.status(200).json({ message: 200, toReturn });
+    const userTalks = extractTalkInfo(user.talksId, req.userId);
+    res.status(200).json({ message: 200, userTalks });
   } catch (err) {
     catchError(err, res);
   }
