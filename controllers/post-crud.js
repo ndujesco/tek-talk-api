@@ -16,7 +16,6 @@ const User = require("../models/user");
 const Comment = require("../models/comment");
 const { notifyMention } = require("../utils/notifications");
 const { Notification } = require("../models/notification");
-// const { lookupService } = require("dns");
 
 const extractPostToSend = (post, users, req) => {
   const postToSend = {
