@@ -92,8 +92,6 @@ router.get("/post/feed", maybeAuthenticated, getFeedOrNotUserName);
 
 router.delete("/post", isAuthenticated, deletePost);
 
-// router.get("/post/feed/:userId", getPostsWithOrOutFeed);
-
 router.put("/follow", isAuthenticated, followUser);
 
 router.patch("/unfollow", isAuthenticated, unFollowUser);
