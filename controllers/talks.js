@@ -128,13 +128,11 @@ exports.popularAndSuggestedTalks = async (req, res) => {
     suggestedTalks = extractTalkInfo(suggestedTalks, req.userId);
     suggestedTalks.sort(() => Math.random() - 0.5);
 
-    res
-      .status(200)
-      .json({
-        status: 200,
-        popularTalks,
-        suggestedTalks: suggestedTalks.slice(0, 5),
-      });
+    res.status(200).json({
+      status: 200,
+      popularTalks,
+      suggestedTalks: suggestedTalks.slice(0, 5),
+    });
   } catch (err) {
     catchError(err, res);
   }
@@ -147,6 +145,7 @@ exports.getUserTalks = async (req, res) => {
       model: "talk",
       populate: { path: "users", model: "User" },
     });
+
     const userTalks = extractTalkInfo(user.talksId, req.userId);
     res.status(200).json({ message: 200, userTalks });
   } catch (err) {
