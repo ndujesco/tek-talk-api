@@ -21,7 +21,6 @@ if (!fs.existsSync("./images")) {
   fs.mkdirSync("./images");
 }
 
-// console.log(process.env.MONGO_USERNAME, process.env.MONGO_PASSWORD);
 const MONGODB_PRACTICE_URI = "mongodb://localhost:27017/tektalkDB";
 const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.83uvt.mongodb.net/tektalkDB?retryWrites=true&w=majority`;
 const app = express();
