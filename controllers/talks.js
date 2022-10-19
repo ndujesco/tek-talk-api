@@ -135,11 +135,12 @@ exports.popularAndSuggestedTalks = async (req, res) => {
 
 exports.getUserTalks = async (req, res) => {
   try {
-    const user = await User.findById(req.userId).populate({
+    const user = await User.findById("633b45a338ad34f4b8940219").populate({
       path: "talksId",
       model: "talk",
+      populate: { path: "users", model: "User" },
     });
-    const userTalks = extractTalkInfo(user.talksId, req.userId);
+    const userTalks = extractTalkInfo(user.talksId, "633b45a338ad34f4b8940219");
     res.status(200).json({ message: 200, userTalks });
   } catch (err) {
     catchError(err, res);
