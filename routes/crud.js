@@ -34,7 +34,6 @@ const {
 const {
   getIndex,
   getMyProfile,
-  // getUserProfileFromId,
   getUserProfileFromUserName,
   getUserSuggestions,
   checkUserName,
