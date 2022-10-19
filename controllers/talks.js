@@ -128,7 +128,13 @@ exports.popularAndSuggestedTalks = async (req, res) => {
     suggestedTalks = extractTalkInfo(suggestedTalks, req.userId);
     suggestedTalks.sort(() => Math.random() - 0.5);
 
-    res.status(200).json({ status: 200, popularTalks, suggestedTalks });
+    res
+      .status(200)
+      .json({
+        status: 200,
+        popularTalks,
+        suggestedTalks: suggestedTalks.slice(0, 5),
+      });
   } catch (err) {
     catchError(err, res);
   }
