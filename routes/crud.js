@@ -69,8 +69,6 @@ router.get(
   getUserProfileFromUserName
 );
 
-// router.get("/profile/id/:id", getUserProfileFromId);
-
 router.patch(
   "/profile/edit",
   isAuthenticated,
