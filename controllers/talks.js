@@ -113,7 +113,7 @@ exports.leaveTalk = async (req, res) => {
 exports.popularAndSuggestedTalks = async (req, res) => {
   try {
     const talks = await Talk.find().populate({ path: "users", model: "User" });
-    let suggestedTalks = [];
+    let suggestedTalks = talks;
     let popularTalks = talks
       .sort((a, b) => (a.users.length > b.users.length ? -1 : 1))
       .slice(0, 5);
@@ -126,6 +126,7 @@ exports.popularAndSuggestedTalks = async (req, res) => {
 
     popularTalks = extractTalkInfo(popularTalks, req.userId);
     suggestedTalks = extractTalkInfo(suggestedTalks, req.userId);
+    suggestedTalks.sort(() => Math.random() - 0.5);
 
     res.status(200).json({ status: 200, popularTalks, suggestedTalks });
   } catch (err) {
@@ -135,12 +136,12 @@ exports.popularAndSuggestedTalks = async (req, res) => {
 
 exports.getUserTalks = async (req, res) => {
   try {
-    const user = await User.findById("633b45a338ad34f4b8940219").populate({
+    const user = await User.findById(req.userId).populate({
       path: "talksId",
       model: "talk",
       populate: { path: "users", model: "User" },
     });
-    const userTalks = extractTalkInfo(user.talksId, "633b45a338ad34f4b8940219");
+    const userTalks = extractTalkInfo(user.talksId, req.userId);
     res.status(200).json({ message: 200, userTalks });
   } catch (err) {
     catchError(err, res);
