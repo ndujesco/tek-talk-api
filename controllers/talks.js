@@ -133,7 +133,7 @@ exports.popularAndSuggestedTalks = async (req, res) => {
   }
 };
 
-exports.getUserTalks = async () => {
+exports.getUserTalks = async (req, res) => {
   try {
     const user = await User.findById(req.userId).populate({
       path: "talksId",
