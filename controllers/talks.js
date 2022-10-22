@@ -140,11 +140,19 @@ exports.popularAndSuggestedTalks = async (req, res) => {
 
 exports.getUserTalks = async (req, res) => {
   try {
-    const user = await User.findById(req.userId).populate({
+    const username = req.params.username;
+    if (!username)
+      return res.status(422).json({ status: 422, message: "input username" });
+
+    const users = await User.find().populate({
       path: "talksId",
       model: "talk",
       populate: { path: "users", model: "User" },
     });
+    const user = users.find((user) => user.username.toLowerCase() === username);
+
+    if (!user)
+      return res.status(401).json({ status: 401, message: "User not found!" });
 
     const userTalks = extractTalkInfo(user.talksId, req.userId);
     res.status(200).json({ message: 200, userTalks });

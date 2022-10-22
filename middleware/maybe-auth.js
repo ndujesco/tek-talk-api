@@ -11,12 +11,14 @@ exports.maybeAuthenticated = (req, res, next) => {
   }
   const token = authHeader.split(" ")[1];
   let decodedToken;
+
   try {
     decodedToken = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
   } catch (err) {
     req.userId = null;
     return next();
   }
+  
   if (!decodedToken) {
     req.userId = null;
     return next();
