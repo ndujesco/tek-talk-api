@@ -4,11 +4,13 @@ const {
   editProfile,
   editProfileValidator,
 } = require("../controllers/edit-profile");
+
 const {
   followUser,
   unFollowUser,
   getFollowFromUserName,
 } = require("../controllers/follow");
+
 const {
   postComment,
   getCommentsFromPostId,
@@ -17,10 +19,12 @@ const {
   getLikers,
   deleteComment,
 } = require("../controllers/like-comment");
+
 const {
   getNotifications,
   readNotifications,
 } = require("../controllers/notifications");
+
 const {
   postPost,
   getAllPosts,
@@ -38,6 +42,7 @@ const {
   getUserSuggestions,
   checkUserName,
 } = require("../controllers/profile-crud");
+
 const {
   getTalks,
   joinTalk,
