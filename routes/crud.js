@@ -124,7 +124,7 @@ router.put("/talk/join", isAuthenticated, joinTalk);
 
 router.patch("/talk/leave", isAuthenticated, leaveTalk);
 
-router.get("/talk/username/:username", isAuthenticated, getUserTalks);
+router.get("/talk/username/:username", getUserTalks);
 
 router.get(
   "/talk/suggested-popular",
