@@ -15,6 +15,11 @@ const commentSchema = new Schema({
     ref: "Post",
     required: true,
   },
+  likes: [
+    {
+      type: String, //I will store the user (that liked) ids.
+    },
+  ],
   createdAt: String,
 });
 
