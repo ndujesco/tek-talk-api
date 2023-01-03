@@ -41,6 +41,7 @@ const {
   getUserProfileFromUserName,
   getUserSuggestions,
   checkUserName,
+  searchForUser,
 } = require("../controllers/profile-crud");
 
 const {
@@ -81,6 +82,8 @@ router.patch(
 );
 
 router.get("/suggestions", isAuthenticated, getUserSuggestions);
+
+router.get("/tag-user", maybeAuthenticated, searchForUser)
 
 router.post("/post", isAuthenticated, postValidator, postPost);
 

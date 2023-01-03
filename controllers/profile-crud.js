@@ -1,6 +1,9 @@
 const { catchError } = require("../utils/help-functions");
 const User = require("../models/user");
+const { isValidObjectId } = require("mongoose");
+
 const fs = require("fs");
+
 const Post = require("../models/post");
 const { Notification } = require("../models/notification");
 
@@ -138,7 +141,6 @@ exports.getUserSuggestions = async (req, res) => {
 
       return firstLength > secondLength ? -1 : 1;
     });
-
     const toReturn = extractSuggestionsInfo(allUsers2, req.userId);
 
     res.status(200).json({ users: toReturn.slice(0, 5) });
@@ -166,4 +168,36 @@ exports.checkUserName = async (req, res) => {
   } catch (err) {
     catchError(err, res);
   }
+};
+
+
+exports.searchForUser = async (req, res) => {
+  try {
+    const isValid = isValidObjectId(req.userId);
+    const string = req.query.search;
+    const users = await User.find();
+    let found = users.filter(
+      (user) => {
+        const stringLength = string.length;
+        const partOf = user.username.toLowerCase().substring(0, stringLength) === string.toLowerCase() 
+        || user.name.toLowerCase().substring(0, stringLength) === string.toLowerCase();
+        return partOf;
+      });
+    if (isValid) {
+      found.sort((user1) => {
+        return user1.following.includes(req.userId) ? -1 : 1
+      })
+    }
+    const toReturn = found.map((ele) => {
+      return {
+        username: ele.username,
+        name: ele.name,
+        displayUrl: ele.displayUrl
+      }
+    })
+    res.status(200).json({ status: 200, users: toReturn });     
+  } catch (err) {
+    catchError(err, res);
+  }
+
 };
