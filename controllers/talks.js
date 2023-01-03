@@ -149,7 +149,7 @@ exports.getUserTalks = async (req, res) => {
       model: "talk",
       populate: { path: "users", model: "User" },
     });
-    const user = users.find((user) => user.username.toLowerCase() === username);
+    const user = users.find((user) => user.username.toLowerCase() === username.toLowerCase());
 
     if (!user)
       return res.status(401).json({ status: 401, message: "User not found!" });
