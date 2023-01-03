@@ -56,7 +56,6 @@ const { isAuthenticated } = require("../middleware/is-auth");
 const { maybeAuthenticated } = require("../middleware/maybe-auth");
 
 const postValidator = [
-  body("body", "Add 'body'.").isLength({ min: 1 }),
   body("postedIn", "Add 'postedIn'.").isLength({ min: 1 }),
 ];
 

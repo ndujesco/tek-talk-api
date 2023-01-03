@@ -3,7 +3,6 @@ const { Schema, default: mongoose } = require("mongoose");
 const postSchema = new Schema({
   body: {
     type: String,
-    required: true,
   },
   imagesLocal: [
     {
