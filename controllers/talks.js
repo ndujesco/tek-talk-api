@@ -9,6 +9,7 @@ const extractTalkInfo = (talks, userId) => {
   talks.forEach((talk) => {
     let toPush = {
       id: talk.id,
+      memberCount: talk.user.length,
       name: talk.name,
       displayUrl: talk.displayUrl,
       description: talk.description,
@@ -35,6 +36,7 @@ exports.getTalks = async (req, res) => {
       let toPush = {
         id: talk.id,
         name: talk.name,
+        memberCount: talk.user.length,
         displayUrl: talk.displayUrl,
         description: talk.description,
         memberOf: talk.users.some((user) => user.id === req.userId),
