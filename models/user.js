@@ -59,6 +59,8 @@ const userSchema = new Schema({
   backdropId: { type: String, default: null },
 
   talksId: [{ type: String }],
+
+  searchHistory: [{type: String}]
 });
 
 userSchema.methods.addToFollowers = function (id) {
