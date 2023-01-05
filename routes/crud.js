@@ -50,6 +50,7 @@ const {
   leaveTalk,
   popularAndSuggestedTalks,
   getUserTalks,
+  getTalkFromName,
 } = require("../controllers/talks");
 
 const { isAuthenticated } = require("../middleware/is-auth");
@@ -121,6 +122,8 @@ router.get("/notifications", isAuthenticated, getNotifications);
 router.patch("/seen-notifications", isAuthenticated, readNotifications);
 
 router.get("/talk", isAuthenticated, getTalks);
+
+router.get("/talk/talk-name/talkName", getTalkFromName)
 
 router.put("/talk/join", isAuthenticated, joinTalk);
 

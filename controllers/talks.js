@@ -14,11 +14,11 @@ const extractTalkInfo = (talks, userId) => {
       displayUrl: talk.displayUrl,
       description: talk.description,
       memberOf: talk.users.some((user) => user.id === userId),
-      usersDisplayUrl: [],
+      users: [],
     };
 
     talk.users.forEach((user) => {
-      if (user.displayUrl) toPush.usersDisplayUrl.push(user.displayUrl);
+     toPush.users.push({username: user.username, displayUrl: user.displayUrl});
     });
 
     toReturn.push(toPush);
@@ -40,11 +40,11 @@ exports.getTalks = async (req, res) => {
         displayUrl: talk.displayUrl,
         description: talk.description,
         memberOf: talk.users.some((user) => user.id === req.userId),
-        usersDisplayUrl: [],
+        users: [],
       };
 
       talk.users.forEach((user) => {
-        if (user.displayUrl) toPush.usersDisplayUrl.push(user.displayUrl);
+        toPush.users.push({username: user.username, displayUrl: user.displayUrl});
       });
 
       toPush.memberOf ? userTalks.push(toPush) : allTalks.push(toPush);
@@ -162,3 +162,15 @@ exports.getUserTalks = async (req, res) => {
     catchError(err, res);
   }
 };
+
+
+exports.getTalkFromName = async (req, res) => {
+  const talkName = req.params.talkName;
+  if (!talkName)
+  return res.status(422).json({ status: 422, message: "Input talkname." });
+  const talk = await Talk.findOne({name: talkName})
+  if (!talk) return res.status(401).json({ status: 401, message: "Talk not found!" });
+  const talkToReturn = [talk].extractTalkInfo[0];
+  res.status(200).json({talkInfo: talkToReturn})
+
+}
