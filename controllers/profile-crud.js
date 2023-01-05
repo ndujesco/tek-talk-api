@@ -195,7 +195,7 @@ exports.searchForUser = async (req, res) => {
       (user) => {
         const stringLength = string.length;
         const partOf = user.username.toLowerCase().substring(0, stringLength) === string.toLowerCase() 
-        || user.name.toLowerCase().substring(0, stringLength) === string.toLowerCase();
+        || user.name.toLowerCase().substring(0, stringLength) === string.toLowerCase() || user.id !== req.userId;
         return partOf;
       });
       // the "found" array contains users that match the search
