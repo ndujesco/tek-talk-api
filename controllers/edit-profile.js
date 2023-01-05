@@ -3,7 +3,7 @@ const User = require("../models/user");
 const {
   uploadProfileToCloudinary,
   deleteFromCloudinary,
-} = require("../utils/cloudinary");
+} = require("../utils/cloudinary");  // functions to upload and delete images from cloudinary
 const { catchError } = require("../utils/help-functions");
 
 exports.editProfile = async (req, res) => {
@@ -21,20 +21,23 @@ exports.editProfile = async (req, res) => {
   const emptyProfiles = [];
   toUpdate.noDisplay ? emptyProfiles.push("display") : null;
   toUpdate.noBackdrop ? emptyProfiles.push("backdrop") : null;
+  // so if the user removes their current picture, "noDisplay" or "noBackdrop" is added to the request body
 
   for (key in images) {
-    const field = key + "Local";
+    const field = key + "Local"; // the only possible keys are display and backdrop
     const filePath = images[key][0].path;
-    toUpdate[field] = filePath.replace("\\", "/");
+    toUpdate[field] = filePath.replace("\\", "/");  
+    //as it is the "backdropLocal" and "imageLocal" if sent have already being stored(temporarily, of course)
   }
 
   try {
     const user = await User.findById(req.userId);
-
     for (key in toUpdate) {
       if (key !== "noDisplay" && key !== "noBackdrop")
         user[key] = toUpdate[key];
     }
+    //so we're updating  all other fields sent in the request body that are not "noDisplay" OR "noBackdrop"
+      // these two fields tell whether or not these images were edited
 
     emptyProfiles.forEach((value) => {
       user[value + "Local"] = null;

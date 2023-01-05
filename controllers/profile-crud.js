@@ -200,8 +200,8 @@ exports.searchForUser = async (req, res) => {
       });
       // the "found" array contains users that match the search
     if (isValid) {
-      found.sort((user1) => {
-        return user1.following.includes(req.userId) ? -1 : 1
+      found.sort((user) => {
+        return user.followers.includes(req.userId) ? -1 : 1
       })
     }
     const toReturn = found.map((ele) => {

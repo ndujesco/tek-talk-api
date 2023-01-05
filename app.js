@@ -57,8 +57,9 @@ app.use(
   ])
 );
 app.use("/images", express.static(path.join(__dirname, "images")));
+ //create the "/images path if it does not exist alraedy"
 
-app.use(checkApi, isAuthorized);
+app.use(checkApi, isAuthorized);  // checks if API is valid
 
 app.use("/auth", authRoutes);
 app.use(crudRoutes);

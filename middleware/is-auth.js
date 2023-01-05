@@ -29,14 +29,6 @@ exports.isAuthenticated = (req, res, next) => {
 };
 
 exports.isAuthorized = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      status: 422,
-      message: errors.array()[0].msg,
-    });
-  }
-
   const apiKey = req.query.apiKey || null;
   if (!API_KEYS.includes(apiKey)) {
     return res.status(401).json({ status: 401, message: "Inavlid api key" });
