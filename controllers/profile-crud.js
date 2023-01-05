@@ -8,6 +8,7 @@ const Post = require("../models/post");
 const { Notification } = require("../models/notification");
 
 const extractProfile = (user, req) => {
+  // So that I don't have to write same function over and over
   const {
     name,
     username,
@@ -21,6 +22,7 @@ const extractProfile = (user, req) => {
     backdropLocal,
     backdropUrl,
   } = user;
+  // The user object it takes as input contains all these keys
 
   let profileToReturn = {
     userId: user.id,
@@ -33,11 +35,12 @@ const extractProfile = (user, req) => {
     verified,
     followingCount: user.following.length,
     followersCount: user.followers.length,
-    isFollowing: user.followers.includes(req.userId),
-    isFollowedBy: user.following.includes(req.userId),
+    isFollowing: user.followers.includes(req.userId),  // if you're in their followers array then you're following them
+    isFollowedBy: user.following.includes(req.userId), 
   };
-  if (displayLocal || displayUrl) {
-    const fileExists = fs.existsSync(displayLocal);
+  if (displayLocal || displayUrl) { //only 'displayLocal' is actually enough check
+    const fileExists = fs.existsSync(displayLocal); /* returns a boolean, since I store images in the hosting service temporarily
+    I must check if it is still there */
     profileToReturn.displayUrl = fileExists
       ? "https://" + req.headers.host + "/" + displayLocal
       : displayUrl;
@@ -45,7 +48,7 @@ const extractProfile = (user, req) => {
     profileToReturn.displayUrl = null;
   }
   if (backdropLocal || backdropUrl) {
-    const fileExists = fs.existsSync(backdropLocal);
+    const fileExists = fs.existsSync(backdropLocal); //same idea
     profileToReturn.backdropUrl = fileExists
       ? "https://" + req.headers.host + "/" + backdropLocal
       : backdropUrl;
@@ -57,6 +60,7 @@ const extractProfile = (user, req) => {
 };
 
 const extractSuggestionsInfo = (users, userId) => {
+  //info to return for user suggestion, it returns less info, so I can't use 'extractProfile'
   infosToReturn = [];
   users.forEach((user) => {
     let infoToReturn = {
@@ -80,7 +84,7 @@ exports.getIndex = async (req, res) => {
   } catch (err) {
     catchError(err, res);
   }
-};
+}; // I use this to check if the app has not crashed.
 
 exports.getMyProfile = async (req, res) => {
   try {
@@ -88,8 +92,9 @@ exports.getMyProfile = async (req, res) => {
     const profileToReturn = extractProfile(user, req);
 
     const myNotifications = await Notification.find({ userId: req.userId });
-    const unRead = myNotifications.some((notification) => !notification.seen);
+    const unRead = myNotifications.some((notification) => !notification.seen); // returns a boolean
     profileToReturn.unreadNotifications = unRead;
+    // if you have !seen SOME notifications, it returns true
     res.status(200).json(profileToReturn);
   } catch (err) {
     catchError(err, res);
@@ -97,6 +102,7 @@ exports.getMyProfile = async (req, res) => {
 };
 
 exports.getUserProfileFromUserName = async (req, res) => {
+  // Searches for user and extracts profile
   const userName = req.params.username;
   try {
     if (!userName) {
@@ -107,6 +113,7 @@ exports.getUserProfileFromUserName = async (req, res) => {
     const users = await User.find();
     const user = users.find(
       (user) => user.username.toLowerCase() === userName.toLowerCase()
+      // makes sure the search is case insensitive
     );
     if (!user) {
       const error = new Error("User not found");
