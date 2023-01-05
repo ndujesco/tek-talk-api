@@ -168,9 +168,10 @@ exports.getTalkFromName = async (req, res) => {
   const talkName = req.params.talkName;
   if (!talkName)
   return res.status(422).json({ status: 422, message: "Input talkname." });
-  const talk = await Talk.findOne({name: talkName})
+  const talks = await Talk.find().populate({ path: "users", model: "User" });
+  const talk = talks.find(talk => talk.name.toLowerCase() === talkName.toLowerCase())
   if (!talk) return res.status(401).json({ status: 401, message: "Talk not found!" });
-  const talkToReturn = [talk].extractTalkInfo[0];
+  const talkToReturn = extractTalkInfo([talk], req.userId)[0];
   res.status(200).json({talkInfo: talkToReturn})
 
 }

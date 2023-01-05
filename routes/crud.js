@@ -123,7 +123,7 @@ router.patch("/seen-notifications", isAuthenticated, readNotifications);
 
 router.get("/talk", isAuthenticated, getTalks);
 
-router.get("/talk/talk-name/talkName", getTalkFromName)
+router.get("/talk/talk-name/:talkName",maybeAuthenticated, getTalkFromName)
 
 router.put("/talk/join", isAuthenticated, joinTalk);
 
