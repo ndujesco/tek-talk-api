@@ -23,9 +23,10 @@ router.post(
     body("username")
       .trim()
       .custom((value) => {
-        if (!value) {
-          throw new Error("username field cannot be empty");
-        }
+
+        if (!value) throw new Error("username field cannot be empty");
+        if(value.indexOf(" ") < 0) throw new Error("usename can't contain spaces");
+        
         return User.find().then((users) => {
           const matches = users.some(
             (user) => user.username.toLowerCase() === value.toLowerCase()
