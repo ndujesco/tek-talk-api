@@ -130,14 +130,21 @@ exports.getUserProfileFromUserName = async (req, res) => {
 exports.getUserSuggestions = async (req, res) => {
   try {
     const posts = await Post.find();
+    // I need posts because we'll suggest based on how active the person is 
+
     const user = await User.findById(req.userId);
     let allUsers = await User.find();
+
     const allUsers1 = allUsers.filter(
+      // filter "allUsers" to make sure they do not include the logged in user's following,
+      // in other words, the user is !part of their followers
+      // I also made sure to remove the loggen in user 
       (thisUser) =>
         thisUser.id !== user.id && !thisUser.followers.includes(req.userId)
-      //
     );
-    const allUsers2 = allUsers1.sort((first, second) => {
+
+    // I also made sure to filter further by amount of posts users have posted, giving priority to active users
+      const allUsers2 = allUsers1.sort((first, second) => {
       const firstLength = posts.filter(
         (thisPost) => thisPost.author.toString() === first.id
       ).length;
@@ -160,7 +167,7 @@ exports.checkUserName = async (req, res) => {
   const username = req.query.username || "cvbsbsvbsvbssk";
   if (username === "cvbsbsvbsvbssk") {
     return res.status(422).json({ status: 422, message: "Add username boss" });
-  }
+  } // makes sure the frontend developer inputs somthing at all
   try {
     const users = await User.find();
     const found = users.find(
@@ -180,8 +187,9 @@ exports.checkUserName = async (req, res) => {
 
 exports.searchForUser = async (req, res) => {
   try {
-    const isValid = isValidObjectId(req.userId);
+    const isValid = isValidObjectId(req.userId); //returns a boolean
     const string = req.query.search;
+
     const users = await User.find();
     let found = users.filter(
       (user) => {
@@ -190,6 +198,7 @@ exports.searchForUser = async (req, res) => {
         || user.name.toLowerCase().substring(0, stringLength) === string.toLowerCase();
         return partOf;
       });
+      // the "found" array contains users that match the search
     if (isValid) {
       found.sort((user1) => {
         return user1.following.includes(req.userId) ? -1 : 1

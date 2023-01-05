@@ -29,7 +29,7 @@ router.post(
         return User.find().then((users) => {
           const matches = users.some(
             (user) => user.username.toLowerCase() === value.toLowerCase()
-            // username should not be the same at all, it is case insensitive 
+            // username should not be the same at all, it is case sensitive 
           );
           if (matches) {
             return Promise.reject("The username is already taken.");
