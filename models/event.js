@@ -3,7 +3,6 @@ const { Schema, default: mongoose } = require("mongoose");
 const eventSchema = new Schema({
     userId: {
         type: String,
-        ref: "User",
         required: true
     },
 
@@ -32,7 +31,10 @@ const eventSchema = new Schema({
     date: {
         type: String,
         required: true
-    }
+    },
+    attendees: [{
+        type: String
+    }]
 })
 
 module.exports = mongoose.model("Event", eventSchema)

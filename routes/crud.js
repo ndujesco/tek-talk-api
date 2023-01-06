@@ -4,7 +4,7 @@ const {
   editProfile,
   editProfileValidator,
 } = require("../controllers/edit-profile");
-const { createEvent, eventValidator } = require("../controllers/events");
+const { createEvent, eventValidator, getAllEvents, rsvpEvent } = require("../controllers/events");
 
 const {
   followUser,
@@ -140,4 +140,7 @@ router.get(
 
 router.post("/event", isAuthenticated, eventValidator, createEvent)
 
+router.get("/event/all", maybeAuthenticated, getAllEvents)
+
+router.put("/event/rsvp/:eventId", isAuthenticated, rsvpEvent)
 module.exports = router;

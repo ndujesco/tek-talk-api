@@ -3,6 +3,32 @@ const Event = require("../models/event");
 const { uploadEventToCloudinary } = require("../utils/cloudinary");
 const { catchError } = require("../utils/help-functions");
 
+const extractEventsInfo = (events, userId) => {
+    const toReturn = []
+
+    events.forEach((event) => {
+        let toPush = {
+            id: event.id,
+            attendeesCount: event.attendees.length,
+            name: event.name,
+            description: event.description,
+            displayUrl: event.displayUrl,
+            willAttend: event.attendees.includes(userId),
+            date: event.date,
+            attendees: []
+        }
+        event.attendees.forEach((attendee) => {
+            toPush.attendees.push({username: attendee.username, displayUrl: attendee.displayUrl})
+        })
+        toPush.admin = {
+            username: event.userId.username,
+            displayUrl: event.userId.displayUrl
+        }
+       toReturn.push(toPush);  
+    })
+    return toReturn;
+}
+
 exports.eventValidator = [
     body("name", "'Name' field should not be empty")
     .isLength({ min: 1 })
@@ -35,11 +61,12 @@ exports.createEvent = async (req, res) => {
             userId: req.userId,
             name,
             description,
-            date
+            date,
+            attendees
         });
         const uploadedImage = req.files.image ? req.files.image[0] : null; //important
         if (uploadedImage) {
-          const imageLocalPath = imgData.path.replace("\\", "/");
+          const imageLocalPath = uploadedImage.path.replace("\\", "/");
           event.imageLocal = imageLocalPath
         }
         await event.save();
@@ -55,10 +82,30 @@ exports.createEvent = async (req, res) => {
 }
 
 
+exports.getAllEvents = async (req, res) =>{
+    const events = await Event.find()
+                    .populate({path: "attendees", model: "User" })
+                    .populate({path: "userId", model: "User" })
+    
+    const eventsToReturn = extractEventsInfo(events, req.userId)
+    res.status(200).json({events: eventsToReturn})
+
+}
 
 
+exports.rsvpEvent = async (req, res) => {
+    const eventId = req.params.eventId
+    try {
+    const event = await Event.findById(eventId)
+    event.attendees.push(req.userId)
+    await event.save()
 
+    res.status(200).json({message: "RSVP successful!"})
 
+    } catch (err) {
+        catchError(err, res)
+    }
+}
 
 
 
