@@ -18,6 +18,7 @@ const eventSchema = new Schema({
 
     imageUrl: {
         type: String,
+        default: null
     },
 
     imageLocal: {
