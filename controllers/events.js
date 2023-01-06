@@ -110,6 +110,25 @@ exports.rsvpEvent = async (req, res) => {
     }
 }
 
+exports.removeRsvp = async (req, res) => {
+    const eventId = req.params.eventId;
+    try {
+        const event = await Event.findById(eventId)
+    
+        if(!event.attendees.includes(req.userId))
+        return res.status(200).json({message: "You are not member!"})
+
+        const usersIndex = event.attendees.indexOf(req.userId)
+        event.attendees.splice(usersIndex, 1)
+        await event.save()
+    
+        res.status(200).json({message: "RSVP successful!"})
+    
+        } catch (err) {
+            catchError(err, res)
+        }
+
+}
 
 
 
