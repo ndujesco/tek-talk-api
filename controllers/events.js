@@ -12,7 +12,7 @@ const extractEventsInfo = (events, userId) => {
             attendeesCount: event.attendees.length,
             name: event.name,
             description: event.description,
-            displayUrl: event.displayUrl,
+            displayUrl: event.imageUrl,
             willAttend: event.attendees.includes(userId),
             date: event.date,
             attendees: []
@@ -62,7 +62,7 @@ exports.createEvent = async (req, res) => {
             name,
             description,
             date,
-            attendees
+            attendees: [],
         });
         const uploadedImage = req.files.image ? req.files.image[0] : null; //important
         if (uploadedImage) {
