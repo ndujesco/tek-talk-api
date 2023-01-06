@@ -32,6 +32,9 @@ exports.uploadEventToCloudinary = async (filePath, id) => {
       folder: "eventImages",
     });
     const event = await Event.findById(id)
+    if(event.imageId) {
+      cloudinary.uploader.destroy(event.imageId)
+    }
     event.imageUrl = result.secure_url
     event.imageId = result.public_id
     await event.save();

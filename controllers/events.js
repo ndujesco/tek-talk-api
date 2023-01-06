@@ -67,7 +67,7 @@ exports.createEvent = async (req, res) => {
         const event = new Event({
             userId: req.userId,
             ...req.body, // name, descrption, startTime, endTime and location.
-            attendees: [],
+            attendees: [req.userId],
         });
         const uploadedImage = req.files.image ? req.files.image[0] : null; //important
         if (uploadedImage) {
@@ -100,6 +100,7 @@ exports.rsvpEvent = async (req, res) => {
     const eventId = req.params.eventId
     try {
     const event = await Event.findById(eventId)
+    if (!event) return res.status(401).json({message: "Event does not exist."})
 
     if(event.attendees.includes(req.userId))
     return res.status(200).json({message: "Already a member!"})
@@ -117,6 +118,8 @@ exports.removeRsvp = async (req, res) => {
     const eventId = req.params.eventId;
     try {
         const event = await Event.findById(eventId)
+        if (!event) return res.status(401).json({message: "Event does not exist."})
+
     
         if(!event.attendees.includes(req.userId))
         return res.status(200).json({message: "You are not member!"})
@@ -176,7 +179,7 @@ exports.editEvent = async (req, res) => {
     res.status(200).json({message: "Edited successfully!"});
     
     if (toUpdate.noImage) deleteFromCloudinary(event.imageId)
-    if (editedImage) uploadEventToCloudinary(editedImage.path, req.userId)
+    if (editedImage) uploadEventToCloudinary(editedImage.path, event.id)
   
     } catch (err) {
         catchError(err, res)
