@@ -40,7 +40,15 @@ exports.eventValidator = [
     .isLength({ min: 1 })
     .trim(),
 
-    body("date", "'date' field should not be empty")
+    body("startTime", "'start-time' field should not be empty")
+    .isLength({ min: 1 })
+    .trim(),
+
+    body("endTime", "'end-time' field should not be empty")
+    .isLength({ min: 1 })
+    .trim(),
+
+    body("location", "'Location' field should not be empty")
     .isLength({ min: 1 })
     .trim(),
 ]
@@ -57,7 +65,7 @@ exports.createEvent = async (req, res) => {
       });
     }
 
-    const {name, description, date} = req.body
+    const {name, description, startTime, endTime, location} = req.body
     try {
         const event = new Event({
             userId: req.userId,
