@@ -17,15 +17,15 @@ const extractEventsInfo = (events, userId) => {
             startTime: event.startTime,
             endTime: event.endTime,
             location: event.location,            
-            attendees: []
+            attendees: [],
+            admin: {
+                username: event.userId.username,
+                displayUrl: event.userId.displayUrl
+            }
         }
         event.attendees.forEach((attendee) => {
             toPush.attendees.push({username: attendee.username, displayUrl: attendee.displayUrl})
         })
-        toPush.admin = {
-            username: event.userId.username,
-            displayUrl: event.userId.displayUrl
-        }
        toReturn.push(toPush);  
     })
     return toReturn;
