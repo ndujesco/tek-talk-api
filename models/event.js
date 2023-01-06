@@ -28,10 +28,15 @@ const eventSchema = new Schema({
     imageId: {
         type: String,
     },
-
-    date: {
+    location: {
         type: String,
-        required: true
+    },
+
+    startTime: {
+        type: String,
+    },
+    endTime: {
+        type: String,
     },
     attendees: [{
         type: String

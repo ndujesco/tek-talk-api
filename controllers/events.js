@@ -14,7 +14,9 @@ const extractEventsInfo = (events, userId) => {
             description: event.description,
             displayUrl: event.imageUrl,
             willAttend: event.attendees.includes(userId),
-            date: event.date,
+            startTime: event.startTime,
+            endTime: event.endTime,
+            location: event.location,            
             attendees: []
         }
         event.attendees.forEach((attendee) => {
@@ -61,7 +63,9 @@ exports.createEvent = async (req, res) => {
             userId: req.userId,
             name,
             description,
-            date,
+            startTime,
+            endTime,
+            location,
             attendees: [],
         });
         const uploadedImage = req.files.image ? req.files.image[0] : null; //important
@@ -84,9 +88,9 @@ exports.createEvent = async (req, res) => {
 
 exports.getAllEvents = async (req, res) =>{
     const events = await Event.find()
-                    .populate({path: "attendees", model: "User" })
-                    .populate({path: "userId", model: "User" })
-    
+            .populate({path: "attendees", model: "User" })
+            .populate({path: "userId", model: "User" })
+
     const eventsToReturn = extractEventsInfo(events, req.userId)
     res.status(200).json({events: eventsToReturn})
 
@@ -122,7 +126,7 @@ exports.removeRsvp = async (req, res) => {
         event.attendees.splice(usersIndex, 1)
         await event.save()
     
-        res.status(200).json({message: "RSVP Declined"})
+        res.status(200).json({message: "RSVP Removed"})
     
         } catch (err) {
             catchError(err, res)
