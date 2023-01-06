@@ -98,8 +98,8 @@ exports.rsvpEvent = async (req, res) => {
     try {
     const event = await Event.findById(eventId)
 
-
-    if(!event.attendees.includes(req.userId))
+    if(event.attendees.includes(req.userId))
+    return res.status(200).json({message: "Already a member!"})
     event.attendees.push(req.userId)
     await event.save()
 
