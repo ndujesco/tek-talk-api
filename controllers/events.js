@@ -207,3 +207,5 @@ exports.editEvent = async (req, res) => {
         catchError(err, res)
     }
 }
+
+exports.extractEventsInfo = extractEventsInfo

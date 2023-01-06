@@ -20,6 +20,7 @@ const {
   getLikers,
   deleteComment,
 } = require("../controllers/like-comment");
+const { searchForAnything } = require("../controllers/network");
 
 const {
   getNotifications,
@@ -151,5 +152,7 @@ router.patch("/event/rsvp/:eventId", isAuthenticated, removeRsvp)
 router.delete("/event/:eventId", isAuthenticated, deleteEvent)
 
 router.patch("/event/edit/:eventId", isAuthenticated, eventValidator, editEvent)
+
+router.get("/network/search", isAuthenticated, searchForAnything)
 
 module.exports = router;
