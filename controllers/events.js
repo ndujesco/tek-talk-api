@@ -103,7 +103,7 @@ exports.rsvpEvent = async (req, res) => {
     event.attendees.push(req.userId)
     await event.save()
 
-    res.status(200).json({message: "RSVP successful!"})
+    res.status(200).json({message: "RSVP successfully!"})
 
     } catch (err) {
         catchError(err, res)
@@ -122,7 +122,7 @@ exports.removeRsvp = async (req, res) => {
         event.attendees.splice(usersIndex, 1)
         await event.save()
     
-        res.status(200).json({message: "RSVP successful!"})
+        res.status(200).json({message: "RSVP Declined"})
     
         } catch (err) {
             catchError(err, res)
