@@ -99,7 +99,7 @@ exports.rsvpEvent = async (req, res) => {
     const event = await Event.findById(eventId)
 
 
-    if(!event.attendees(includes(req.userId)))
+    if(!event.attendees.includes(req.userId))
     event.attendees.push(req.userId)
     await event.save()
 
