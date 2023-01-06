@@ -198,7 +198,7 @@ exports.editEvent = async (req, res) => {
         }
 
     await event.save()
-    res.status(200).json({message: "Edited successfully!", noImage: toUpdate.noImage});
+    res.status(200).json({message: "Edited successfully!", body: req.body});
     
     if (toUpdate.noImage) deleteFromCloudinary(event.imageId)
     if (editedImage) uploadEventToCloudinary(editedImage.path, event.id)
