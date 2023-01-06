@@ -175,3 +175,6 @@ exports.getTalkFromName = async (req, res) => {
   res.status(200).json({talkInfo: talkToReturn})
 
 }
+
+
+exports.extractTalkInfo = extractTalkInfo  // for the network page

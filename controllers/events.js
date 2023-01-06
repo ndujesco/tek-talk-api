@@ -1,4 +1,5 @@
 const { body, validationResult } = require("express-validator");
+const { isValidObjectId } = require("mongoose");
 const Event = require("../models/event");
 const { uploadEventToCloudinary, deleteFromCloudinary } = require("../utils/cloudinary");
 const { catchError } = require("../utils/help-functions");
@@ -96,8 +97,24 @@ exports.getAllEvents = async (req, res) =>{
 
 }
 
+exports.getEventFromId = async (req, res) => {
+    const eventId = req.params.eventId;
+    if (!isValidObjectId(eventId)) return res.status(400).json({message: "The id is not valid"})
+
+    const event = await Event.findById(eventId)
+            .populate({path: "attendees", model: "User" })
+            .populate({path: "userId", model: "User" })
+
+    if (!event) return res.status(401).json({message: "Event does not exist."})
+    const eventToReturn = extractEventsInfo([event], req.userId)[0]
+    res.status(200).json({event: eventToReturn})
+
+
+}
+
 exports.rsvpEvent = async (req, res) => {
     const eventId = req.params.eventId
+    if (!isValidObjectId(eventId)) return res.status(400).json({message: "The id is not valid"})
     try {
     const event = await Event.findById(eventId)
     if (!event) return res.status(401).json({message: "Event does not exist."})
@@ -116,6 +133,8 @@ exports.rsvpEvent = async (req, res) => {
 
 exports.removeRsvp = async (req, res) => {
     const eventId = req.params.eventId;
+    if (!isValidObjectId(eventId)) return res.status(400).json({message: "The id is not valid"})
+
     try {
         const event = await Event.findById(eventId)
         if (!event) return res.status(401).json({message: "Event does not exist."})
@@ -138,6 +157,8 @@ exports.removeRsvp = async (req, res) => {
 
 exports.deleteEvent =async (req, res) => {
     const eventId = req.params.eventId;
+    if (!isValidObjectId(eventId)) return res.status(400).json({message: "The id is not valid"})
+
     try {
        await  Event.findByIdAndDelete(eventId)
        res.status(202).json({message: "Event deleted successfully"})
@@ -157,13 +178,14 @@ exports.editEvent = async (req, res) => {
       });
     }
     const eventId = req.params.eventId
+    if (!isValidObjectId(eventId)) return res.status(400).json({message: "The id is not valid"})
     const toUpdate = req.body;
     const editedImage = req.files.image ? req.files.image[0] : null; //important
 
     if (editedImage)  toUpdate.imageLocal = editedImage.path.replace("\\", "/")
     try {
         const event = await Event.findById(eventId)
-        if (!event) return res.status(401).json({message: "User does not exists"})
+        if (!event) return res.status(401).json({message: "Event does not exists"})
 
         for (key in toUpdate) {
             if (key !== "noImage") event[key] = toUpdate[key];
