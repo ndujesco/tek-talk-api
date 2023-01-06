@@ -1,6 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const Event = require("../models/event");
-const { uploadEventToCloudinary } = require("../utils/cloudinary");
+const { uploadEventToCloudinary, deleteFromCloudinary } = require("../utils/cloudinary");
 const { catchError } = require("../utils/help-functions");
 
 const extractEventsInfo = (events, userId) => {
@@ -53,8 +53,6 @@ exports.eventValidator = [
     .trim(),
 ]
 
-
-
 exports.createEvent = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -65,15 +63,10 @@ exports.createEvent = async (req, res) => {
       });
     }
 
-    const {name, description, startTime, endTime, location} = req.body
     try {
         const event = new Event({
             userId: req.userId,
-            name,
-            description,
-            startTime,
-            endTime,
-            location,
+            ...req.body, // name, descrption, startTime, endTime and location.
             attendees: [],
         });
         const uploadedImage = req.files.image ? req.files.image[0] : null; //important
@@ -93,7 +86,6 @@ exports.createEvent = async (req, res) => {
     }
 }
 
-
 exports.getAllEvents = async (req, res) =>{
     const events = await Event.find()
             .populate({path: "attendees", model: "User" })
@@ -103,7 +95,6 @@ exports.getAllEvents = async (req, res) =>{
     res.status(200).json({events: eventsToReturn})
 
 }
-
 
 exports.rsvpEvent = async (req, res) => {
     const eventId = req.params.eventId
@@ -153,4 +144,41 @@ exports.deleteEvent =async (req, res) => {
     }
 }
 
+exports.editEvent = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({
+        status: 422,
+        message: "Validation failed",
+        errors: errors.array(),
+      });
+    }
+    const eventId = req.params.eventId
+    const toUpdate = req.body;
+    const editedImage = req.files.image ? req.files.image[0] : null; //important
 
+    if (editedImage)  toUpdate.imageLocal = editedImage.path.replace("\\", "/")
+    try {
+        const event = await Event.findById(eventId)
+        if (!event) return res.status(401).json({message: "User does not exists"})
+
+        for (key in toUpdate) {
+            if (key !== "noImage") event[key] = toUpdate[key];
+        }
+
+        if (toUpdate.noImage) {
+            event.imageUrl = null;
+            event.imageLocal = null
+            //I can't remove the id because I need to remove from cloudinary.
+        }
+
+    await event.save()
+    res.status(200).json({message: "Edited successfully!"});
+    
+    if (toUpdate.noImage) deleteFromCloudinary(event.imageId)
+    if (editedImage) uploadEventToCloudinary(editedImage.path, req.userId)
+  
+    } catch (err) {
+        catchError(err, res)
+    }
+}
