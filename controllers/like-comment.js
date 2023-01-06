@@ -200,3 +200,5 @@ exports.getLikers = async (req, res) => {
 
 // const update = { $pull: { "lists.$[list].items": { _id: checkedId } } };
 // const options = { arrayFilters: [{ "list.name": listName }] };
+
+exports.extractCommentToSend = extractCommentToSend

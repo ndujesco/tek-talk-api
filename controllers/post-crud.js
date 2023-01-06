@@ -44,7 +44,6 @@ const extractPostToSend = (post, users, req) => {
       postToSend.images.push(post.imagesUrl[index]);
     }
   });
-
   return postToSend;
 };
 
@@ -306,3 +305,5 @@ exports.getUserRelatedPosts = async (req, res) => {
     catchError(err, res);
   }
 };
+
+exports.extractPostToSend = extractPostToSend;
