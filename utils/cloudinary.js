@@ -1,3 +1,4 @@
+const Event = require("../models/event");
 const Post = require("../models/post");
 const User = require("../models/user");
 const { catchError } = require("./help-functions");
@@ -23,6 +24,21 @@ exports.uploadPostToCloudinary = async (filePath, id) => {
     console.log(err);
   }
 };
+
+
+exports.uploadEventToCloudinary = async (filePath, id) => {
+  try {
+    const result = await cloudinary.uploader.upload(filePath, {
+      folder: "eventImages",
+    });
+    const event = await Event.findById(id)
+    event.imageUrl = result.secure_url
+    event.imageId = result.public_id
+    await event.save();
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 exports.uploadProfileToCloudinary = async (filePath, id, field, fieldId) => {
   try {

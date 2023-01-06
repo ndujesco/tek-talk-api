@@ -4,6 +4,7 @@ const {
   editProfile,
   editProfileValidator,
 } = require("../controllers/edit-profile");
+const { createEvent, eventValidator } = require("../controllers/events");
 
 const {
   followUser,
@@ -136,5 +137,7 @@ router.get(
   maybeAuthenticated,
   popularAndSuggestedTalks
 );
+
+router.post("/event", isAuthenticated, eventValidator, createEvent)
 
 module.exports = router;

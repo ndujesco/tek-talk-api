@@ -25,7 +25,7 @@ exports.editProfile = async (req, res) => {
 
   for (key in images) {
     const field = key + "Local"; // the only possible keys are display and backdrop
-    const filePath = images[key][0].path;
+    const filePath = images[key][0].path; //the display and backdrops are actually arrays
     toUpdate[field] = filePath.replace("\\", "/");  
     //as it is the "backdropLocal" and "imageLocal" if sent have already being stored(temporarily, of course)
   }
