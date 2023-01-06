@@ -25,7 +25,7 @@ router.post(
       .custom((value) => {
 
         if (!value) throw new Error("username field cannot be empty");
-        if(value.indexOf(" ") < 0) throw new Error("usename can't contain spaces");
+        if(value.indexOf(" ") >= 0) throw new Error("username can't contain spaces");
         
         return User.find().then((users) => {
           const matches = users.some(
