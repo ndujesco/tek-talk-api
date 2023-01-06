@@ -17,7 +17,7 @@ exports.searchForAnything = async (req, res) => {
     try {
         if (fromClick === "true") {}
         const users = await User.find();
-        let usersToReturn = users.filter(user => regexed.test(user.username) || regexed.test(user.name));
+        let usersToReturn = users.filter(user => regexed.test(user.username) || regexed.test(user.name) && user.id !== req.userId);
         usersToReturn = usersToReturn.map(user=> {
            return {
             name: user.name,
