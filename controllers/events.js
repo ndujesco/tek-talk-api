@@ -142,7 +142,15 @@ exports.removeRsvp = async (req, res) => {
 
 }
 
+exports.deleteEvent =async (req, res) => {
+    const eventId = req.params.eventId;
+    try {
+       await  Event.findByIdAndDelete(eventId)
+       res.status(202).json({message: "Event deleted successfully"})
 
-
+    } catch (err) {
+        catchError(err, res)
+    }
+}
 
 
