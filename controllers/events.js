@@ -197,7 +197,7 @@ exports.editEvent = async (req, res) => {
             //I can't remove the id because I need to remove from cloudinary.
         }
 
-    await event.save()
+    await event.save();
     res.status(200).json({message: "Edited successfully!", body: req.body});
     
     if (toUpdate.noImage) deleteFromCloudinary(event.imageId)
