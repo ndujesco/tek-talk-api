@@ -24,7 +24,9 @@ const extractEventsInfo = (events, userId) => {
             admin: {
                 username: event.userId.username,
                 displayUrl: event.userId.displayUrl
-            }
+            },
+            eventHeld: new Date(event.endTime).getTime() < Date.now()
+
         }
         event.attendees.forEach((attendee) => {
             toPush.attendees.push({username: attendee.username, displayUrl: attendee.displayUrl})
