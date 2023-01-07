@@ -4,6 +4,8 @@ const Event = require("../models/event");
 const { uploadEventToCloudinary, deleteFromCloudinary } = require("../utils/cloudinary");
 const { catchError } = require("../utils/help-functions");
 
+const millisecondsPerDay = 24 * 3600 * 1000;
+
 const extractEventsInfo = (events, userId) => {
     const toReturn = []
 

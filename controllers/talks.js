@@ -43,8 +43,8 @@ exports.getTalks = async (req, res) => {
         users: [],
       };
 
-      talk.users.forEach((user) => {
-        toPush.users.push({username: user.username, displayUrl: user.displayUrl});
+      talk.users.forEach((user, index) => {
+        if (index < 5) toPush.users.push({username: user.username, displayUrl: user.displayUrl});
       });
 
       toPush.memberOf ? userTalks.push(toPush) : allTalks.push(toPush);
