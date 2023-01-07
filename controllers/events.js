@@ -14,7 +14,7 @@ const extractEventsInfo = (events, userId) => {
             name: event.name,
             description: event.description,
             displayUrl: event.imageUrl,
-            willAttend: event.attendees.includes(userId),
+            willAttend: event.attendees.some(attendee => attendee.id !== userId),
             startTime: event.startTime,
             endTime: event.endTime,
             location: event.location,            
