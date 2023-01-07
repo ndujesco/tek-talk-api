@@ -207,7 +207,7 @@ exports.getFeedOrNotUserName = async (req, res) => {
       (user) => user.username.toLowerCase() === username.toLowerCase()
     );
     if (!user) {
-      const error = new Error("Username Does not exist.");
+      const error = new Error("Username does not exist.");
       error.statusCode = 422;
       throw error;
     }

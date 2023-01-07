@@ -1,13 +1,13 @@
-const Comment = require("../models/comment")
-const Event = require("../models/event")
-const Post = require("../models/post")
-const Talk = require("../models/talk")
-const User = require("../models/user")
-const { catchError } = require("../utils/help-functions")
-const { extractEventsInfo } = require("./events")
-const { extractCommentToSend } = require("./like-comment")
-const { extractPostToSend } = require("./post-crud")
-const { extractTalkInfo } = require("./talks")
+const Comment = require("../models/comment");
+const Event = require("../models/event");
+const Post = require("../models/post");
+const Talk = require("../models/talk");
+const User = require("../models/user");
+const { catchError } = require("../utils/help-functions");
+const { extractEventsInfo } = require("./events");
+const { extractCommentToSend } = require("./like-comment");
+const { extractPostToSend } = require("./post-crud");
+const { extractTalkInfo } = require("./talks");
 
 exports.searchForAnything = async (req, res) => {
     const string = req.query.search
