@@ -57,7 +57,7 @@ exports.postPost = async (req, res) => {
     });
   }
   if(!req.body.body && !req.files.image)
-  return res.status(422).json({status: 422, message: "The two input fields cannot be empty"})
+  return res.status(422).json({status: 422, message: "The two input fields cannot be empty."})
   try {
     const { body, postedIn } = req.body;
     const post = new Post({
