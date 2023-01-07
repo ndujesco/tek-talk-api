@@ -128,16 +128,25 @@ exports.getPostsFromUserId = async (req, res) => {
 exports.getAllPosts = async (req, res) => {
   const filter = req.query.filter;
   const pageNumber = +req.query.pageNumber || 1;
+  let posts;
 
   try {
-    let posts = await Post.find()
+    if (filter) {
+      posts = await Post.find({postedIn: filter})
       .skip((pageNumber - 1) * 25)
       .limit(25)
       .populate({ path: "comments", model: "Comment" })
       .populate("author")
       .sort({ $natural: -1 });
-    if (filter) {
-      posts = posts.filter((post) => filter === post.postedIn);
+      console.log(posts);
+    }
+    else {
+      posts = await Post.find()
+      .skip((pageNumber - 1) * 25)
+      .limit(25)
+      .populate({ path: "comments", model: "Comment" })
+      .populate("author")
+      .sort({ $natural: -1 });
     }
     let postsToSend = [];
     const users = await User.find();
