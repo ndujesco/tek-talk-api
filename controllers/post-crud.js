@@ -56,6 +56,7 @@ exports.postPost = async (req, res) => {
       errors: errors.array(),
     });
   }
+  if(!req.body.body && !req.files) return res.status(422).json({status: 422, message: "Cannot be empty"})
   try {
     const { body, postedIn } = req.body;
     const post = new Post({
