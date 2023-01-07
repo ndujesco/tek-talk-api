@@ -138,7 +138,6 @@ exports.getAllPosts = async (req, res) => {
       .populate({ path: "comments", model: "Comment" })
       .populate("author")
       .sort({ $natural: -1 });
-      console.log(posts);
     }
     else {
       posts = await Post.find()
