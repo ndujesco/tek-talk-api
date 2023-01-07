@@ -76,7 +76,7 @@ exports.createEvent = async (req, res) => {
           event.imageLocal = imageLocalPath
         }
         await event.save();
-        res.status(200).json({message: "Created successfully!"})
+        res.status(200).json({message: "Created successfully!", eventId: event.id})
 
 
         if (uploadedImage) {
