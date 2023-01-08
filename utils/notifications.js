@@ -115,7 +115,7 @@ exports.notifyFollow = async (userToFollow, loggedInUser) => {
   }
   if (!notification.followersId.includes(loggedInUser.id)) {
     notification.username = loggedInUser.username;
-    notification.loggedUserId = loggedUser.id;
+    notification.loggedUserId = loggedInUser.id
     notification.name = loggedInUser.name;
     notification.displayUrl = loggedInUser.displayUrl;
     notification.count += 1;
