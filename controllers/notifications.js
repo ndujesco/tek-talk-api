@@ -13,7 +13,7 @@ exports.getNotifications = async (req, res) => {
       if (notification.loggedUserId) {
         toReturn.username = notification.loggedUserId.username;
         toReturn.name = notification.loggedUserId.name;
-        toReturn.displayUrl = notification.loggedUserId.displayUrl;
+        toReturn.displayUrl = notification.loggedUserId.displayUrl || null;
         toReturn.loggedUserId = notification.loggedUserId.id;
       }
       return toReturn 
