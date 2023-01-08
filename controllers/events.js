@@ -4,13 +4,15 @@ const Event = require("../models/event");
 const { uploadEventToCloudinary, deleteFromCloudinary } = require("../utils/cloudinary");
 const { catchError } = require("../utils/help-functions");
 
-const millisecondsPerDay = 24 * 3600 * 1000;
+const daysGrace = 24 * 3600 * 1000;
 
 const extractEventsInfo = (events, userId) => {
     const toReturn = []
 
     events.forEach((event) => {
-        let toPush = {
+        expDate = new Date(event.endTime).getTime();
+        if (expDate > Date.now()) {   //if the expDate is still ahead
+            let toPush = {
             id: event.id,
             attendeesCount: event.attendees.length,
             name: event.name,
@@ -31,7 +33,8 @@ const extractEventsInfo = (events, userId) => {
         event.attendees.forEach((attendee) => {
             toPush.attendees.push({username: attendee.username, displayUrl: attendee.displayUrl})
         })
-       toReturn.push(toPush);  
+       toReturn.push(toPush);
+      }
     })
     return toReturn;
 }
@@ -98,7 +101,13 @@ exports.getAllEvents = async (req, res) =>{
 
     const eventsToReturn = extractEventsInfo(events, req.userId)
     res.status(200).json({events: eventsToReturn})
-
+    events.forEach(event => {
+        expDate = new Date(event.endTime).getTime();
+        if (expDate < Date.now()) {
+            event.delete()
+            event.save();
+        }
+    })
 }
 
 exports.getEventFromId = async (req, res) => {
