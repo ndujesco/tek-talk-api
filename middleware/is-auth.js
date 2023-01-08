@@ -1,5 +1,6 @@
 const { param, validationResult, query } = require("express-validator");
 const jwt = require("jsonwebtoken");
+const { isValidObjectId } = require("mongoose");
 const API_KEYS = [process.env.api1, process.env.api2, process.env.api3];
 
 exports.isAuthenticated = (req, res, next) => {
@@ -25,6 +26,7 @@ exports.isAuthenticated = (req, res, next) => {
     throw error;
   }
   req.userId = decodedToken.userId;
+  if (!isValidObjectId(req.userId)) return res.status(401).json({message: "Input valid userId, the token must have been altered"})
   next();
 };
 

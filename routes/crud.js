@@ -20,7 +20,7 @@ const {
   getLikers,
   deleteComment,
 } = require("../controllers/like-comment");
-const { searchForAnything } = require("../controllers/network");
+const { searchForAnything, saveSearch, getSearchHistory, deleteSearch } = require("../controllers/network");
 
 const {
   getNotifications,
@@ -154,5 +154,11 @@ router.delete("/event/:eventId", isAuthenticated, deleteEvent)
 router.patch("/event/edit/:eventId", isAuthenticated, eventValidator, editEvent)
 
 router.get("/network/search", isAuthenticated, searchForAnything)
+
+router.post("/network/save-search", isAuthenticated, saveSearch)
+
+router.get("/network/search-history", isAuthenticated, getSearchHistory)
+
+router.delete("/network/delete-search/:searchId", isAuthenticated, deleteSearch)
 
 module.exports = router;

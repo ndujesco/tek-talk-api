@@ -10,6 +10,10 @@ exports.getNotifications = async (req, res) => {
   } catch (err) {
     catchError(err, res);
   }
+
+  
+
+
 };
 
 exports.readNotifications = async (req, res) => {
@@ -24,3 +28,4 @@ exports.readNotifications = async (req, res) => {
     catchError(err, res);
   }
 };
+

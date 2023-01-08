@@ -1,5 +1,7 @@
+const { isValidObjectId } = require("mongoose");
 const Comment = require("../models/comment");
 const Event = require("../models/event");
+const History = require("../models/history");
 const Post = require("../models/post");
 const Talk = require("../models/talk");
 const User = require("../models/user");
@@ -59,4 +61,71 @@ exports.searchForAnything = async (req, res) => {
     } catch (err) {
         catchError(err, res)
     }
+}
+
+exports.saveSearch = async (req, res) => {
+    let history;
+    const string = req.body.search
+    console.log(string, req.body);
+
+    if (!string) return res.status(401).json({message: "Input a search"})
+    // const theClass = req.body.class;
+    try {
+        history = await History.findOne({userId: req.userId})
+        if (!history) {
+            history = new History({
+                userId: req.userId,
+                history: []
+            })
+        }
+        if (history.history.some(obj => obj.search.toLowerCase() === string.toLowerCase())) {
+            const position = history.history.findIndex(obj => obj.search.toLowerCase() === string.toLowerCase())
+            history.history.splice(position,1)
+        }  // remove so it can go up the array
+        history.history.push({
+            search: string
+        })
+        history.save();
+        res.status(200).json({message: "Saved successfully!"});
+    
+    } catch (err) {
+        catchError(err, res)
+    }
+}
+
+exports.getSearchHistory = async (req, res) => {
+    try {
+        const history = await History.findOne({userId: req.userId});
+        if (!history) return res.status(200).json({message: "You have no search history"});
+    
+        const search = history.history
+        if (search.length === 0) return res.status(200).json({message: "You have no search history"});
+        res.status(200).json({searchHistory: search.map(obj => {
+            return {
+                searchId: obj.id,
+                search: obj.search
+                }
+            })
+        });
+    } catch (err) {
+        catchError(err, res)
+    }
+
+}
+
+exports.deleteSearch = async (req, res) => {
+    const searchId = req.params.searchId
+    if (!isValidObjectId(searchId)) return res.status(401).json({message: "Input valid id"})
+    try {
+        const history = await History.findOne({userId: req.userId});
+        const position = history.history.findIndex(obj => obj.id === searchId)
+        history.history.splice(position,1)
+        history.save()
+        res.status(200).json({message: "Deleted successfully!"})
+    } catch (err) {
+        catchError(err, res)
+    }
+
+  
+
 }
