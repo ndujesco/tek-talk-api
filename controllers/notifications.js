@@ -3,33 +3,25 @@ const User = require("../models/user");
 const { catchError } = require("../utils/help-functions");
 
 exports.getNotifications = async (req, res) => {
-
-  // const notifications = await  Notification.find();
-  // const users = await User.find()
-  // const allUserNames = users.map(user => user.username);
-
-  // const unchangedName = notifications.filter(notification => allUserNames.includes(notification.username))
-  // const changedName = notifications.filter(notification => !allUserNames.includes(notification.username))
-
-
-
-  // return res.json({allCount: notifications.length, unchangedCount: unchangedName.length, changedCount: changedName.length, changed: changedName })
-
-
-
-
   try {
-    const userNotifications = await Notification.find({
+    let userNotifications = await Notification.find({
       userId: req.userId,
-    }).sort({ updatedAt: -1 });
+    }).sort({ updatedAt: -1 }).populate({path: "loggedUserId", model: "User" })
+
+    userNotifications = userNotifications.map(notification => {
+      const toReturn = notification;
+      if (notification.loggedUserId) {
+        toReturn.username = notification.loggedUserId.username;
+        toReturn.name = notification.loggedUserId.name;
+        toReturn.displayUrl = notification.loggedUserId.displayUrl;
+        toReturn.loggedUserId = notification.loggedUserId.id;
+      }
+      return toReturn 
+    })
     res.status(200).json({ userNotifications });
   } catch (err) {
     catchError(err, res);
   }
-
-
-
-
 };
 
 exports.readNotifications = async (req, res) => {
