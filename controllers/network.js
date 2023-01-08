@@ -66,7 +66,6 @@ exports.searchForAnything = async (req, res) => {
 exports.saveSearch = async (req, res) => {
     let history;
     const string = req.body.search
-    console.log(string, req.body);
 
     if (!string) return res.status(401).json({message: "Input a search"})
     // const theClass = req.body.class;
@@ -80,7 +79,7 @@ exports.saveSearch = async (req, res) => {
         }
         if (history.history.some(obj => obj.search.toLowerCase() === string.toLowerCase())) {
             const position = history.history.findIndex(obj => obj.search.toLowerCase() === string.toLowerCase())
-            history.history.splice(position,1)
+            history.history.splice(position, 1)
         }  // remove so it can go up the array
         history.history.push({
             search: string
@@ -125,7 +124,5 @@ exports.deleteSearch = async (req, res) => {
     } catch (err) {
         catchError(err, res)
     }
-
-  
 
 }
