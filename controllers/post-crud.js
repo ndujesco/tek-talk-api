@@ -223,7 +223,6 @@ exports.getFeedOrNotUserName = async (req, res) => {
       post.postedIn === "Feed" ? isFeed : !isFeed
     );
     posts = posts.slice((pageNumber - 1) * 25, pageNumber * 25)
-
     let postsToSend = [];
 
     posts.forEach((post) => {
