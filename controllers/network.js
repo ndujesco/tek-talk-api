@@ -94,11 +94,11 @@ exports.saveSearch = async (req, res) => {
 
 exports.getSearchHistory = async (req, res) => {
     try {
-        const history = await History.findOne({userId: req.userId});
-        if (!history) return res.status(200).json({message: "You have no search history"});
+        const history = await History.findOne({userId: req.userId}).sort({ $natural: -1 });;
+        if (!history) return res.status(200).json({searchHistory: []});
     
         const search = history.history
-        if (search.length === 0) return res.status(200).json({message: "You have no search history"});
+        if (search.length === 0) return res.status(200).json({searchHistory: []});
         res.status(200).json({searchHistory: search.map(obj => {
             return {
                 searchId: obj.id,
