@@ -94,7 +94,7 @@ exports.saveSearch = async (req, res) => {
 
 exports.getSearchHistory = async (req, res) => {
     try {
-        const history = await History.findOne({userId: req.userId}).sort({ $natural: -1 });;
+        const history = await History.findOne({userId: req.userId}).sort({ $natural: -1 });
         if (!history) return res.status(200).json({searchHistory: []});
     
         const search = history.history
