@@ -81,12 +81,13 @@ exports.saveSearch = async (req, res) => {
             const position = history.history.findIndex(obj => obj.search.toLowerCase() === string.toLowerCase())
             history.history.splice(position, 1)
         }  // remove so it can go up the array
+        if (history.history.length > 15) history.history.pop();
         history.history.push({
             search: string
         })
         const modifiedHistory = await (await history.save()).history;
         const searchId = modifiedHistory[modifiedHistory.length - 1].id
-        
+
         res.status(200).json({message: "Saved successfully!", searchId});
     
     } catch (err) {
