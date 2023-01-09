@@ -84,8 +84,10 @@ exports.saveSearch = async (req, res) => {
         history.history.push({
             search: string
         })
-        history.save();
-        res.status(200).json({message: "Saved successfully!"});
+        const modifiedHistory = await (await history.save()).history;
+        const searchId = modifiedHistory[modifiedHistory.length - 1].id
+        
+        res.status(200).json({message: "Saved successfully!", searchId});
     
     } catch (err) {
         catchError(err, res)
