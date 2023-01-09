@@ -81,7 +81,7 @@ exports.saveSearch = async (req, res) => {
             const position = history.history.findIndex(obj => obj.search.toLowerCase() === string.toLowerCase())
             history.history.splice(position, 1)
         }  // remove so it can go up the array
-        if (history.history.length > 15) history.history.pop();
+        if (history.history.length === 15) history.history.pop();
         history.history.push({
             search: string
         })
