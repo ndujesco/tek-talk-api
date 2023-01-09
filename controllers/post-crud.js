@@ -214,16 +214,15 @@ exports.getFeedOrNotUserName = async (req, res) => {
       throw error;
     }
     const userId = user.id;
-    let posts = await Post.find({ author: userId })
+    let posts = await Post.find({ author: userId})
       .populate({ path: "comments", model: "Comment" })
       .populate("author")
-      .skip((pageNumber - 1) * 25)
-      .limit(25)
       .sort({ $natural: -1 });
 
     posts = posts.filter((post) =>
       post.postedIn === "Feed" ? isFeed : !isFeed
     );
+    posts = posts.slice((pageNumber - 1) * 25, pageNumber * 25)
 
     let postsToSend = [];
 
