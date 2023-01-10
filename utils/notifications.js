@@ -125,5 +125,3 @@ exports.notifyFollow = async (userToFollow, loggedInUser) => {
 
   notification.save();
 };
-
-exports.notifyEvent = async () 
