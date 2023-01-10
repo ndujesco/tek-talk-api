@@ -20,13 +20,6 @@ exports.searchForAnything = async (req, res) => {
         if (fromClick === "true") {}
         const users = await User.find();
         let usersToReturn = users.filter(user => regexed.test(user.username) || regexed.test(user.name) && user.id !== req.userId);
-        usersToReturn = usersToReturn.map(user=> {
-           return {
-            name: user.name,
-            username: user.username,
-            displayUrl: user.displayUrl || null
-        }   
-        })
 
         const comments = await Comment.find().populate("author");;
         let commentsToReturn = comments.filter(comment => regexed.test(comment.body));
@@ -43,10 +36,25 @@ exports.searchForAnything = async (req, res) => {
         let talksToReturn = talks.filter(talk => regexed.test(talk.name));
         talksToReturn = extractTalkInfo(talksToReturn, req.userId)
 
+
+        let usersFromTalks = [];
+        talksToReturn.forEach(talk => {
+            usersFromTalks.push(...talk.users)
+        });
+        usersToReturn.push(...usersFromTalks)
+        
+        usersToReturn = usersToReturn.map(user=> {
+            return {
+             name: user.name,
+             username: user.username,
+             displayUrl: user.displayUrl || null
+         }   
+         });
+
         const events = await Event.find()
         .populate({path: "attendees", model: "User" })
         .populate({path: "userId", model: "User" })
-        let eventsToReturn = events.filter(event => regexed.test(event.name))
+        let eventsToReturn = events.filter(event => regexed.test(event.name) || regexed.test(event.userId.username) || regexed.test(event.userId.name))
         eventsToReturn = extractEventsInfo(eventsToReturn, req.userId)
 
         res.status(200).json({

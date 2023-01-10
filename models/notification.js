@@ -2,7 +2,7 @@ const { Schema, default: mongoose } = require("mongoose");
 
 const notificationSchema = new Schema(
   {
-    class: String, //like, comment, follow, mention
+    class: String, //like, comment, follow, mention, event
     mentionLocation: String,
     seen: Boolean,
     postId: String,
