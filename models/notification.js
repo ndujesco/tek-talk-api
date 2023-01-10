@@ -18,13 +18,13 @@ const notificationSchema = new Schema(
     commentId: String,
     postedIn: String,
     displayUrl: String,
-    eventId: String,
-    
-
   },
+
   {
     timestamps: true,
   }
 );
-
+const eventNotificationSchema = new Schema ({
+  
+})
 exports.Notification = mongoose.model("Notification", notificationSchema);

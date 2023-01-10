@@ -5,7 +5,7 @@ const eventSchema = new Schema({
         type: String,
         required: true
     },
-
+    
     name: {
         type: String,
         required: true
@@ -28,6 +28,7 @@ const eventSchema = new Schema({
     imageId: {
         type: String,
     },
+
     location: {
         type: String,
     },
@@ -35,9 +36,11 @@ const eventSchema = new Schema({
     startTime: {
         type: String,
     },
+
     endTime: {
         type: String,
     },
+
     attendees: [{
         type: String
     }]

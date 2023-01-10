@@ -1,9 +1,14 @@
+const Event  = require("../models/event")
 const { Notification } = require("../models/notification");
 const User = require("../models/user");
 const { catchError } = require("../utils/help-functions");
 
+const dayBeforeNotification = 24 * 3600 * 1000;
+
+
 exports.getNotifications = async (req, res) => {
   try {
+    const events = await Event.find({attendees});
     let userNotifications = await Notification.find({
       userId: req.userId,
     }).sort({ updatedAt: -1 }).populate({path: "loggedUserId", model: "User" })
@@ -17,7 +22,13 @@ exports.getNotifications = async (req, res) => {
         toReturn.loggedUserId = notification.loggedUserId.id;
       }
       return toReturn 
+    });
+
+    const usersEventsToNotify = events.filter(event => {
+      return event.attendees.includes(req.userId) && new Date(event.startTime).getTime() < Date.now() + dayBeforeNotification
     })
+
+
     res.status(200).json({ userNotifications });
   } catch (err) {
     catchError(err, res);

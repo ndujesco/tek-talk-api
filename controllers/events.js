@@ -6,7 +6,6 @@ const { uploadEventToCloudinary, deleteFromCloudinary } = require("../utils/clou
 const { catchError } = require("../utils/help-functions");
 
 
-const daysGrace = 24 * 3600 * 1000;
 
 const extractEventsInfo = (events, userId) => {
     const toReturn = []
@@ -103,14 +102,7 @@ exports.getAllEvents = async (req, res) =>{
             .populate({path: "userId", model: "User" })
 
     const eventsToReturn = extractEventsInfo(events, req.userId)
-    res.status(200).json({events: eventsToReturn})
-    events.forEach(event => {
-        expDate = new Date(event.endTime).getTime();
-        if (expDate < Date.now()) {
-            event.delete()
-            event.save();
-        }
-    })
+    res.status(200).json({events: eventsToReturn});
 }
 
 exports.getEventFromId = async (req, res) => {
