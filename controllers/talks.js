@@ -3,7 +3,7 @@ const Talk = require("../models/talk");
 const User = require("../models/user");
 const { catchError } = require("../utils/help-functions");
 
-const extractTalkInfo = (talks, userId) => {
+const extractTalkInfo = (talks, userId, maxUser) => {
   const toReturn = [];
 
   talks.forEach((talk) => {
@@ -18,7 +18,7 @@ const extractTalkInfo = (talks, userId) => {
     };
 
     talk.users.forEach((user, index) => {
-      if (index < 5) toPush.users.push({username: user.username, displayUrl: user.displayUrl});
+      if (index < maxUser) toPush.users.push({username: user.username, displayUrl: user.displayUrl});
     });
 
     toReturn.push(toPush);
@@ -126,8 +126,8 @@ exports.popularAndSuggestedTalks = async (req, res) => {
       );
     }
 
-    popularTalks = extractTalkInfo(popularTalks, req.userId);
-    suggestedTalks = extractTalkInfo(suggestedTalks, req.userId);
+    popularTalks = extractTalkInfo(popularTalks, req.userId, 5);
+    suggestedTalks = extractTalkInfo(suggestedTalks, req.userId, 5);
     suggestedTalks.sort(() => Math.random() - 0.5);
 
     res.status(200).json({
@@ -156,7 +156,7 @@ exports.getUserTalks = async (req, res) => {
     if (!user)
       return res.status(401).json({ status: 401, message: "User not found!" });
 
-    const userTalks = extractTalkInfo(user.talksId, req.userId);
+    const userTalks = extractTalkInfo(user.talksId, req.userId, 5);
     res.status(200).json({ message: 200, userTalks });
   } catch (err) {
     catchError(err, res);
@@ -171,7 +171,7 @@ exports.getTalkFromName = async (req, res) => {
   const talks = await Talk.find().populate({ path: "users", model: "User" });
   const talk = talks.find(talk => talk.name.toLowerCase() === talkName.toLowerCase())
   if (!talk) return res.status(401).json({ status: 401, message: "Talk not found!" });
-  const talkToReturn = extractTalkInfo([talk], req.userId)[0];
+  const talkToReturn = extractTalkInfo([talk], req.userId, 10)[0]; // the "2" can be 1.
   res.status(200).json({talkInfo: talkToReturn})
 
 }

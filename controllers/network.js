@@ -32,7 +32,7 @@ exports.searchForAnything = async (req, res) => {
 
         const talks = await Talk.find().populate({ path: "users", model: "User" });
         let talksToReturn = talks.filter(talk => regexed.test(talk.name));
-        talksToReturn = extractTalkInfo(talksToReturn, req.userId)
+        talksToReturn = extractTalkInfo(talksToReturn, req.userId, 100)
 
 
         let usersFromTalks = [];
