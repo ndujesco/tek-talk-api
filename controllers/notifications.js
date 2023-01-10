@@ -8,7 +8,7 @@ const dayBeforeNotification = 24 * 3600 * 1000;
 
 exports.getNotifications = async (req, res) => {
   try {
-    const events = await Event.find({attendees});
+    const events = await Event.find();
     let userNotifications = await Notification.find({
       userId: req.userId,
     }).sort({ updatedAt: -1 }).populate({path: "loggedUserId", model: "User" })
