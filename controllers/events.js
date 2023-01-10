@@ -54,13 +54,16 @@ exports.eventValidator = [
     .trim()
     .custom(value => {
         if (new Date(value).getTime() < Date.now() ) throw new Error("The start time cannot be a past date.");
+        return true
     }),
 
     body("endTime")
     .isLength({ min: 1 }).withMessage("'end-time' field should not be empty")
     .trim()
     .custom((value, {req}) => {
-        if (new Date(value) < new Date(req.startTime)) throw new Error("The event cannot end before it starts.👀");
+        if (new Date(value) < new Date(req.body.startTime)) throw new Error("The event cannot end before it starts.👀");
+        if (new Date(value).getTime() === new Date(req.body.startTime).getTime()) throw new Error("The duration of this event is infinitesimal, are you a calculus student?😏");
+        return false    
     }),
 
     body("location", "'Location' field should not be empty")
