@@ -14,10 +14,8 @@ const { extractTalkInfo } = require("./talks");
 exports.searchForAnything = async (req, res) => {
     const string = req.query.search
     const regexed = new RegExp(string, "i")
-    const fromClick = req.query.click
 
     try {
-        if (fromClick === "true") {}
         const users = await User.find();
         let usersToReturn = users.filter(user => regexed.test(user.username) || regexed.test(user.name) && user.id !== req.userId);
 
