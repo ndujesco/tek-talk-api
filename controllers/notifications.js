@@ -33,10 +33,15 @@ exports.getNotifications = async (req, res) => {
         displayUrl: event.imageUrl,
         startTime: event.startTime,
         endTime: event.endTime,
-        class: event
+        class: event, 
+        updatedAt: new Date(event.startTime - dayBeforeNotification) 
       }
     })
+    
     userNotifications.push(...usersEventsToNotify)
+    userNotifications.sort((a, b) => {
+      return a.updatedAt > b.updatedAt ? -1 : 1
+    })
 
 
     res.status(200).json({ userNotifications });
