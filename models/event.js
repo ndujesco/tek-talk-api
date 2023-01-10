@@ -1,11 +1,11 @@
 const { Schema, default: mongoose } = require("mongoose");
 
 const eventSchema = new Schema({
-    userId: {
+    userId: {  //authorId I meant, my bad.
         type: String,
         required: true
     },
-    
+
     name: {
         type: String,
         required: true

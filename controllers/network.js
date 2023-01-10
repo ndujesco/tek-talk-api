@@ -52,7 +52,11 @@ exports.searchForAnything = async (req, res) => {
         const events = await Event.find()
         .populate({path: "attendees", model: "User" })
         .populate({path: "userId", model: "User" })
-        let eventsToReturn = events.filter(event => regexed.test(event.name) || regexed.test(event.userId.username) || regexed.test(event.userId.name))
+        let eventsToReturn = events.filter(event => {
+            const createdByUser = usersToReturn.some(user => user.name === event.userId.name || user.username === event.userId.username)
+            return regexed.test(event.name) || createdByUser
+
+        })
         eventsToReturn = extractEventsInfo(eventsToReturn, req.userId)
 
         res.status(200).json({
