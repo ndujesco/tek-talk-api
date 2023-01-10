@@ -24,9 +24,19 @@ exports.getNotifications = async (req, res) => {
       return toReturn 
     });
 
-    const usersEventsToNotify = events.filter(event => {
+    let usersEventsToNotify = events.filter(event => {
       return event.attendees.includes(req.userId) && new Date(event.startTime).getTime() < Date.now() + dayBeforeNotification
     })
+    usersEventsToNotify = usersEventsToNotify.map(event => {
+      return {
+        name: event.name,
+        displayUrl: event.imageUrl,
+        startTime: event.startTime,
+        endTime: event.endTime,
+        class: event
+      }
+    })
+    userNotifications.push(...usersEventsToNotify)
 
 
     res.status(200).json({ userNotifications });
