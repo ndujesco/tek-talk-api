@@ -1,8 +1,10 @@
 const { body, validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 const Event = require("../models/event");
+const { Notification } = require("../models/notification");
 const { uploadEventToCloudinary, deleteFromCloudinary } = require("../utils/cloudinary");
 const { catchError } = require("../utils/help-functions");
+
 
 const daysGrace = 24 * 3600 * 1000;
 
@@ -88,7 +90,8 @@ exports.createEvent = async (req, res) => {
 
         if (uploadedImage) {
             uploadEventToCloudinary(uploadedImage.path, event.id)
-        }
+        } 
+
     } catch (err) {
         catchError(err, res)
     }

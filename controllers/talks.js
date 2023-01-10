@@ -18,7 +18,7 @@ const extractTalkInfo = (talks, userId) => {
     };
 
     talk.users.forEach((user) => {
-     toPush.users.push({username: user.username, displayUrl: user.displayUrl});
+      if (index < 5) toPush.users.push({username: user.username, displayUrl: user.displayUrl});
     });
 
     toReturn.push(toPush);
