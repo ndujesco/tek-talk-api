@@ -1,8 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 const Event = require("../models/event");
-const { Notification } = require("../models/notification");
-const { uploadEventToCloudinary, deleteFromCloudinary } = require("../utils/cloudinary");
+    const { uploadEventToCloudinary, deleteFromCloudinary } = require("../utils/cloudinary");
 const { catchError } = require("../utils/help-functions");
 
 
@@ -63,7 +62,7 @@ exports.eventValidator = [
     .custom((value, {req}) => {
         if (new Date(value) < new Date(req.body.startTime)) throw new Error("The event cannot end before it starts.👀");
         if (new Date(value).getTime() === new Date(req.body.startTime).getTime()) throw new Error("The duration of this event is infinitesimal, are you a calculus student?😏");
-        return false    
+        return true    
     }),
 
     body("location", "'Location' field should not be empty")
