@@ -113,7 +113,10 @@ exports.notifyFollow = async (userToFollow, loggedInUser) => {
       followersId: [],
     });
   }
-  if (!notification.followersId.includes(loggedInUser.id)) {
+  if (notification.followersId.includes(loggedInUser.id)) {
+    const position = notification.followersId.indexOf(loggedInUser.id)
+    notification.followersId.splice(position, 1)
+  }
     notification.username = loggedInUser.username;
     notification.loggedUserId = loggedInUser.id
     notification.name = loggedInUser.name;
@@ -121,7 +124,7 @@ exports.notifyFollow = async (userToFollow, loggedInUser) => {
     notification.count = notification.followersId.length
     notification.seen = false;
     notification.followersId.push(loggedInUser.id);
-  }
+    console.log(notification);
 
   notification.save();
 };
