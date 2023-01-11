@@ -34,7 +34,8 @@ exports.getNotifications = async (req, res) => {
         startTime: event.startTime,
         endTime: event.endTime,
         class: "event", 
-        updatedAt: new Date(new Date(event.startTime).getTime() - dayBeforeNotification) 
+        updatedAt: new Date(new Date(event.startTime).getTime() - dayBeforeNotification),
+        description: event.description
       }
     })
     console.log(usersEventsToNotify);
