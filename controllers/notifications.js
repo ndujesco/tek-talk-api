@@ -25,18 +25,19 @@ exports.getNotifications = async (req, res) => {
     });
 
     let usersEventsToNotify = events.filter(event => {
-      return event.attendees.includes(req.userId) && new Date(event.startTime).getTime() < Date.now() + dayBeforeNotification
+      return event.attendees.includes(req.userId) && new Date(event.startTime).getTime() <= Date.now() + dayBeforeNotification
     })
-    usersEventsToNotify = usersEventsToNotify.map(event => {
+    usersEventsToNotify = usersEventsToNotify.map(event => { 
       return {
         name: event.name,
         displayUrl: event.imageUrl,
         startTime: event.startTime,
         endTime: event.endTime,
-        class: event, 
-        updatedAt: new Date(event.startTime - dayBeforeNotification) 
+        class: "event", 
+        updatedAt: new Date(new Date(event.startTime).getTime() - dayBeforeNotification) 
       }
     })
+    console.log(usersEventsToNotify);
     
     userNotifications.push(...usersEventsToNotify)
     userNotifications.sort((a, b) => {
