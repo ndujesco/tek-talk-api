@@ -17,7 +17,7 @@ exports.searchForAnything = async (req, res) => {
 
     try {
         const users = await User.find();
-        let usersToReturn = users.filter(user => regexed.test(user.username) || regexed.test(user.name) && user.id !== req.userId);
+        let usersToReturn = users.filter(user => regexed.test(`${user.username} ${user.name} ${user.stack}`)  );
 
         const comments = await Comment.find().populate("author");;
         let commentsToReturn = comments.filter(comment => regexed.test(comment.body));
