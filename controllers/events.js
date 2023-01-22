@@ -31,7 +31,7 @@ const extractEventsInfo = (events, userId) => {
 
         }
         event.attendees.forEach((attendee) => {
-            toPush.attendees.push({username: attendee.username, displayUrl: attendee.displayUrl})
+            toPush.attendees.push({username: attendee.username, displayUrl: attendee.displayUrl, name: attendee.name})
         })
        toReturn.push(toPush);
       }
