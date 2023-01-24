@@ -112,7 +112,11 @@ exports.deleteComment = async (req, res) => {
   }
 
   try {
-    await Comment.findByIdAndDelete(commentId);
+    const comment = await Comment.findById(commentId).populate("author");
+    if (!comment) return  res.status(200).json({ message: "No comment with this id" });
+    const possiblePeople = [post.author.id, "633b45a338ad34f4b8940219", "633dae0b84db7a1a751fe468" ];
+    if (!possiblePeople.includes(req.userId)) return  res.status(200).json({ message: "What do you think you're trying to do?" });
+
     const posts = await Post.find();
     const post = posts.find((post) => {
       return post.comments.includes(commentId);

@@ -245,7 +245,10 @@ exports.deletePost = async (req, res) => {
   }
 
   try {
-    const post = await Post.findByIdAndDelete(postId);
+    const post = await Post.findById(postId).populate("author");
+    if (!post) return  res.status(200).json({ message: "No post with this id" });
+    const possiblePeople = [post.author.id, "633b45a338ad34f4b8940219", "633dae0b84db7a1a751fe468" ]
+    if (!possiblePeople.includes(req.userId)) return  res.status(200).json({ message: "What do you think you're trying to do?" });
     await Comment.deleteMany({ post: postId });
     res.status(200).json({ message: "Deleted successfully" });
     post.imagesId.forEach((id) => {
