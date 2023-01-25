@@ -1,4 +1,4 @@
-const { param, validationResult, query } = require("express-validator");
+const { query } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
 const API_KEYS = [process.env.api1, process.env.api2, process.env.api3];
@@ -26,14 +26,19 @@ exports.isAuthenticated = (req, res, next) => {
     throw error;
   }
   req.userId = decodedToken.userId;
-  if (!isValidObjectId(req.userId)) return res.status(401).json({message: "Input valid userId, the token must have been altered"})
+  if (!isValidObjectId(req.userId))
+    return res
+      .status(401)
+      .json({
+        message: "Input valid userId, the token must have been altered",
+      });
   next();
 };
 
 exports.isAuthorized = (req, res, next) => {
   const apiKey = req.query.apiKey || null;
   if (!API_KEYS.includes(apiKey)) {
-    return res.status(401).json({ status: 401, message: "Inavlid api key" });
+    return res.status(401).json({ status: 401, message: "Invalid api key" });
   }
   next();
 };
