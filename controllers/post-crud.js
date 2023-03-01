@@ -255,6 +255,7 @@ exports.deletePost = async (req, res) => {
       deleteFromCloudinary(id);
     });
     await Notification.deleteMany({ postId });
+    post.delete();
   } catch (err) {
     catchError(err, res);
   }
