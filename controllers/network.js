@@ -11,6 +11,22 @@ const { extractCommentToSend } = require("./like-comment");
 const { extractPostToSend } = require("./post-crud");
 const { extractTalkInfo } = require("./talks");
 
+const extractUsersInfo = (users, userId) => {
+  infosToReturn = [];
+  users.forEach((user) => {
+    let infoToReturn = {
+      userId: user.id,
+      username: user.username,
+      name: user.name,
+      displayUrl: user.displayUrl,
+      verified: user.verified,
+      isFollowedBy: user.following.includes(userId),
+    };
+    infosToReturn.push(infoToReturn);
+  });
+  return infosToReturn;
+};
+
 exports.searchForAnything = async (req, res) => {
   const string = req.query.search;
   const regexed = new RegExp(string, "i");
@@ -151,4 +167,45 @@ exports.deleteSearch = async (req, res) => {
   } catch (err) {
     catchError(err, res);
   }
+};
+
+exports.getTopFive = async (req, res) => {
+  const talk = req.params.talk;
+  const stacks = [
+    "Frontend Development",
+    "Backend Development",
+    "Fullstack Development",
+    "DevOps",
+    "UI/UX Design",
+    "Product Design",
+    "Mobile Development",
+    "Data Analysis",
+    "ML/AI",
+    "Data Science",
+    "App Development",
+    "Cloud Computing",
+    "Game Development",
+    "CyberSecurity",
+    "Technical Writing",
+    "Guest",
+    "I do not want to put myself in a box",
+    "I am yet to decide",
+    "I don't know, man",
+  ];
+
+  if (!stacks.includes(talk))
+    return res.status(401).json({ message: "Input valid talk" });
+
+  let users = await User.find({ stack: { $in: talk } }).select(
+    "username name displayUrl verified following followers"
+  );
+  users = users
+    .filter((user) => !user.followers.includes(req.userId))
+    .sort((user1, user2) => {
+      return user1.followers.length > user2.followers.length ? -1 : 1;
+    })
+    .slice(0, 5);
+
+  const toReturn = extractUsersInfo(users, req.userId);
+  res.status(200).json({ users: toReturn });
 };

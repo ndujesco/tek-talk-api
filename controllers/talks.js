@@ -18,7 +18,11 @@ const extractTalkInfo = (talks, userId, maxUser) => {
     };
 
     talk.users.forEach((user, index) => {
-      if (index < maxUser) toPush.users.push({username: user.username, displayUrl: user.displayUrl});
+      if (index < maxUser)
+        toPush.users.push({
+          username: user.username,
+          displayUrl: user.displayUrl,
+        });
     });
 
     toReturn.push(toPush);
@@ -44,7 +48,11 @@ exports.getTalks = async (req, res) => {
       };
 
       talk.users.forEach((user, index) => {
-        if (index < 5) toPush.users.push({username: user.username, displayUrl: user.displayUrl});
+        if (index < 5)
+          toPush.users.push({
+            username: user.username,
+            displayUrl: user.displayUrl,
+          });
       });
 
       toPush.memberOf ? userTalks.push(toPush) : allTalks.push(toPush);
@@ -151,7 +159,9 @@ exports.getUserTalks = async (req, res) => {
       model: "talk",
       populate: { path: "users", model: "User" },
     });
-    const user = users.find((user) => user.username.toLowerCase() === username.toLowerCase());
+    const user = users.find(
+      (user) => user.username.toLowerCase() === username.toLowerCase()
+    );
 
     if (!user)
       return res.status(401).json({ status: 401, message: "User not found!" });
@@ -163,18 +173,28 @@ exports.getUserTalks = async (req, res) => {
   }
 };
 
-
 exports.getTalkFromName = async (req, res) => {
   const talkName = req.params.talkName;
   if (!talkName)
-  return res.status(422).json({ status: 422, message: "Input talkname." });
+    return res.status(422).json({ status: 422, message: "Input talkname." });
   const talks = await Talk.find().populate({ path: "users", model: "User" });
-  const talk = talks.find(talk => talk.name.toLowerCase() === talkName.toLowerCase())
-  if (!talk) return res.status(401).json({ status: 401, message: "Talk not found!" });
+  const talk = talks.find(
+    (talk) => talk.name.toLowerCase() === talkName.toLowerCase()
+  );
+  if (!talk)
+    return res.status(401).json({ status: 401, message: "Talk not found!" });
   const talkToReturn = extractTalkInfo([talk], req.userId, 10)[0]; // the "2" can be 1.
-  res.status(200).json({talkInfo: talkToReturn})
+  res.status(200).json({ talkInfo: talkToReturn });
+};
 
-}
+exports.addTalk = async (req, res) => {
+  const { name, description, displayUrl } = req.body;
+  const talk = Talk({
+    name,
+    description,
+    displayUrl,
+  });
+  await talk.save();
+};
 
-
-exports.extractTalkInfo = extractTalkInfo  // for the network page
+exports.extractTalkInfo = extractTalkInfo; // for the network page

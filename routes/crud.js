@@ -4,7 +4,16 @@ const {
   editProfile,
   editProfileValidator,
 } = require("../controllers/edit-profile");
-const { createEvent, eventValidator, getAllEvents, rsvpEvent, removeRsvp, deleteEvent, editEvent, getEventFromId } = require("../controllers/events");
+const {
+  createEvent,
+  eventValidator,
+  getAllEvents,
+  rsvpEvent,
+  removeRsvp,
+  deleteEvent,
+  editEvent,
+  getEventFromId,
+} = require("../controllers/events");
 
 const {
   followUser,
@@ -20,7 +29,13 @@ const {
   getLikers,
   deleteComment,
 } = require("../controllers/like-comment");
-const { searchForAnything, saveSearch, getSearchHistory, deleteSearch } = require("../controllers/network");
+const {
+  searchForAnything,
+  saveSearch,
+  getSearchHistory,
+  deleteSearch,
+  getTopFive,
+} = require("../controllers/network");
 
 const {
   getNotifications,
@@ -53,6 +68,7 @@ const {
   popularAndSuggestedTalks,
   getUserTalks,
   getTalkFromName,
+  addTalk,
 } = require("../controllers/talks");
 
 const { isAuthenticated } = require("../middleware/is-auth");
@@ -85,7 +101,7 @@ router.patch(
 
 router.get("/suggestions", isAuthenticated, getUserSuggestions);
 
-router.get("/tag-user", maybeAuthenticated, searchForUser)
+router.get("/tag-user", maybeAuthenticated, searchForUser);
 
 router.post("/post", isAuthenticated, postValidator, postPost);
 
@@ -125,7 +141,7 @@ router.patch("/seen-notifications", isAuthenticated, readNotifications);
 
 router.get("/talk", isAuthenticated, getTalks);
 
-router.get("/talk/talk-name/:talkName",maybeAuthenticated, getTalkFromName)
+router.get("/talk/talk-name/:talkName", maybeAuthenticated, getTalkFromName);
 
 router.put("/talk/join", isAuthenticated, joinTalk);
 
@@ -139,26 +155,39 @@ router.get(
   popularAndSuggestedTalks
 );
 
-router.post("/event", isAuthenticated, eventValidator, createEvent)
+router.post("/event", isAuthenticated, eventValidator, createEvent);
 
-router.get("/event/all", maybeAuthenticated, getAllEvents)
+router.get("/event/all", maybeAuthenticated, getAllEvents);
 
-router.get("/event/id/:eventId", maybeAuthenticated, getEventFromId)
+router.get("/event/id/:eventId", maybeAuthenticated, getEventFromId);
 
-router.put("/event/rsvp/:eventId", isAuthenticated, rsvpEvent)
+router.put("/event/rsvp/:eventId", isAuthenticated, rsvpEvent);
 
-router.patch("/event/rsvp/:eventId", isAuthenticated, removeRsvp)
+router.patch("/event/rsvp/:eventId", isAuthenticated, removeRsvp);
 
-router.delete("/event/:eventId", isAuthenticated, deleteEvent)
+router.delete("/event/:eventId", isAuthenticated, deleteEvent);
 
-router.patch("/event/edit/:eventId", isAuthenticated, eventValidator, editEvent)
+router.patch(
+  "/event/edit/:eventId",
+  isAuthenticated,
+  eventValidator,
+  editEvent
+);
 
-router.get("/network/search", isAuthenticated, searchForAnything)
+router.get("/network/search", isAuthenticated, searchForAnything);
 
-router.post("/network/save-search", isAuthenticated, saveSearch)
+router.post("/network/save-search", isAuthenticated, saveSearch);
 
-router.get("/network/search-history", isAuthenticated, getSearchHistory)
+router.get("/network/search-history", isAuthenticated, getSearchHistory);
 
-router.delete("/network/delete-search/:searchId", isAuthenticated, deleteSearch)
+router.delete(
+  "/network/delete-search/:searchId",
+  isAuthenticated,
+  deleteSearch
+);
+
+router.get("/network/top-five/:talk", isAuthenticated, getTopFive);
+
+router.post("/talk", addTalk);
 
 module.exports = router;

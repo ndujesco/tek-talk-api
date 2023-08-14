@@ -4,6 +4,28 @@ const { signup, login } = require("../controllers/auth");
 
 const User = require("../models/user");
 
+const stacks = [
+  "Frontend Development",
+  "Backend Development",
+  "Fullstack Development",
+  "DevOps",
+  "UI/UX Design",
+  "Product Design",
+  "Mobile Development",
+  "Data Analysis",
+  "ML/AI",
+  "Data Science",
+  "App Development",
+  "Cloud Computing",
+  "Game Development",
+  "CyberSecurity",
+  "Technical Writing",
+  "Guest",
+  "I do not want to put myself in a box",
+  "I am yet to decide",
+  "I don't know, man",
+];
+
 router = Router();
 
 router.post(
@@ -23,14 +45,14 @@ router.post(
     body("username")
       .trim()
       .custom((value) => {
-
         if (!value) throw new Error("username field cannot be empty");
-        if(value.indexOf(" ") >= 0) throw new Error("username can't contain spaces");
-        
+        if (value.indexOf(" ") >= 0)
+          throw new Error("username can't contain spaces");
+
         return User.find().then((users) => {
           const matches = users.some(
             (user) => user.username.toLowerCase() === value.toLowerCase()
-            // username should not be the same at all, it is case sensitive 
+            // username should not be the same at all, it is case sensitive
           );
           if (matches) {
             return Promise.reject("The username is already taken.");
@@ -50,6 +72,7 @@ router.post(
       .trim(),
 
     body("confirmPassword")
+      .trim()
       .custom((value, { req }) => {
         if (!value) {
           throw new Error("Fill the 'confirmPassword' field.");
@@ -58,10 +81,18 @@ router.post(
           throw new Error("Passwords have to match!");
         }
         return true;
-      })
-      .trim(),
+      }),
 
-    body("stack").isLength({ min: 1 }).trim(),
+    body("stack")
+      .isLength({ min: 1 })
+      .trim()
+      .custom((value, req) => {
+        console.log(stacks.length);
+        if (!stacks.includes(value)) {
+          throw new Error(`Stack must be one of the following: ${stacks}`);
+        }
+        return true;
+      }),
   ],
   signup
 );
