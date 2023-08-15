@@ -35,11 +35,15 @@ const extractProfile = (user, req) => {
     verified,
     followingCount: user.following.length,
     followersCount: user.followers.length,
-    isFollowing: user.followers.includes(req.userId),  // if you're in their followers array then you're following them
-    isFollowedBy: user.following.includes(req.userId), 
+    isFollowing: user.followers.includes(req.userId), // if you're in their followers array then you're following them
+    isFollowedBy: user.following.includes(req.userId),
   };
-  if (displayLocal || displayUrl) { //only 'displayLocal' is actually enough check
-    const fileExists = fs.existsSync(displayLocal); /* returns a boolean, since I store images in the hosting service temporarily
+  if (displayLocal || displayUrl) {
+    //only 'displayLocal' is actually enough check
+    const fileExists =
+      fs.existsSync(
+        displayLocal
+      ); /* returns a boolean, since I store images in the hosting service temporarily
     I must check if it is still there */
     profileToReturn.displayUrl = fileExists
       ? "https://" + req.headers.host + "/" + displayLocal
@@ -130,7 +134,7 @@ exports.getUserProfileFromUserName = async (req, res) => {
 exports.getUserSuggestions = async (req, res) => {
   try {
     const posts = await Post.find();
-    // I need posts because we'll suggest based on how active the person is 
+    // I need posts because we'll suggest based on how active the person is
 
     const user = await User.findById(req.userId);
     let allUsers = await User.find();
@@ -138,13 +142,13 @@ exports.getUserSuggestions = async (req, res) => {
     const allUsers1 = allUsers.filter(
       // filter "allUsers" to make sure they do not include the logged in user's following,
       // in other words, the user is !part of their followers
-      // I also made sure to remove the loggen in user 
+      // I also made sure to remove the loggen in user
       (thisUser) =>
         thisUser.id !== user.id && !thisUser.followers.includes(req.userId)
     );
 
     // I also made sure to filter further by amount of posts users have posted, giving priority to active users
-      const allUsers2 = allUsers1.sort((first, second) => {
+    const allUsers2 = allUsers1.sort((first, second) => {
       const firstLength = posts.filter(
         (thisPost) => thisPost.author.toString() === first.id
       ).length;
@@ -184,36 +188,37 @@ exports.checkUserName = async (req, res) => {
   }
 };
 
-
 exports.searchForUser = async (req, res) => {
   try {
     const isValid = isValidObjectId(req.userId); //returns a boolean
     const string = req.query.search;
 
     const users = await User.find();
-    let found = users.filter(
-      (user) => {
-        const stringLength = string.length;
-        const partOf = user.username.toLowerCase().substring(0, stringLength) === string.toLowerCase() 
-        || user.name.toLowerCase().substring(0, stringLength) === string.toLowerCase() && user.id !== req.userId;
-        return partOf;
-      });
-      // the "found" array contains users that match the search
+    let found = users.filter((user) => {
+      const stringLength = string.length;
+      const partOf =
+        user.username.toLowerCase().substring(0, stringLength) ===
+          string.toLowerCase() ||
+        (user.name.toLowerCase().substring(0, stringLength) ===
+          string.toLowerCase() &&
+          user.id !== req.userId);
+      return partOf;
+    });
+    // the "found" array contains users that match the search
     if (isValid) {
       found.sort((user) => {
-        return user.followers.includes(req.userId) ? -1 : 1
-      })
+        return user.followers.includes(req.userId) ? -1 : 1;
+      });
     }
     const toReturn = found.map((ele) => {
       return {
         username: ele.username,
         name: ele.name,
-        displayUrl: ele.displayUrl
-      }
-    })
-    res.status(200).json({ status: 200, users: toReturn });     
+        displayUrl: ele.displayUrl,
+      };
+    });
+    res.status(200).json({ status: 200, users: toReturn });
   } catch (err) {
     catchError(err, res);
   }
-
 };

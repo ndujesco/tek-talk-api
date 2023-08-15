@@ -16,6 +16,7 @@ const {
   isAuthenticated,
   checkApi,
 } = require("./middleware/is-auth");
+const { clientIsAuthenticated } = require("./middleware/is-auth-socket");
 
 if (!fs.existsSync("./images")) {
   fs.mkdirSync("./images");
@@ -48,7 +49,6 @@ const storage = multer.diskStorage({
   },
 });
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
@@ -59,9 +59,9 @@ app.use(
   ])
 );
 app.use("/images", express.static(path.join(__dirname, "images")));
- //create the "/images path if it does not exist alraedy"
+//create the "/images path if it does not exist alraedy"
 
-app.use(checkApi, isAuthorized);  // checks if API is valid.
+app.use(checkApi, isAuthorized); // checks if API is valid.
 
 app.use("/auth", authRoutes);
 app.use(crudRoutes);
@@ -77,7 +77,8 @@ app.use((req, res) => {
 
 main()
   .then((connected) => {
-    app.listen(process.env.PORT || 8080);
+    const server = app.listen(process.env.PORT || 8080);
+    require("./socket").init(server);
     console.log("E deh rush!🚿");
   })
   .catch((err) => {

@@ -2,7 +2,7 @@ exports.catchError = (error, res) => {
   console.log(error);
   const status = error.statusCode || 500;
   const message = error.message;
-  res.status(status).json({ message, status });
+  res.status(401).json({ message, status });
 };
 
 exports.checkForMentionedUser = (string, users) => {

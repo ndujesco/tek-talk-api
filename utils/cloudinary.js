@@ -1,7 +1,10 @@
 const Event = require("../models/event");
 const Post = require("../models/post");
 const User = require("../models/user");
+const Message = require("../models/message");
+
 const { catchError } = require("./help-functions");
+const message = require("../models/message");
 
 const cloudinary = require("cloudinary").v2;
 
@@ -25,23 +28,22 @@ exports.uploadPostToCloudinary = async (filePath, id) => {
   }
 };
 
-
 exports.uploadEventToCloudinary = async (filePath, id) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       folder: "eventImages",
     });
-    const event = await Event.findById(id)
-    if(event.imageId) {
-      cloudinary.uploader.destroy(event.imageId)
+    const event = await Event.findById(id);
+    if (event.imageId) {
+      cloudinary.uploader.destroy(event.imageId);
     }
-    event.imageUrl = result.secure_url
-    event.imageId = result.public_id
+    event.imageUrl = result.secure_url;
+    event.imageId = result.public_id;
     await event.save();
   } catch (err) {
     console.log(err);
   }
-}
+};
 
 exports.uploadProfileToCloudinary = async (filePath, id, field, fieldId) => {
   try {
@@ -58,6 +60,20 @@ exports.uploadProfileToCloudinary = async (filePath, id, field, fieldId) => {
     console.log(field);
   } catch (err) {
     console.log(err.message);
+  }
+};
+
+exports.uploadDmToCloudinary = async (filePath, id) => {
+  try {
+    const result = await cloudinary.uploader.upload(filePath, {
+      folder: "dmImages",
+    });
+    const message = await Message.findById(id);
+    message.imagesUrl = result.secure_url;
+    message.imagesId = result.public_id;
+    await message.save();
+  } catch (err) {
+    console.log(err);
   }
 };
 

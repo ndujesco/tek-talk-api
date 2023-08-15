@@ -56,8 +56,10 @@ exports.postPost = async (req, res) => {
       errors: errors.array(),
     });
   }
-  if(!req.body.body && !req.files.image)
-  return res.status(422).json({status: 422, message: "The two input fields cannot be empty."})
+  if (!req.body.text && (!req.files || !req.files.image))
+    return res
+      .status(422)
+      .json({ status: 422, message: "The two input fields cannot be empty." });
   try {
     const { body, postedIn } = req.body;
     const post = new Post({
@@ -134,20 +136,19 @@ exports.getAllPosts = async (req, res) => {
 
   try {
     if (filter) {
-      posts = await Post.find({postedIn: filter})
-      .skip((pageNumber - 1) * 25)
-      .limit(25)
-      .populate({ path: "comments", model: "Comment" })
-      .populate("author")
-      .sort({ $natural: -1 });
-    }
-    else {
+      posts = await Post.find({ postedIn: filter })
+        .skip((pageNumber - 1) * 25)
+        .limit(25)
+        .populate({ path: "comments", model: "Comment" })
+        .populate("author")
+        .sort({ $natural: -1 });
+    } else {
       posts = await Post.find()
-      .skip((pageNumber - 1) * 25)
-      .limit(25)
-      .populate({ path: "comments", model: "Comment" })
-      .populate("author")
-      .sort({ $natural: -1 });
+        .skip((pageNumber - 1) * 25)
+        .limit(25)
+        .populate({ path: "comments", model: "Comment" })
+        .populate("author")
+        .sort({ $natural: -1 });
     }
     let postsToSend = [];
     const users = await User.find();
@@ -214,7 +215,7 @@ exports.getFeedOrNotUserName = async (req, res) => {
       throw error;
     }
     const userId = user.id;
-    let posts = await Post.find({ author: userId})
+    let posts = await Post.find({ author: userId })
       .populate({ path: "comments", model: "Comment" })
       .populate("author")
       .sort({ $natural: -1 });
@@ -222,7 +223,7 @@ exports.getFeedOrNotUserName = async (req, res) => {
     posts = posts.filter((post) =>
       post.postedIn === "Feed" ? isFeed : !isFeed
     );
-    posts = posts.slice((pageNumber - 1) * 25, pageNumber * 25)
+    posts = posts.slice((pageNumber - 1) * 25, pageNumber * 25);
     let postsToSend = [];
 
     posts.forEach((post) => {
@@ -246,9 +247,16 @@ exports.deletePost = async (req, res) => {
 
   try {
     const post = await Post.findById(postId).populate("author");
-    if (!post) return  res.status(200).json({ message: "No post with this id" });
-    const possiblePeople = [post.author.id, "633b45a338ad34f4b8940219", "633dae0b84db7a1a751fe468" ]
-    if (!possiblePeople.includes(req.userId)) return  res.status(200).json({ message: "What do you think you're trying to do?" });
+    if (!post) return res.status(200).json({ message: "No post with this id" });
+    const possiblePeople = [
+      post.author.id,
+      "633b45a338ad34f4b8940219",
+      "633dae0b84db7a1a751fe468",
+    ];
+    if (!possiblePeople.includes(req.userId))
+      return res
+        .status(200)
+        .json({ message: "What do you think you're trying to do?" });
     await Comment.deleteMany({ post: postId });
     res.status(200).json({ message: "Deleted successfully" });
     post.imagesId.forEach((id) => {

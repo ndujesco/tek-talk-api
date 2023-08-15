@@ -189,12 +189,36 @@ exports.getTalkFromName = async (req, res) => {
 
 exports.addTalk = async (req, res) => {
   const { name, description, displayUrl } = req.body;
+  if (!name || !description || !displayUrl)
+    return res
+      .status(422)
+      .json({ status: 422, message: "Request body is invalid" });
   const talk = Talk({
     name,
     description,
     displayUrl,
+    users: [],
   });
   await talk.save();
+  res.status(200).json({ message: "Sucessful" });
+};
+
+exports.editTalk = async (req, res) => {
+  const { name, description, displayUrl } = req.body;
+  if (!name || !description || !displayUrl)
+    return res
+      .status(422)
+      .json({ status: 422, message: "Request body is invalid" });
+
+  const talk = await Talk.findOne({ name });
+  if (!talk)
+    return res.status(422).json({ status: 422, message: "Talk no deh boss" });
+
+  talk.description = description;
+  talk.displayUrl = displayUrl;
+  await talk.save();
+
+  res.status(200).json({ message: "Sucessful" });
 };
 
 exports.extractTalkInfo = extractTalkInfo; // for the network page

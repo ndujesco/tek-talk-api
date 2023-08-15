@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 const {
   editProfile,
   editProfileValidator,
@@ -69,13 +69,27 @@ const {
   getUserTalks,
   getTalkFromName,
   addTalk,
+  editTalk,
 } = require("../controllers/talks");
 
 const { isAuthenticated } = require("../middleware/is-auth");
 const { maybeAuthenticated } = require("../middleware/maybe-auth");
+const { isValidObjectId } = require("mongoose");
+const { postMessage, deleteMessage } = require("../controllers/message");
 
 const postValidator = [
   body("postedIn", "Add 'postedIn'.").isLength({ min: 1 }),
+];
+
+const postMessageValidator = [
+  param("receiverId").custom((value, req) => {
+    if (!isValidObjectId(value)) {
+      throw new Error(`${value} is not a valid id sha.`);
+    }
+    return true;
+  }),
+
+  body("socketId", "socketId must be included").notEmpty(),
 ];
 
 const router = Router();
@@ -188,6 +202,15 @@ router.delete(
 
 router.get("/network/top-five/:talk", isAuthenticated, getTopFive);
 
-router.post("/talk", addTalk);
+router.post(
+  "/message/:receiverId",
+  isAuthenticated,
+  postMessageValidator,
+  postMessage
+);
+
+router.delete("/message/:messageId", isAuthenticated, deleteMessage);
+
+// router.post("/talk", editTalk);
 
 module.exports = router;
