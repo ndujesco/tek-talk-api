@@ -75,7 +75,11 @@ const {
 const { isAuthenticated } = require("../middleware/is-auth");
 const { maybeAuthenticated } = require("../middleware/maybe-auth");
 const { isValidObjectId } = require("mongoose");
-const { postMessage, deleteMessage } = require("../controllers/message");
+const {
+  postMessage,
+  deleteMessage,
+  getMessages,
+} = require("../controllers/message");
 
 const postValidator = [
   body("postedIn", "Add 'postedIn'.").isLength({ min: 1 }),
@@ -210,6 +214,8 @@ router.post(
 );
 
 router.delete("/message/:messageId", isAuthenticated, deleteMessage);
+
+router.get("/message/:receiverId", isAuthenticated, getMessages);
 
 // router.post("/talk", editTalk);
 

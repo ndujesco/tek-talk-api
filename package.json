@@ -22,5 +22,8 @@
     "nodemailer": "^6.7.7",
     "nodemon": "^2.0.20",
     "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "@types/socket.io": "^3.0.2"
   }
 }

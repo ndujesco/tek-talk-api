@@ -79,6 +79,7 @@ main()
   .then((connected) => {
     const server = app.listen(process.env.PORT || 8080);
     require("./socket").init(server);
+
     console.log("E deh rush!🚿");
   })
   .catch((err) => {

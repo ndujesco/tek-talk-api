@@ -6,7 +6,7 @@ exports.clientIsAuthenticated = (socket, next) => {
   if (!authorization) {
     const error = new Error("Add Authorization Header");
     error.statusCode = 401;
-    throw error; // it'll catch it prolly because of next()
+    return next(error); // it'll catch it prolly because of next()
   }
 
   const token = authorization.split(" ")[1];
