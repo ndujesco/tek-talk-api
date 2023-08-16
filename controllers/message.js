@@ -70,7 +70,7 @@ exports.postMessage = async (req, res) => {
       .except(socketId)
       .to(uniquifiedRoomName)
       .emit(
-        "newMessage",
+        "updateMessages",
         modifyMessages(await Message.find({ receiverId, senderId: req.userId }))
       );
 
@@ -90,18 +90,35 @@ exports.postMessage = async (req, res) => {
 
 exports.deleteMessage = async (req, res) => {
   const { messageId } = req.params;
+  const { socketId } = req.query;
 
   if (!isValidObjectId(messageId))
     return res.status(401).json({ message: "iInvalid credentials" });
   try {
     const message = await Message.findById(messageId);
 
-    if (message && message.senderId !== req.userId)
+    if (!message || message.senderId !== req.userId)
       return res.status(401).json({ message: "Invalid credentials" });
 
     await message.delete();
 
-    io.getIO().emit("deleteMessage", message);
+    const uniquifiedRoomName = `${message.senderId} ${message.receiverId}`
+      .split(" ")
+      .sort((a, b) => (a > b ? 1 : -1))
+      .join("-and-");
+
+    io.getIO()
+      .except(socketId)
+      .to(uniquifiedRoomName)
+      .emit(
+        "updateMessages",
+        modifyMessages(
+          await Message.find({
+            receiverId: message.receiverId,
+            senderId: req.userId,
+          })
+        )
+      );
 
     message.imagesId.forEach((id) => {
       deleteFromCloudinary(id);
