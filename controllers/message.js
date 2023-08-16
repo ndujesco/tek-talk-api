@@ -10,6 +10,19 @@ const {
 } = require("../utils/cloudinary");
 const io = require("../socket");
 
+const modifyMessages = (messages, senderId) => {
+  return messages.map((message) => {
+    return {
+      id: message.id,
+      text: message.text,
+      updatedAt: message.updatedAt.toString(),
+      createdAt: message.createdAt.toString(),
+      status: message.senderId === senderId ? "sender" : "receiver",
+      seen: message.seen,
+    };
+  });
+};
+
 exports.postMessage = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -56,7 +69,10 @@ exports.postMessage = async (req, res) => {
     io.getIO()
       .except(socketId)
       .to(uniquifiedRoomName)
-      .emit("newMessage", message);
+      .emit(
+        "newMessage",
+        modifyMessages(await Message.find({ receiverId, senderId: req.userId }))
+      );
 
     uploadedImages.forEach((imgData) => {
       uploadDmToCloudinary(imgData.path, message.id);
@@ -103,7 +119,8 @@ exports.getMessages = async (req, res) => {
     return res.status(401).json({ message: "iInvalid credentials" });
 
   try {
-    const messages = await Message.find({ receiverId, senderId: req.userId });
+    let messages = await Message.find({ receiverId, senderId: req.userId });
+    messages = modifyMessages(messages, req.userId);
     res.status(200).json({ messages });
   } catch (err) {
     catchError(err, res);
