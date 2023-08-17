@@ -13,7 +13,6 @@ const passwordRoutes = require("./routes/password-reset");
 
 const {
   isAuthorized,
-  isAuthenticated,
   checkApi,
 } = require("./middleware/is-auth");
 const { clientIsAuthenticated } = require("./middleware/is-auth-socket");

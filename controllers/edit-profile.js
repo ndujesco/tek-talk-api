@@ -3,7 +3,7 @@ const User = require("../models/user");
 const {
   uploadProfileToCloudinary,
   deleteFromCloudinary,
-} = require("../utils/cloudinary");  // functions to upload and delete images from cloudinary
+} = require("../utils/cloudinary"); // functions to upload and delete images from cloudinary
 const { catchError } = require("../utils/help-functions");
 
 exports.editProfile = async (req, res) => {
@@ -17,16 +17,19 @@ exports.editProfile = async (req, res) => {
   }
   const toUpdate = req.body;
   const images = req.files;
+  const toLoop = ["display", "backdrop"];
 
   const emptyProfiles = [];
   toUpdate.noDisplay ? emptyProfiles.push("display") : null;
   toUpdate.noBackdrop ? emptyProfiles.push("backdrop") : null;
   // so if the user removes their current picture, "noDisplay" or "noBackdrop" is added to the request
 
-  for (key in images) {
-    const field = key + "Local"; // the only possible keys are display and backdrop
-    const filePath = images[key][0].path;
-    toUpdate[field] = filePath.replace("\\", "/");  
+  for (key of toLoop) {
+    if (images[key]) {
+      const field = key + "Local"; // the only possible keys are display and backdrop
+      const filePath = images[key][0].path;
+      toUpdate[field] = filePath.replace("\\", "/");
+    }
     //as it is the "backdropLocal" and "imageLocal" if sent have already being stored(temporarily, of course)
   }
 
@@ -37,7 +40,7 @@ exports.editProfile = async (req, res) => {
         user[key] = toUpdate[key];
     }
     //so we're updating  all other fields sent in the request body that are not "noDisplay" OR "noBackdrop"
-      // these two fields tell whether or not these images were edited
+    // these two fields tell whether or not these images were edited
 
     emptyProfiles.forEach((value) => {
       user[value + "Local"] = null;
@@ -46,7 +49,7 @@ exports.editProfile = async (req, res) => {
     });
 
     await user.save();
-    res.status(200).json({message: "Edited successfully!"});
+    res.status(200).json({ message: "Edited successfully!" });
 
     //should either delete the current Urls from cloudinary or upload or do nothing
     emptyProfiles.forEach((value) => {
@@ -54,11 +57,13 @@ exports.editProfile = async (req, res) => {
       deleteFromCloudinary(user[value + "Id"]);
     });
 
-    for (key in images) {
-      const field = key + "Url";
-      const fieldId = key + "Id";
-      const filePath = images[key][0].path;
-      uploadProfileToCloudinary(filePath, req.userId, field, fieldId);
+    for (key of toLoop) {
+      if (images[key]) {
+        const field = key + "Url";
+        const fieldId = key + "Id";
+        const filePath = images[key][0].path;
+        uploadProfileToCloudinary(filePath, req.userId, field, fieldId);
+      }
     }
   } catch (err) {
     catchError(err, res);
