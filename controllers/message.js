@@ -168,12 +168,12 @@ exports.getMessages = async (req, res) => {
       .populate({
         path: "senderId",
         model: "User",
-        select: { displayUrl: 1, username: 1, verified: 1 },
+        select: { displayUrl: 1, username: 1, verified: 1, name: 1 },
       })
       .populate({
         path: "receiverId",
         model: "User",
-        select: { displayUrl: 1, username: 1, verified: 1 },
+        select: { displayUrl: 1, username: 1, verified: 1, name: 1 },
       });
 
     let messagesToReturn = [];
@@ -202,9 +202,11 @@ exports.getMessages = async (req, res) => {
         text: message.text,
         id: user.id,
         username: user.username,
+        name: user.name,
         displayUrl: user.displayUrl,
         isVerified: user.verified,
         time: message.createdAt.toString(),
+        seen: message.seen,
       };
     });
 
