@@ -200,6 +200,7 @@ exports.getMessages = async (req, res) => {
 
       return {
         text: message.text,
+        id: user.id,
         username: user.username,
         displayUrl: user.displayUrl,
         isVerified: user.verified,
