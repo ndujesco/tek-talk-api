@@ -87,9 +87,9 @@ const postValidator = [
 ];
 
 const postMessageValidator = [
-  param("receiverId").custom((value, req) => {
-    if (!isValidObjectId(value)) {
-      throw new Error(`${value} is not a valid id sha.`);
+  param("receiverId").custom((value, { req }) => {
+    if (!isValidObjectId(value) || req.userId === value) {
+      throw new Error(`${value} is not valid  sha.`);
     }
     return true;
   }),

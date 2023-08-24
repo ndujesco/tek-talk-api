@@ -134,8 +134,8 @@ exports.deleteMessage = async (req, res) => {
 exports.getDirectMessages = async (req, res) => {
   const { otherUserId } = req.params;
 
-  if (!isValidObjectId(otherUserId))
-    return res.status(401).json({ message: "iInvalid credentials" });
+  if (!isValidObjectId(otherUserId) || req.userId === otherUserId)
+    return res.status(401).json({ message: "Invalid credentials" });
 
   try {
     let messages = await Message.find({
@@ -207,6 +207,7 @@ exports.getMessages = async (req, res) => {
         isVerified: user.verified,
         time: message.createdAt.toString(),
         seen: message.seen,
+        status: message.senderId.id === req.userId ? "sender" : "receiver",
       };
     });
 
