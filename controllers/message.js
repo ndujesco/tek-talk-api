@@ -12,13 +12,15 @@ const io = require("../socket");
 
 const modifyMessages = (messages, senderId) => {
   return messages.map((message) => {
+    const { username, displayUrl, id } = message.senderId;
     return {
       id: message.id,
       text: message.text,
       updatedAt: message.updatedAt.toString(),
       createdAt: message.createdAt.toString(),
-      status: message.senderId === senderId ? "sender" : "receiver",
+      status: message.senderId.id === senderId ? "sender" : "receiver",
       seen: message.seen,
+      sender: { id, displayUrl, username },
     };
   });
 };
@@ -130,13 +132,27 @@ exports.deleteMessage = async (req, res) => {
 };
 
 exports.getDirectMessages = async (req, res) => {
-  const { receiverId } = req.params;
+  const { otherUserId } = req.params;
 
-  if (!isValidObjectId(receiverId))
+  if (!isValidObjectId(otherUserId))
     return res.status(401).json({ message: "iInvalid credentials" });
 
   try {
-    let messages = await Message.find({ receiverId, senderId: req.userId });
+    let messages = await Message.find({
+      $or: [
+        { $and: [{ senderId: req.userId }, { receiverId: otherUserId }] },
+        { $and: [{ senderId: otherUserId }, { receiverId: req.userId }] },
+      ],
+    }).populate({
+      path: "senderId",
+      model: "User",
+      select: { displayUrl: 1, username: 1 },
+    });
+
+    const lastMessage = messages[messages.length - 1];
+    lastMessage.seen = true;
+    await lastMessage.save();
+
     messages = modifyMessages(messages, req.userId);
     res.status(200).json({ messages });
   } catch (err) {
@@ -144,4 +160,55 @@ exports.getDirectMessages = async (req, res) => {
   }
 };
 
-exports.getMessages = async (req, res) => {}
+exports.getMessages = async (req, res) => {
+  try {
+    const messages = await Message.find({
+      $or: [{ senderId: req.userId }, { receiverId: req.userId }],
+    })
+      .populate({
+        path: "senderId",
+        model: "User",
+        select: { displayUrl: 1, username: 1, verified: 1 },
+      })
+      .populate({
+        path: "receiverId",
+        model: "User",
+        select: { displayUrl: 1, username: 1, verified: 1 },
+      });
+
+    let messagesToReturn = [];
+    let keeptrack = {};
+
+    for (i = messages.length - 1; i > -1; i--) {
+      const otherUserId =
+        messages[i].senderId.id === req.userId
+          ? messages[i].receiverId.id
+          : messages[i].senderId.id;
+
+      if (!keeptrack[otherUserId]) {
+        messagesToReturn.push(messages[i]);
+        keeptrack[otherUserId] = 1;
+      }
+    }
+
+    messagesToReturn = messagesToReturn.map((message) => {
+      const toReturn = {};
+      const user =
+        message.senderId.id === req.userId
+          ? message.receiverId
+          : message.senderId;
+
+      return {
+        text: message.text,
+        username: user.username,
+        displayUrl: user.displayUrl,
+        isVerified: user.verified,
+        time: message.createdAt.toString(),
+      };
+    });
+
+    res.status(200).json({ messagesToReturn });
+  } catch (err) {
+    catchError(err, res);
+  }
+};

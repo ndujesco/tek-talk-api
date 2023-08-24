@@ -216,7 +216,9 @@ router.post(
 
 router.delete("/message/:messageId", isAuthenticated, deleteMessage);
 
-router.get("/message/:receiverId", isAuthenticated, getDirectMessages);
+router.get("/message/:otherUserId", isAuthenticated, getDirectMessages);
+
+router.get("/chats", isAuthenticated, getMessages);
 
 // router.post("/talk", editTalk);
 
