@@ -79,6 +79,7 @@ const {
   postMessage,
   deleteMessage,
   getMessages,
+  getDirectMessages,
 } = require("../controllers/message");
 
 const postValidator = [
@@ -215,7 +216,7 @@ router.post(
 
 router.delete("/message/:messageId", isAuthenticated, deleteMessage);
 
-router.get("/message/:receiverId", isAuthenticated, getMessages);
+router.get("/message/:receiverId", isAuthenticated, getDirectMessages);
 
 // router.post("/talk", editTalk);
 

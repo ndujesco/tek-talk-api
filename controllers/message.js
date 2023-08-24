@@ -129,7 +129,7 @@ exports.deleteMessage = async (req, res) => {
   }
 };
 
-exports.getMessages = async (req, res) => {
+exports.getDirectMessages = async (req, res) => {
   const { receiverId } = req.params;
 
   if (!isValidObjectId(receiverId))
@@ -143,3 +143,5 @@ exports.getMessages = async (req, res) => {
     catchError(err, res);
   }
 };
+
+exports.getMessages = async (req, res) => {}
