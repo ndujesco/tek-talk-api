@@ -1,16 +1,15 @@
 const jwt = require("jsonwebtoken");
 
 exports.clientIsAuthenticated = (socket, next) => {
-  const { Authorization } = socket.handshake.auth;
+  console.log(socket.handshake);
+  const { token } = socket.handshake.auth;
   const { receiverId } = socket.handshake.query;
-
-  if (!Authorization) {
-    const error = new Error("Add Authorization Header");
+  if (!token) {
+    const error = new Error("Invalid connection");
     error.statusCode = 401;
     return next(error);
   }
 
-  const token = Authorization.split(" ")[1];
   let decodedToken;
 
   try {
@@ -28,6 +27,6 @@ exports.clientIsAuthenticated = (socket, next) => {
   }
 
   socket.data.userId = decodedToken.userId;
-  socket.data.receiverId = receiverId
+  socket.data.receiverId = receiverId;
   next();
 };
