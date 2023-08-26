@@ -1,16 +1,16 @@
 const jwt = require("jsonwebtoken");
 
 exports.clientIsAuthenticated = (socket, next) => {
-  const { authorization } = socket.handshake.headers;
+  const { Authorization } = socket.handshake.auth;
   const { receiverId } = socket.handshake.query;
 
-  if (!authorization) {
+  if (!Authorization) {
     const error = new Error("Add Authorization Header");
     error.statusCode = 401;
     return next(error);
   }
 
-  const token = authorization.split(" ")[1];
+  const token = Authorization.split(" ")[1];
   let decodedToken;
 
   try {
