@@ -71,10 +71,7 @@ exports.postMessage = async (req, res) => {
     io.getIO()
       .except(socketId)
       .to(uniquifiedRoomName)
-      .emit(
-        "updateMessages",
-        modifyMessages(await Message.find({ receiverId, senderId: req.userId }))
-      );
+      .emit("onNewMessage", modifyMessages([message])[0]);
 
     uploadedImages.forEach((imgData) => {
       uploadDmToCloudinary(imgData.path, message.id);
@@ -112,15 +109,7 @@ exports.deleteMessage = async (req, res) => {
     io.getIO()
       .except(socketId)
       .to(uniquifiedRoomName)
-      .emit(
-        "updateMessages",
-        modifyMessages(
-          await Message.find({
-            receiverId: message.receiverId,
-            senderId: req.userId,
-          })
-        )
-      );
+      .emit("onDelete", modifyMessages([message])[0]);
 
     message.imagesId.forEach((id) => {
       deleteFromCloudinary(id);
@@ -180,7 +169,7 @@ exports.getChats = async (req, res) => {
     let keepTrackObj = {};
 
     for (i = messages.length - 1; i > -1; i--) {
-      const message = messages[i]
+      const message = messages[i];
       const otherUserId =
         message.senderId.id === req.userId
           ? message.receiverId.id
@@ -197,7 +186,7 @@ exports.getChats = async (req, res) => {
     }
 
     keepTrackArray = keepTrackArray.map((id) => {
-      const message = keepTrackObj[id]
+      const message = keepTrackObj[id];
       const user =
         message.senderId.id === req.userId
           ? message.receiverId
@@ -212,7 +201,7 @@ exports.getChats = async (req, res) => {
         isVerified: user.verified,
         time: message.createdAt.toString(),
         status: message.senderId.id === req.userId ? "sender" : "receiver",
-        unread:  message.unread
+        unread: message.unread,
       };
     });
 
