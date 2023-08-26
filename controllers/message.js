@@ -40,7 +40,7 @@ exports.postMessage = async (req, res) => {
       .json({ status: 422, message: "The two input fields cannot be empty." });
 
   try {
-    const { text, socketId } = req.body;
+    const { text } = req.body;
     const { receiverId } = req.params;
     const message = await new Message({
       receiverId,
@@ -73,7 +73,6 @@ exports.postMessage = async (req, res) => {
     await message.save();
 
     io.getIO()
-      .except(socketId)
       .to(uniquifiedRoomName)
       .emit("onNewMessage", modifyMessages([message])[0]);
 
@@ -84,7 +83,7 @@ exports.postMessage = async (req, res) => {
     res.status(200).json({
       status: 200,
       message: "Sent successfully!",
-      message: message.id,
+      messageId: message.id,
     });
   } catch (err) {
     catchError(err, res);
@@ -93,7 +92,6 @@ exports.postMessage = async (req, res) => {
 
 exports.deleteMessage = async (req, res) => {
   const { messageId } = req.params;
-  const { socketId } = req.query;
 
   if (!isValidObjectId(messageId))
     return res.status(401).json({ message: "Invalid credentials" });
@@ -115,14 +113,13 @@ exports.deleteMessage = async (req, res) => {
       .join("-and-");
 
     io.getIO()
-      .except(socketId)
       .to(uniquifiedRoomName)
       .emit("onDelete", modifyMessages([message])[0]);
 
     message.imagesId.forEach((id) => {
       deleteFromCloudinary(id);
     });
-    res.status(200).json({ message: "Bad boy!" });
+    res.status(200).json({ messageId: message.id });
   } catch (err) {
     catchError(err, res);
   }

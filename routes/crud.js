@@ -95,7 +95,6 @@ const postMessageValidator = [
     return true;
   }),
 
-  body("socketId", "socketId must be included").notEmpty(),
 ];
 
 const router = Router();
