@@ -42,13 +42,17 @@ exports.postMessage = async (req, res) => {
   try {
     const { text, socketId } = req.body;
     const { receiverId } = req.params;
-    const message = new Message({
+    const message = await new Message({
       receiverId,
       text,
       imagesId: [],
       imagesLocal: [],
       imagesUrl: [],
       senderId: req.userId,
+    }).populate({
+      model: "User",
+      path: "senderId",
+      select: { displayUrl: 1, username: 1 },
     });
 
     const uploadedImages = req.files.image || []; //important
@@ -92,16 +96,20 @@ exports.deleteMessage = async (req, res) => {
   const { socketId } = req.query;
 
   if (!isValidObjectId(messageId))
-    return res.status(401).json({ message: "iInvalid credentials" });
+    return res.status(401).json({ message: "Invalid credentials" });
   try {
-    const message = await Message.findById(messageId);
+    const message = await Message.findById(messageId).populate({
+      model: "User",
+      path: "senderId",
+      select: { displayUrl: 1, username: 1 },
+    });
 
-    if (!message || message.senderId !== req.userId)
+    if (!message || message.senderId.id !== req.userId)
       return res.status(401).json({ message: "Invalid credentials" });
 
     await message.delete();
 
-    const uniquifiedRoomName = `${message.senderId} ${message.receiverId}`
+    const uniquifiedRoomName = `${message.senderId.id} ${message.receiverId}`
       .split(" ")
       .sort((a, b) => (a > b ? 1 : -1))
       .join("-and-");
