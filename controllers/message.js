@@ -138,6 +138,10 @@ exports.getDirectMessages = async (req, res) => {
     return res.status(401).json({ message: "Invalid credentials" });
 
   try {
+    await Message.updateMany(
+      { receiverId: req.userId, seen: false },
+      { seen: true }
+    );
     let messages = await Message.find({
       $or: [
         { $and: [{ senderId: req.userId }, { receiverId: otherUserId }] },
@@ -148,10 +152,6 @@ exports.getDirectMessages = async (req, res) => {
       model: "User",
       select: { displayUrl: 1, username: 1 },
     });
-
-    const lastMessage = messages[messages.length - 1];
-    lastMessage.seen = true;
-    await lastMessage.save();
 
     messages = modifyMessages(messages, req.userId);
     res.status(200).json({ messages });
@@ -176,23 +176,28 @@ exports.getChats = async (req, res) => {
         select: { displayUrl: 1, username: 1, verified: 1, name: 1 },
       });
 
-    let messagesToReturn = [];
-    let keeptrack = {};
+    let keepTrackArray = [];
+    let keepTrackObj = {};
 
     for (i = messages.length - 1; i > -1; i--) {
+      const message = messages[i]
       const otherUserId =
-        messages[i].senderId.id === req.userId
-          ? messages[i].receiverId.id
-          : messages[i].senderId.id;
+        message.senderId.id === req.userId
+          ? message.receiverId.id
+          : message.senderId.id;
 
-      if (!keeptrack[otherUserId]) {
-        messagesToReturn.push(messages[i]);
-        keeptrack[otherUserId] = 1;
+      if (!keepTrackObj[otherUserId]) {
+        message.unread = 0;
+        keepTrackArray.push(otherUserId);
+        keepTrackObj[otherUserId] = message;
+      }
+      if (!message.seen && message.receiverId.id === req.userId) {
+        keepTrackObj[otherUserId].unread += 1;
       }
     }
 
-    messagesToReturn = messagesToReturn.map((message) => {
-      const toReturn = {};
+    keepTrackArray = keepTrackArray.map((id) => {
+      const message = keepTrackObj[id]
       const user =
         message.senderId.id === req.userId
           ? message.receiverId
@@ -206,12 +211,12 @@ exports.getChats = async (req, res) => {
         displayUrl: user.displayUrl,
         isVerified: user.verified,
         time: message.createdAt.toString(),
-        seen: message.seen,
         status: message.senderId.id === req.userId ? "sender" : "receiver",
+        unread:  message.unread
       };
     });
 
-    res.status(200).json({ messagesToReturn });
+    res.status(200).json({ chats: keepTrackArray });
   } catch (err) {
     catchError(err, res);
   }
