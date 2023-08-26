@@ -160,7 +160,7 @@ exports.getDirectMessages = async (req, res) => {
   }
 };
 
-exports.getMessages = async (req, res) => {
+exports.getChats = async (req, res) => {
   try {
     const messages = await Message.find({
       $or: [{ senderId: req.userId }, { receiverId: req.userId }],

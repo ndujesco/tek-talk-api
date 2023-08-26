@@ -79,8 +79,8 @@ const { isValidObjectId } = require("mongoose");
 const {
   postMessage,
   deleteMessage,
-  getMessages,
   getDirectMessages,
+  getChats,
 } = require("../controllers/message");
 
 const postValidator = [
@@ -221,7 +221,7 @@ router.delete("/message/:messageId", isAuthenticated, deleteMessage);
 
 router.get("/message/:otherUserId", isAuthenticated, getDirectMessages);
 
-router.get("/chats", isAuthenticated, getMessages);
+router.get("/chats", isAuthenticated, getChats);
 
 // router.post("/talk", editTalk);
 
