@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 
 exports.clientIsAuthenticated = (socket, next) => {
-  console.log(socket.handshake);
   const { token } = socket.handshake.auth;
   const { receiverId } = socket.handshake.query;
   if (!token) {
