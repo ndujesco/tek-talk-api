@@ -114,11 +114,31 @@ exports.getUserProfileFromUserName = async (req, res) => {
       error.statusCode = 401;
       throw error;
     }
-    const users = await User.find();
-    const user = users.find(
-      (user) => user.username.toLowerCase() === userName.toLowerCase()
-      // makes sure the search is case insensitive
-    );
+    const user = await User.findOne({
+      username: { $regex: new RegExp("^" + userName.toLowerCase(), "i") },
+    });
+
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 401;
+      throw error;
+    }
+    const profileToReturn = extractProfile(user, req);
+    res.status(200).json(profileToReturn);
+  } catch (err) {
+    catchError(err, res);
+  }
+};
+
+exports.getUserProfileFromId = async (req, res) => {
+  const id = req.params.id;
+  try {
+    if (!id || !isValidObjectId(id)) {
+      const error = new Error("Your id, hmm.");
+      error.statusCode = 401;
+      throw error;
+    }
+    const user = await User.findById(id);
     if (!user) {
       const error = new Error("User not found");
       error.statusCode = 401;

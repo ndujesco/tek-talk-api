@@ -59,6 +59,7 @@ const {
   getUserSuggestions,
   checkUserName,
   searchForUser,
+  getUserProfileFromId,
 } = require("../controllers/profile-crud");
 
 const {
@@ -110,6 +111,8 @@ router.get(
   maybeAuthenticated,
   getUserProfileFromUserName
 );
+
+router.get("/profile/id/:id", maybeAuthenticated, getUserProfileFromId);
 
 router.patch(
   "/profile/edit",
