@@ -18,11 +18,11 @@ module.exports = {
         .join("-and-");
 
       socket.join(uniquifiedRoomName);
-      console.log(socket.rooms);
-      io.to(socket.id).emit(
-        "onJoin",
-        `You joined the room ${uniquifiedRoomName}`
-      );
+      // console.log(socket.rooms);
+      // io.to(socket.id).emit(
+      //   "onJoin",
+      //   `You joined the room ${uniquifiedRoomName}`
+      // );
 
       // socket.on("join", (message) => {
       //   const { receiverId } = message;
@@ -40,7 +40,7 @@ module.exports = {
       // });
     });
   },
-  
+
   getIO: () => {
     if (!io) {
       throw new Error("Socket.io not initialized!");
