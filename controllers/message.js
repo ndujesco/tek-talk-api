@@ -78,7 +78,7 @@ exports.postMessage = async (req, res) => {
 
     io.getIO()
       .to(uniquifiedRoomName)
-      .emit("onNewMessage", modifyMessages([message])[0]);
+      .emit("onNewMessage", modifyMessages([message], req.userId, req)[0]);
 
     uploadedImages.forEach((imgData) => {
       uploadDmToCloudinary(imgData.path, message.id);
@@ -118,7 +118,7 @@ exports.deleteMessage = async (req, res) => {
 
     io.getIO()
       .to(uniquifiedRoomName)
-      .emit("onDelete", modifyMessages([message])[0], req.userId, req);
+      .emit("onDelete", modifyMessages([message], req.userId, req)[0]);
 
     message.imagesId.forEach((id) => {
       deleteFromCloudinary(id);

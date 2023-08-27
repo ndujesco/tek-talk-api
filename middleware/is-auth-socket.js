@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 exports.clientIsAuthenticated = (socket, next) => {
-  const { token } = socket.handshake.headers;
+  const { token } = socket.handshake.auth;
   const { receiverId } = socket.handshake.query;
   if (!token) {
     const error = new Error("Invalid connection");
