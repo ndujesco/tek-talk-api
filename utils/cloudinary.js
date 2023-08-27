@@ -4,7 +4,6 @@ const User = require("../models/user");
 const Message = require("../models/message");
 
 const { catchError } = require("./help-functions");
-const message = require("../models/message");
 
 const cloudinary = require("cloudinary").v2;
 
@@ -63,14 +62,18 @@ exports.uploadProfileToCloudinary = async (filePath, id, field, fieldId) => {
   }
 };
 
-exports.uploadDmToCloudinary = async (filePath, id) => {
+exports.uploadDmToCloudinary = async (filePaths, id) => {
   try {
-    const result = await cloudinary.uploader.upload(filePath, {
-      folder: "dmImages",
-    });
+    const results = await Promise.all(
+      filePaths.map(async (filePath) => {
+        return await cloudinary.uploader.upload(filePath, {
+          folder: "dmImages",
+        });
+      })
+    );
     const message = await Message.findById(id);
-    message.imagesUrl.push(result.secure_url);
-    message.imagesId.push(result.public_id);
+    message.imagesUrl = results.map(result => result.secure_url);
+    message.imagesId = results.map(result => result.public_id);
     await message.save();
   } catch (err) {
     console.log(err);

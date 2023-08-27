@@ -82,9 +82,8 @@ exports.postMessage = async (req, res) => {
       .to(uniquifiedRoomName)
       .emit("onNewMessage", modifyMessages([message], req)[0]);
 
-    uploadedImages.forEach((imgData) => {
-      uploadDmToCloudinary(imgData.path, message.id);
-    });
+
+    uploadDmToCloudinary(uploadedImages.map(file => file.path), message.id)
 
     res.status(200).json({
       status: 200,
