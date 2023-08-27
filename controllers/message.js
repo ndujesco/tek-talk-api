@@ -79,7 +79,7 @@ exports.postMessage = async (req, res) => {
     await message.save();
 
     io.getIO()
-      // .to(uniquifiedRoomName)
+      .to(uniquifiedRoomName)
       .emit("onNewMessage", modifyMessages([message], req)[0]);
 
 
@@ -118,7 +118,7 @@ exports.deleteMessage = async (req, res) => {
       .join("-and-");
 
     io.getIO()
-      // .to(uniquifiedRoomName)
+      .to(uniquifiedRoomName)
       .emit("onDelete", modifyMessages([message], req)[0]);
 
     message.imagesId.forEach((id) => {
