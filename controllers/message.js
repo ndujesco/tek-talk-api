@@ -10,7 +10,7 @@ const {
 } = require("../utils/cloudinary");
 const io = require("../socket");
 
-const modifyMessages = (messages, senderId, req) => {
+const modifyMessages = (messages, req) => {
   return messages.map((message) => {
     const { username, displayUrl, id } = message.senderId;
     return {
@@ -18,13 +18,15 @@ const modifyMessages = (messages, senderId, req) => {
       text: message.text,
       updatedAt: message.updatedAt.toString(),
       createdAt: message.createdAt.toString(),
-      status: message.senderId.id === senderId ? "sender" : "receiver",
+      status: message.senderId.id === req.userId ? "sender" : "receiver",
       seen: message.seen,
       sender: { id, displayUrl, username },
       imagesUrl:
         message.imagesUrl.length > 1
           ? message.imagesUrl
-          : message.imagesLocal.map((image) => `https://${req.headers.host}/${image}`),
+          : message.imagesLocal.map(
+              (image) => `https://${req.headers.host}/${image}`
+            ),
     };
   });
 };
@@ -78,7 +80,7 @@ exports.postMessage = async (req, res) => {
 
     io.getIO()
       .to(uniquifiedRoomName)
-      .emit("onNewMessage", modifyMessages([message], req.userId, req)[0]);
+      .emit("onNewMessage", modifyMessages([message], req)[0]);
 
     uploadedImages.forEach((imgData) => {
       uploadDmToCloudinary(imgData.path, message.id);
@@ -118,7 +120,7 @@ exports.deleteMessage = async (req, res) => {
 
     io.getIO()
       .to(uniquifiedRoomName)
-      .emit("onDelete", modifyMessages([message], req.userId, req)[0]);
+      .emit("onDelete", modifyMessages([message], req)[0]);
 
     message.imagesId.forEach((id) => {
       deleteFromCloudinary(id);
@@ -151,7 +153,7 @@ exports.getDirectMessages = async (req, res) => {
       select: { displayUrl: 1, username: 1 },
     });
 
-    messages = modifyMessages(messages, req.userId, req);
+    messages = modifyMessages(messages, req);
     res.status(200).json({ messages });
   } catch (err) {
     catchError(err, res);
