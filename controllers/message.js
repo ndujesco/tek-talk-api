@@ -21,6 +21,7 @@ const modifyMessages = (messages, senderId) => {
       status: message.senderId.id === senderId ? "sender" : "receiver",
       seen: message.seen,
       sender: { id, displayUrl, username },
+      imagesUrl: message.imagesUrl.length > 1 ? message.imagesUrl : message.imagesLocal
     };
   });
 };
