@@ -69,8 +69,8 @@ exports.uploadDmToCloudinary = async (filePath, id) => {
       folder: "dmImages",
     });
     const message = await Message.findById(id);
-    message.imagesUrl = result.secure_url;
-    message.imagesId = result.public_id;
+    message.imagesUrl.push(result.secure_url);
+    message.imagesId.push(result.public_id);
     await message.save();
   } catch (err) {
     console.log(err);
