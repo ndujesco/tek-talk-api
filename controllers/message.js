@@ -24,7 +24,7 @@ const modifyMessages = (messages, senderId, req) => {
       imagesUrl:
         message.imagesUrl.length > 1
           ? message.imagesUrl
-          : message.imagesLocal.map((image) => `${req.hostname}/${image}`),
+          : message.imagesLocal.map((image) => `https://${req.headers.host}/${image}`),
     };
   });
 };
