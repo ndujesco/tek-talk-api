@@ -90,13 +90,6 @@ exports.postMessage = async (req, res) => {
         modifyMessages([message], req.headers.host, receiverId)[0]
       );
 
-    io.getIO()
-      .to(req.userId)
-      .emit(
-        "onNewMessage",
-        modifyMessages([message], req.headers.host, req.userId)[0]
-      );
-
     uploadDmToCloudinary(
       uploadedImages.map((file) => file.path),
       message.id
@@ -139,13 +132,6 @@ exports.deleteMessage = async (req, res) => {
       .emit(
         "onDelete",
         modifyMessages([message], req.headers.host, message.receiverId)[0]
-      );
-
-    io.getIO()
-      .to(req.userId)
-      .emit(
-        "onDelete",
-        modifyMessages([message], req.headers.host, req.userId)[0]
       );
 
     message.imagesId.forEach((id) => {
