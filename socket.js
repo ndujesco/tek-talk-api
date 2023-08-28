@@ -8,17 +8,22 @@ module.exports = {
     io.use(clientIsAuthenticated);
 
     io.on("connection", (socket) => {
-      console.log(
-        `User with id ${socket.data.userId} and socket id ${socket.id} has connected`
-      );
-
-      const uniquifiedRoomName = `${socket.data.userId} ${socket.data.receiverId}`
-        .split(" ")
-        .sort((a, b) => (a > b ? 1 : -1))
-        .join("-and-");
-
-      socket.join(uniquifiedRoomName);
+      socket.join(socket.data.userId)
   
+      socket.on("join", (message) => {
+        const { receiverId } = message;
+        const uniquifiedRoomName = `${socket.data.userId} ${receiverId}`
+          .split(" ")
+          .sort((a, b) => (a > b ? 1 : -1))
+          .join("-and-");
+
+        socket.join(uniquifiedRoomName);
+        console.log(socket.rooms);
+        io.to(socket.id).emit(
+          "onJoin",
+          `You joined the room ${uniquifiedRoomName}`
+        );
+      });
     });
   },
 
