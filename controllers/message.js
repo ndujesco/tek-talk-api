@@ -46,6 +46,12 @@ exports.postMessage = async (req, res) => {
   try {
     const { text } = req.body;
     const { receiverId } = req.params;
+
+    const uniquifiedRoomName = `${req.userId} ${receiverId}`
+      .split(" ")
+      .sort((a, b) => (a > b ? 1 : -1))
+      .join("-and-");
+
     const message = await new Message({
       receiverId,
       text,
@@ -53,6 +59,9 @@ exports.postMessage = async (req, res) => {
       imagesLocal: [],
       imagesUrl: [],
       senderId: req.userId,
+      seen: (await io.getIO().fetchSockets())
+        .map((socket) => socket.rooms)
+        .some((set) => set.has(uniquifiedRoomName) && set.has(receiverId)),
     }).populate({
       model: "User",
       path: "senderId",
@@ -70,10 +79,6 @@ exports.postMessage = async (req, res) => {
       message.imagesLocal.push(imageLocalPath);
     });
 
-    const uniquifiedRoomName = `${req.userId} ${receiverId}`
-      .split(" ")
-      .sort((a, b) => (a > b ? 1 : -1))
-      .join("-and-");
     await message.save();
 
     io.getIO()
@@ -95,7 +100,6 @@ exports.postMessage = async (req, res) => {
       uploadedImages.map((file) => file.path),
       message.id
     );
-
     res.status(200).json({
       status: 200,
       message: "Sent successfully!",
@@ -215,7 +219,6 @@ exports.getChats = async (req, res) => {
           : message.senderId.id;
 
       if (!keepTrackObj[otherUserId]) {
-        console.log(message);
         message.unread = 0;
         keepTrackArray.push(otherUserId);
         keepTrackObj[otherUserId] = message;

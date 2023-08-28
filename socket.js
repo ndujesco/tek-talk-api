@@ -18,7 +18,6 @@ module.exports = {
           .join("-and-");
 
         socket.join(uniquifiedRoomName);
-        console.log(socket.rooms);
         io.to(socket.id).emit(
           "onJoin",
           `You joined the room ${uniquifiedRoomName}`
