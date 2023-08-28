@@ -13,11 +13,10 @@ const io = require("../socket");
 const modifyMessages = (messages, host, loggedUserId) => {
   return messages.map((message) => {
     const { username, displayUrl, id } = message.senderId;
-    console.log(typeof message.text);
 
     return {
       id: message.id,
-      text: message.text ? message.text : null,
+      text: message.text,
       updatedAt: message.updatedAt.toString(),
       createdAt: message.createdAt.toString(),
       status: message.senderId.id === loggedUserId ? "sender" : "receiver",
@@ -56,7 +55,7 @@ exports.postMessage = async (req, res) => {
 
     const message = await new Message({
       receiverId,
-      text: text ? text : null,
+      text: text,
       imagesId: [],
       imagesLocal: [],
       imagesUrl: [],
