@@ -130,6 +130,7 @@ exports.deleteMessage = async (req, res) => {
 
     io.getIO()
       .to(uniquifiedRoomName)
+      .except(req.userId)
       .emit(
         "onDelete",
         modifyMessages([message], req.headers.host, message.receiverId)[0]
