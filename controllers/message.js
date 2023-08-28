@@ -45,7 +45,6 @@ exports.postMessage = async (req, res) => {
       .json({ status: 422, message: "The two input fields cannot be empty." });
 
   try {
-    console.log(req.body);
     const { text } = req.body;
     const { receiverId } = req.params;
 
