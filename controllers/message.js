@@ -225,6 +225,7 @@ exports.getChats = async (req, res) => {
 
       return {
         text: message.text,
+        imagesUrl: message.imagesUrl,
         id: user.id,
         username: user.username,
         name: user.name,
