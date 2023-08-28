@@ -10,7 +10,7 @@ const {
 } = require("../utils/cloudinary");
 const io = require("../socket");
 
-const modifyMessages = (messages, req) => {
+const modifyMessages = (messages, host, loggedUserId) => {
   return messages.map((message) => {
     const { username, displayUrl, id } = message.senderId;
     return {
@@ -18,15 +18,13 @@ const modifyMessages = (messages, req) => {
       text: message.text,
       updatedAt: message.updatedAt.toString(),
       createdAt: message.createdAt.toString(),
-      status: message.senderId.id === req.userId ? "sender" : "receiver",
+      status: message.senderId.id === loggedUserId ? "sender" : "receiver",
       seen: message.seen,
       sender: { id, displayUrl, username },
       imagesUrl:
         message.imagesUrl.length > 0
           ? message.imagesUrl
-          : message.imagesLocal.map(
-              (image) => `https://${req.headers.host}/${image}`
-            ),
+          : message.imagesLocal.map((image) => `https://${host}/${image}`),
     };
   });
 };
@@ -80,10 +78,22 @@ exports.postMessage = async (req, res) => {
 
     io.getIO()
       .to(uniquifiedRoomName)
-      .emit("onNewMessage", modifyMessages([message], req)[0]);
+      .emit(
+        "onNewMessage",
+        modifyMessages([message], req.headers.host, receiverId)[0]
+      );
 
+    io.getIO()
+      .to(req.userId)
+      .emit(
+        "onNewMessage",
+        modifyMessages([message], req.headers.host, req.userId)[0]
+      );
 
-    uploadDmToCloudinary(uploadedImages.map(file => file.path), message.id)
+    uploadDmToCloudinary(
+      uploadedImages.map((file) => file.path),
+      message.id
+    );
 
     res.status(200).json({
       status: 200,
@@ -119,7 +129,17 @@ exports.deleteMessage = async (req, res) => {
 
     io.getIO()
       .to(uniquifiedRoomName)
-      .emit("onDelete", modifyMessages([message], req)[0]);
+      .emit(
+        "onDelete",
+        modifyMessages([message], req.headers.host, message.receiverId)[0]
+      );
+
+    io.getIO()
+      .to(req.userId)
+      .emit(
+        "onDelete",
+        modifyMessages([message], req.headers.host, req.userId)[0]
+      );
 
     message.imagesId.forEach((id) => {
       deleteFromCloudinary(id);
@@ -152,7 +172,8 @@ exports.getDirectMessages = async (req, res) => {
       select: { displayUrl: 1, username: 1 },
     });
 
-    messages = modifyMessages(messages, req);
+    messages = modifyMessages(messages, req.headers.host, req.userId);
+
     res.status(200).json({ messages });
   } catch (err) {
     catchError(err, res);
