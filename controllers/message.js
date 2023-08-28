@@ -45,6 +45,7 @@ exports.postMessage = async (req, res) => {
       .json({ status: 422, message: "The two input fields cannot be empty." });
 
   try {
+    console.log(req.body);
     const { text } = req.body;
     const { receiverId } = req.params;
 
@@ -53,9 +54,10 @@ exports.postMessage = async (req, res) => {
       .sort((a, b) => (a > b ? 1 : -1))
       .join("-and-");
 
+
     const message = await new Message({
       receiverId,
-      text: text,
+      text,
       imagesId: [],
       imagesLocal: [],
       imagesUrl: [],
