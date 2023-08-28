@@ -160,7 +160,13 @@ exports.getDirectMessages = async (req, res) => {
 
   try {
     await Message.updateMany(
-      { $and: [{ receiverId: req.userId }, { senderId: otherUserId }] },
+      {
+        $and: [
+          { receiverId: req.userId },
+          { senderId: otherUserId },
+          { seen: false },
+        ],
+      },
       { seen: true }
     );
     let messages = await Message.find({
