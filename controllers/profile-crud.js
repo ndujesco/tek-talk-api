@@ -1,6 +1,6 @@
 const { catchError } = require("../utils/help-functions");
 const User = require("../models/user");
-const { isValidObjectId } = require("mongoose");
+const { isValidObjectId, default: mongoose } = require("mongoose");
 
 const fs = require("fs");
 
@@ -154,33 +154,35 @@ exports.getUserProfileFromId = async (req, res) => {
 
 exports.getUserSuggestions = async (req, res) => {
   try {
-    const posts = await Post.find();
-    // I need posts because we'll suggest based on how active the person is
-
-    const user = await User.findById(req.userId);
-    let allUsers = await User.find();
-
-    const allUsers1 = allUsers.filter(
-      // filter "allUsers" to make sure they do not include the logged in user's following,
-      // in other words, the user is !part of their followers
-      // I also made sure to remove the loggen in user
-      (thisUser) =>
-        thisUser.id !== user.id && !thisUser.followers.includes(req.userId)
-    );
-
-    // I also made sure to filter further by amount of posts users have posted, giving priority to active users
-    const allUsers2 = allUsers1.sort((first, second) => {
-      const firstLength = posts.filter(
-        (thisPost) => thisPost.author.toString() === first.id
-      ).length;
-
-      const secondLength = posts.filter(
-        (thisPost) => thisPost.author.toString() === second.id
-      ).length;
-
-      return firstLength > secondLength ? -1 : 1;
+    const posts = await Post.find().populate({
+      path: "author",
+      model: "User",
+      select: "name username displayUrl followers following verified",
     });
-    const toReturn = extractSuggestionsInfo(allUsers2, req.userId);
+    // I need posts because we'll suggest based on how active the person is
+    let idsArr = [];
+    let users = {};
+
+    posts.forEach((post) => {
+      if (
+        post.author.id !== req.userId &&
+        !post.author.followers.includes(req.userId)
+      ) {
+        if (!users[post.author.id]) {
+          idsArr.push(post.author.id);
+          users[post.author.id] = post.author;
+          users[post.author.id].count = 1;
+        } else {
+          users[post.author.id].count += 1;
+        }
+      }
+    });
+    idsArr = idsArr
+      .sort((id1, id2) => (users[id1].count > users[id2].count ? -1 : 1))
+      .slice(0, 5);
+
+    const fiveUsers = idsArr.map((id) => users[id]);
+    const toReturn = extractSuggestionsInfo(fiveUsers, req.userId);
 
     res.status(200).json({ users: toReturn.slice(0, 5) });
   } catch (err) {
