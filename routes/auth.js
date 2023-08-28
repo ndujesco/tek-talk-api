@@ -87,7 +87,6 @@ router.post(
       .isLength({ min: 1 })
       .trim()
       .custom((value, req) => {
-        console.log(stacks.length);
         if (!stacks.includes(value)) {
           throw new Error(`Stack must be one of the following: ${stacks}`);
         }

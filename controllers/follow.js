@@ -79,7 +79,6 @@ exports.unFollowUser = async (req, res) => {
 
     const a = await loggedInUser.removeFollowing(userToUnFollowId);
     const b = await userToUnFollow.removeFollower(loggedInUserId);
-    console.log(a, b);
     res.status(200).json({ userUnFollowedId: userToUnFollowId });
   } catch (err) {
     catchError(err, res);

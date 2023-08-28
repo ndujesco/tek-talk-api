@@ -38,7 +38,6 @@ exports.getNotifications = async (req, res) => {
         description: event.description
       }
     })
-    console.log(usersEventsToNotify);
     
     userNotifications.push(...usersEventsToNotify)
     userNotifications.sort((a, b) => {

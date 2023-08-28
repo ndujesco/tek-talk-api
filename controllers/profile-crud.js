@@ -117,7 +117,6 @@ exports.getUserProfileFromUserName = async (req, res) => {
     const user = await User.findOne({
       username: { $regex: new RegExp("^" + userName.toLowerCase(), "i") },
     });
-    console.log(user);
 
     if (!user) {
       const error = new Error("User not found");

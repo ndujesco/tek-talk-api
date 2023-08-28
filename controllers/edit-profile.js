@@ -53,7 +53,6 @@ exports.editProfile = async (req, res) => {
 
     //should either delete the current Urls from cloudinary or upload or do nothing
     emptyProfiles.forEach((value) => {
-      console.log(user[value + "Url"]);
       deleteFromCloudinary(user[value + "Id"]);
     });
 
