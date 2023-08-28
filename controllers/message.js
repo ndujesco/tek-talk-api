@@ -78,6 +78,7 @@ exports.postMessage = async (req, res) => {
 
     io.getIO()
       .to(uniquifiedRoomName)
+      .except(req.userId)
       .emit(
         "onNewMessage",
         modifyMessages([message], req.headers.host, receiverId)[0]
