@@ -77,7 +77,7 @@ exports.postMessage = async (req, res) => {
     await message.save();
 
     io.getIO()
-      .to(uniquifiedRoomName)
+      .broadcast.to(uniquifiedRoomName)
       .emit(
         "onNewMessage",
         modifyMessages([message], req.headers.host, receiverId)[0]
@@ -128,7 +128,7 @@ exports.deleteMessage = async (req, res) => {
       .join("-and-");
 
     io.getIO()
-      .to(uniquifiedRoomName)
+      .broadcast.to(uniquifiedRoomName)
       .emit(
         "onDelete",
         modifyMessages([message], req.headers.host, message.receiverId)[0]
