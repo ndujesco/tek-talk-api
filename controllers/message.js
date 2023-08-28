@@ -15,7 +15,7 @@ const modifyMessages = (messages, host, loggedUserId) => {
     const { username, displayUrl, id } = message.senderId;
     return {
       id: message.id,
-      text: message.text,
+      text: message.text ? message.text : null,
       updatedAt: message.updatedAt.toString(),
       createdAt: message.createdAt.toString(),
       status: message.senderId.id === loggedUserId ? "sender" : "receiver",
