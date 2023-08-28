@@ -160,7 +160,7 @@ exports.getDirectMessages = async (req, res) => {
 
   try {
     await Message.updateMany(
-      { receiverId: req.userId, seen: false },
+      { $and: [{ receiverId: req.userId }, { senderId: otherUserId }] },
       { seen: true }
     );
     let messages = await Message.find({
@@ -209,6 +209,7 @@ exports.getChats = async (req, res) => {
           : message.senderId.id;
 
       if (!keepTrackObj[otherUserId]) {
+        console.log(message);
         message.unread = 0;
         keepTrackArray.push(otherUserId);
         keepTrackObj[otherUserId] = message;
