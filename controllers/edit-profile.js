@@ -68,6 +68,7 @@ exports.editProfile = async (req, res) => {
     catchError(err, res);
   }
 };
+
 exports.editProfileValidator = [
   body("email", "Email is invalid")
     .isEmail()

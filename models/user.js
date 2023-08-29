@@ -42,6 +42,14 @@ const userSchema = new Schema({
     },
   ],
 
+  github: String,
+
+  twitter: String,
+
+  instagram: String,
+
+  linkedIn: String,
+
   token: String,
 
   tokenExpiration: Date,
@@ -60,7 +68,7 @@ const userSchema = new Schema({
 
   talksId: [{ type: String }],
 
-  searchHistory: [{type: String}]
+  searchHistory: [{ type: String }],
 });
 
 userSchema.methods.addToFollowers = function (id) {

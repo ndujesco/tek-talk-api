@@ -21,6 +21,10 @@ const extractProfile = (user, req) => {
     displayLocal,
     backdropLocal,
     backdropUrl,
+    github,
+    instagram,
+    twitter,
+    linkedIn,
   } = user;
   // The user object it takes as input contains all these keys
 
@@ -33,6 +37,12 @@ const extractProfile = (user, req) => {
     email,
     bio,
     verified,
+    socials: {
+      github,
+      linkedIn,
+      twitter,
+      instagram,
+    },
     followingCount: user.following.length,
     followersCount: user.followers.length,
     isFollowing: user.followers.includes(req.userId), // if you're in their followers array then you're following them
