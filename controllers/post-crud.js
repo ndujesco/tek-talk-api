@@ -16,6 +16,7 @@ const User = require("../models/user");
 const Comment = require("../models/comment");
 const { notifyMention } = require("../utils/notifications");
 const { Notification } = require("../models/notification");
+const { getIO } = require("../socket");
 
 const extractPostToSend = (post, users, req) => {
   const postToSend = {
@@ -72,23 +73,25 @@ exports.postPost = async (req, res) => {
       comments: [],
       likes: [],
       createdAt: new Date().toString(),
-    });
+    }).populate({ path: "author", select: "followers" });
     const uploadedImages = req.files.image || []; //important
 
     uploadedImages.forEach((imgData) => {
       const imageLocalPath = imgData.path.replace("\\", "/");
       post.imagesLocal.push(imageLocalPath);
     });
-    await post.save();
+    console.log((await post).author);
+    // await post.save();
     res
       .status(200)
       .json({ status: 200, message: "Posted Successfully!", postId: post.id });
+    // getIO().emit()
 
-    notifyMention(body, req.userId, "post", post.id, "dummy", postedIn);
+    // notifyMention(body, req.userId, "post", post.id, "dummy", postedIn);
 
-    uploadedImages.forEach((imgData) => {
-      uploadPostToCloudinary(imgData.path, post.id);
-    });
+    // uploadedImages.forEach((imgData) => {
+    //   uploadPostToCloudinary(imgData.path, post.id);
+    // });
   } catch (err) {
     catchError(err, res);
   }
