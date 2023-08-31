@@ -80,18 +80,16 @@ exports.postPost = async (req, res) => {
       const imageLocalPath = imgData.path.replace("\\", "/");
       post.imagesLocal.push(imageLocalPath);
     });
-    console.log((await post).author);
-    // await post.save();
+    await post.save();
     res
       .status(200)
       .json({ status: 200, message: "Posted Successfully!", postId: post.id });
-    // getIO().emit()
 
-    // notifyMention(body, req.userId, "post", post.id, "dummy", postedIn);
+    notifyMention(body, req.userId, "post", post.id, "dummy", postedIn);
 
-    // uploadedImages.forEach((imgData) => {
-    //   uploadPostToCloudinary(imgData.path, post.id);
-    // });
+    uploadedImages.forEach((imgData) => {
+      uploadPostToCloudinary(imgData.path, post.id);
+    });
   } catch (err) {
     catchError(err, res);
   }
