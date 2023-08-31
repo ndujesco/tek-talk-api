@@ -80,7 +80,7 @@ exports.postPost = async (req, res) => {
       const imageLocalPath = imgData.path.replace("\\", "/");
       post.imagesLocal.push(imageLocalPath);
     });
-    await post.save();
+    (await post).save();
     res
       .status(200)
       .json({ status: 200, message: "Posted Successfully!", postId: post.id });
