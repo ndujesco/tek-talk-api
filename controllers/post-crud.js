@@ -63,7 +63,7 @@ exports.postPost = async (req, res) => {
       .json({ status: 422, message: "The two input fields cannot be empty." });
   try {
     const { body, postedIn } = req.body;
-    const post = new Post({
+    const post = await new Post({
       body,
       postedIn,
       author: req.userId,
