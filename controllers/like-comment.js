@@ -72,7 +72,7 @@ exports.postComment = async (req, res) => {
     res.json({ commentId: comment.id });
 
     if (post.author.toString() !== userId)
-    notifyComment(req.userId, post, comment.id);
+      notifyComment(req.userId, post, comment.id);
     notifyMention(body, req.userId, "comment", postId, comment.id, "dummy");
   } catch (err) {
     catchError(err, res);
@@ -104,7 +104,7 @@ exports.getCommentsFromPostId = async (req, res) => {
 };
 
 exports.deleteComment = async (req, res) => {
-  const { commentId, postId } = req.query;
+  const { commentId } = req.query;
   const isValid = isValidObjectId(commentId);
 
   if (!isValid) {
@@ -112,15 +112,22 @@ exports.deleteComment = async (req, res) => {
   }
 
   try {
-    const comment = await Comment.findById(commentId).populate("author");
-    if (!comment) return  res.status(200).json({ message: "No comment with this id" });
-    const possiblePeople = [post.author.id, "633b45a338ad34f4b8940219", "633dae0b84db7a1a751fe468" ];
-    if (!possiblePeople.includes(req.userId)) return  res.status(200).json({ message: "What do you think you're trying to do?" });
+    const comment = await Comment.findById(commentId).populate("author").populate("post");
+    if (!comment)
+      return res.status(200).json({ message: "No comment with this id" });
 
-    const posts = await Post.find();
-    const post = posts.find((post) => {
-      return post.comments.includes(commentId);
-    });
+    const post = await Post.findById(comment.post.id);
+
+    const possiblePeople = [
+      post.author.id,
+      "633b45a338ad34f4b8940219",
+      "633dae0b84db7a1a751fe468",
+    ];
+    if (!possiblePeople.includes(req.userId))
+      return res
+        .status(200)
+        .json({ message: "What do you think you're trying to do?" });
+
     if (post) {
       const position = post.comments.indexOf(commentId);
       post.comments.splice(position, 1);
@@ -128,6 +135,7 @@ exports.deleteComment = async (req, res) => {
     }
 
     res.status(200).json({ message: "Deleted successfully" });
+    comment.delete();
   } catch (err) {
     catchError(err, res);
   }
@@ -205,4 +213,4 @@ exports.getLikers = async (req, res) => {
 // const update = { $pull: { "lists.$[list].items": { _id: checkedId } } };
 // const options = { arrayFilters: [{ "list.name": listName }] };
 
-exports.extractCommentToSend = extractCommentToSend
+exports.extractCommentToSend = extractCommentToSend;
