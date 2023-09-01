@@ -57,7 +57,7 @@ exports.postPost = async (req, res) => {
       errors: errors.array(),
     });
   }
-  if (!req.body && (!req.files || !req.files.image))
+  if (!req.body.body && (!req.files || !req.files.image))
     return res
       .status(422)
       .json({ status: 422, message: "The two input fields cannot be empty." });
