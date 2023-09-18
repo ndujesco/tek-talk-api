@@ -30,6 +30,69 @@ const modifyMessages = (messages, host, loggedUserId) => {
   });
 };
 
+const getChats = async (userId) => {
+  try {
+    const messages = await Message.find({
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    })
+      .populate({
+        path: "senderId",
+        model: "User",
+        select: { displayUrl: 1, username: 1, verified: 1, name: 1 },
+      })
+      .populate({
+        path: "receiverId",
+        model: "User",
+        select: { displayUrl: 1, username: 1, verified: 1, name: 1 },
+      });
+
+    let keepTrackArray = [];
+    let keepTrackObj = {};
+
+    for (i = messages.length - 1; i > -1; i--) {
+      const message = messages[i];
+      const otherUserId =
+        message.senderId.id === userId
+          ? message.receiverId.id
+          : message.senderId.id;
+
+      if (!keepTrackObj[otherUserId]) {
+        message.unread = 0;
+        keepTrackArray.push(otherUserId);
+        keepTrackObj[otherUserId] = message;
+      }
+      if (!message.seen && message.receiverId.id === userId) {
+        keepTrackObj[otherUserId].unread += 1;
+      }
+    }
+
+    return keepTrackArray.map((id) => {
+      const message = keepTrackObj[id];
+      const user =
+        message.senderId.id === userId ? message.receiverId : message.senderId;
+
+      return {
+        text: message.text,
+        imagesUrl: message.imagesUrl,
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        displayUrl: user.displayUrl,
+        isVerified: user.verified,
+        time: message.createdAt.toString(),
+        status: message.senderId.id === userId ? "sender" : "receiver",
+        unread: message.unread,
+      };
+    });
+  } catch (err) {
+    catchError(err, res);
+  }
+};
+
+exports.getChats = async (req, res) => {
+  res.status(200).json({ chats: await getChats(req.userId) });
+};
+
 exports.postMessage = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -52,7 +115,6 @@ exports.postMessage = async (req, res) => {
       .split(" ")
       .sort((a, b) => (a > b ? 1 : -1))
       .join("-and-");
-
 
     const message = await new Message({
       receiverId,
@@ -100,6 +162,15 @@ exports.postMessage = async (req, res) => {
       message: "Sent successfully!",
       messageId: message.id,
     });
+
+    const chats = await getChats(receiverId);
+    io.getIO()
+      .to(receiverId)
+      .emit("onNotifyNewMessage", {
+        unreadMessages: chats.filter((message) => message.unread > 0).length,
+      });
+
+    io.getIO().to(receiverId).emit("onRefreshChats", { chats });
   } catch (err) {
     catchError(err, res);
   }
@@ -175,69 +246,6 @@ exports.getDirectMessages = async (req, res) => {
     messages = modifyMessages(messages, req.headers.host, req.userId);
 
     res.status(200).json({ messages });
-  } catch (err) {
-    catchError(err, res);
-  }
-};
-
-exports.getChats = async (req, res) => {
-  try {
-    const messages = await Message.find({
-      $or: [{ senderId: req.userId }, { receiverId: req.userId }],
-    })
-      .populate({
-        path: "senderId",
-        model: "User",
-        select: { displayUrl: 1, username: 1, verified: 1, name: 1 },
-      })
-      .populate({
-        path: "receiverId",
-        model: "User",
-        select: { displayUrl: 1, username: 1, verified: 1, name: 1 },
-      });
-
-    let keepTrackArray = [];
-    let keepTrackObj = {};
-
-    for (i = messages.length - 1; i > -1; i--) {
-      const message = messages[i];
-      const otherUserId =
-        message.senderId.id === req.userId
-          ? message.receiverId.id
-          : message.senderId.id;
-
-      if (!keepTrackObj[otherUserId]) {
-        message.unread = 0;
-        keepTrackArray.push(otherUserId);
-        keepTrackObj[otherUserId] = message;
-      }
-      if (!message.seen && message.receiverId.id === req.userId) {
-        keepTrackObj[otherUserId].unread += 1;
-      }
-    }
-
-    keepTrackArray = keepTrackArray.map((id) => {
-      const message = keepTrackObj[id];
-      const user =
-        message.senderId.id === req.userId
-          ? message.receiverId
-          : message.senderId;
-
-      return {
-        text: message.text,
-        imagesUrl: message.imagesUrl,
-        id: user.id,
-        username: user.username,
-        name: user.name,
-        displayUrl: user.displayUrl,
-        isVerified: user.verified,
-        time: message.createdAt.toString(),
-        status: message.senderId.id === req.userId ? "sender" : "receiver",
-        unread: message.unread,
-      };
-    });
-
-    res.status(200).json({ chats: keepTrackArray });
   } catch (err) {
     catchError(err, res);
   }

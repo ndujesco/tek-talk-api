@@ -6,6 +6,50 @@ const fs = require("fs");
 
 const Post = require("../models/post");
 const { Notification } = require("../models/notification");
+const Message = require("../models/message");
+
+const getUnreadMessages = async (userId) => {
+  try {
+    const messages = await Message.find({
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    })
+
+      .populate({
+        path: "senderId",
+        model: "User",
+        select: { id: 1 },
+      })
+      .populate({
+        path: "receiverId",
+        model: "User",
+        select: { id: 1 },
+      });
+
+    let keepTrackArray = [];
+    let keepTrackObj = {};
+
+    for (i = messages.length - 1; i > -1; i--) {
+      const message = messages[i];
+      const otherUserId =
+        message.senderId.id === userId
+          ? message.receiverId.id
+          : message.senderId.id;
+
+      if (!keepTrackObj[otherUserId]) {
+        message.unread = 0;
+        keepTrackArray.push(otherUserId);
+        keepTrackObj[otherUserId] = message;
+      }
+      if (!message.seen && message.receiverId.id === userId) {
+        keepTrackObj[otherUserId].unread += 1;
+      }
+    }
+
+    return keepTrackArray.filter((id) => keepTrackObj[id].unread > 0).length;
+  } catch (err) {
+    catchError(err, res);
+  }
+};
 
 const extractProfile = (user, req) => {
   // So that I don't have to write same function over and over
@@ -91,6 +135,8 @@ const extractSuggestionsInfo = (users, userId) => {
   return infosToReturn;
 };
 
+exports.getUnreadMessages = getUnreadMessages;
+
 exports.getIndex = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
@@ -107,7 +153,9 @@ exports.getMyProfile = async (req, res) => {
 
     const myNotifications = await Notification.find({ userId: req.userId });
     const unRead = myNotifications.some((notification) => !notification.seen); // returns a boolean
+
     profileToReturn.unreadNotifications = unRead;
+    profileToReturn.unreadMessages = await getUnreadMessages(req.userId);
     // if you have !seen SOME notifications, it returns true
     res.status(200).json(profileToReturn);
   } catch (err) {
