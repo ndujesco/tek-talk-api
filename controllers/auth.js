@@ -46,9 +46,10 @@ exports.signup = async (req, res) => {
       status: 201,
       message: "User created!",
       token,
-      userId: result.id,  /*They should be logged in immediately so the id should be sent.
+      userId:
+        result.id /*They should be logged in immediately so the id should be sent.
     the id in the token (to be stored in the browser until it expires)
-    is to keep track of subsequent actions by the user */
+    is to keep track of subsequent actions by the user */,
     });
   } catch (err) {
     catchError(err, res);
@@ -56,7 +57,7 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const errors = validationResult(req);  //checks for errors
+  const errors = validationResult(req); //checks for errors
   const { email, password } = req.body;
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -80,7 +81,7 @@ exports.login = async (req, res) => {
     }
     const token = jwt.sign({ userId: user.id }, process.env.JWT_PRIVATE_KEY, {
       expiresIn: "30d",
-    }); 
+    });
     res.status(200).json({ status: 200, token, userId: user.id });
     /*They should be logged in immediately so the id should be sent.
     the id in the token (to be stored in the browser until it expires)
