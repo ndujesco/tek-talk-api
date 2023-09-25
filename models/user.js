@@ -42,13 +42,13 @@ const userSchema = new Schema({
     },
   ],
 
-  github: String,
+  github: { type: String, default: null },
 
-  twitter: String,
+  twitter: { type: String, default: null },
 
-  instagram: String,
+  instagram: { type: String, default: null },
 
-  linkedIn: String,
+  linkedIn: { type: String, default: null },
 
   token: String,
 
